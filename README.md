@@ -18,3 +18,5 @@ configuration file. Each DOS application can have its individual settings stored
 - Additional options: full screen and automatic closing of *DOSBox*
 - Adjustment of the DOS user memory
 - Adjustment of the emulation speed
+
+[Application download ](http://www.rathlev-home.de/home-e.html#dospanel)
