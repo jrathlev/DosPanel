@@ -19,4 +19,4 @@ configuration file. Each DOS application can have its individual settings stored
 - Adjustment of the DOS user memory
 - Adjustment of the emulation speed
 
-[Application download ](http://www.rathlev-home.de/home-e.html#dospanel)
+[Application download ](http://www.rathlev-home.de/index-e.html?home-e.html#dospanel)
