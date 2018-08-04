@@ -1,0 +1,135 @@
+body {
+  font-family:arial,sans-serif;
+  text-decoration:none;
+  font-size:10.0pt;
+  }
+a {
+  font-weight:bold;  
+  }
+a:link {
+  text-decoration:none;
+  background: transparent;
+  color: #004080;
+}
+a:visited {
+  text-decoration:none;
+  background: transparent;
+  color: #004080;
+}
+a:active {
+  text-decoration:none;
+  background: transparent;
+  color: #004080;
+}
+a:hover {
+  text-decoration:none;
+  background: transparent;
+  color: #e22d00;
+}
+h1 {
+  color:#e22d00;
+  font-size:180%;
+  font-weight:bold;
+  margin-top: 8pt;
+  margin-bottom:8pt;
+}
+h2 {
+  color:#e22d00;
+  font-size:140%;
+  font-weight:bold;
+  margin-top: 8pt;
+  margin-bottom:6pt;
+}
+h3 {
+  color:#2c44a7;
+  font-size:120%;
+  font-weight:bold;
+  margin-top: 12pt;
+  margin-bottom:0pt;
+}
+h4 {
+  color:#2c44a7;
+  font-size:110%;
+  font-weight:bold;
+  margin-top:6pt;
+  margin-bottom:0pt;
+}
+h5 {
+  color:#2c44a7;
+  font-size:100%;
+  font-weight:bold;
+  margin-top:3pt;
+  margin-bottom:0pt;
+}
+h6 {
+  color:#2c44a7;
+  font-size:100%;
+  font-style: italic;
+  margin-top:2pt;
+  margin-bottom:0pt;
+}
+big {
+  color:#e22d00;
+  font-size:140%;
+  font-weight:bold;
+  margin-bottom:4pt;
+}
+small {
+  color:#000000;
+  font-size:100%;
+  font-style: italic;
+  margin-bottom:4pt;
+  }
+p {
+  margin-top:3px;
+  line-height:140%;
+  margin-bottom:5px;
+}
+dl {
+  margin-top:0px;
+  margin-bottom: 5px;
+}
+dt,dd {
+  line-height:140%;
+}
+ul {
+  list-style-image:url(images/ball.gif);
+  list-style-position: outside;
+  line-height:140%;
+  margin-top:5px;
+  margin-bottom: 5px;
+  margin-left: 15px;
+  margin-right: 5px;
+  padding-left: 15px;
+}
+ol {
+  list-style-type:decimal;
+  line-height:140%;
+  margin-top:5px;
+  margin-bottom: 5px;
+  margin-left: 15px;
+  margin-right: 5px;
+  padding-left: 15px;
+}
+li {
+  line-height:140%;
+}
+b {
+  color: #2c44a7;
+}
+em {
+  color: #2c44a7;
+  font-weight:bold;
+}
+hr {
+	color: #2c44a7;
+	background-color: #2c44a7;
+	margin-top: 5px;
+	margin-right: 0px;
+	margin-bottom: 10px;
+	margin-left: 0px;
+	height: 2px;
+	padding: 0px;
+	line-height: 2px;
+	border: 0px;
+}

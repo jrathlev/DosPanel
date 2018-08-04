@@ -1,0 +1,373 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>DosPanel - Info</title>
+<meta name="description" content="(c) 2012-2018, J. Rathlev, D-24222 Schwentinental">
+<meta name="author" content="J. Rathlev">
+<meta name="date" content="2018-08-03">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<link rel=stylesheet type="text/css" href="styles.css">
+</head>
+
+<body>
+<table>
+<tr>
+  <td rowspan="2" valign="center"><img src="images/dp-logo.png" width="53" height="40" align="left" border="0"></td>
+  <td align="Left"><h2 style="margin-top:2pt;margin-bottom:2pt;">DosPanel - Windows-Desktop for DosBox</h2></td>
+</tr>
+<tr valign="top"">
+    <td><b>&copy; 2014-2018, J. Rathlev</a>, 24222 Schwentinental, Germany</b></td>
+</tr>
+</table>
+<p>
+<img src="images/ball.gif" width="14" height="14">
+  <a href="#intro">Overview</a>
+<img src="images/ball.gif" width="14" height="14">
+  <a href="#install">Installation</a>
+<img src="images/ball.gif" width="14" height="14">
+  <a href="#options">Command line option</a>
+<img src="images/ball.gif" width="14" height="14">
+  <a href="#use">Operation</a>
+<img src="images/ball.gif" width="14" height="14">
+  <a href="#sample">Sample</a>
+<img src="images/ball.gif" width="14" height="14">
+  <a href="#autor">Author</a>
+<img src="images/ball.gif" width="14" height="14">
+  <a href="#license">Licensing</a>
+</p>
+
+<hr>
+<h2><a name="intro">Overview:</a></h2>
+<map name="dospanel">
+  <area shape="rect" coords="9,30,384,48" href="#menu" alt="Main menu" title="Main menu">
+  <area shape="rect" coords="12,53,40,83" href="#add" alt="Add a DOS application" title="Add a DOS application">
+  <area shape="rect" coords="42,53,68,82" href="#edit" alt="Edit settings of DOS application" title="Edit settings of DOS application">
+  <area shape="rect" coords="70,52,98,83" href="#delete" alt="Remove DOS application" title="Remove DOS application">
+  <area shape="rect" coords="106,53,133,84" href="#start" alt="Run DOS application" title="Run DOS application">
+  <area shape="rect" coords="145,53,261,88" href="#view" alt="Display options" title="Display options">
+  <area shape="rect" coords="267,55,296,87" href="#manual" alt="Show manual" title="Show manual">
+  <area shape="rect" coords="299,54,326,87" href="#dosbox" alt="Run DOSBox without application" title="Run DOSBox without application">
+  <area shape="rect" coords="5,90,385,113" href="#cats" alt="Categories" title="Categories">
+  <area shape="rect" coords="10,116,385,230" href="#apps" alt="Application of a category" title="Application of a category">
+</map>
+<img src="images/dospanel.png" width="392" height="255" align="right" border="0" hspace="5" usemap="#dospanel">
+<p>The program is a Windows frontend to the DOS emulator
+  <i><a href="http://www.dosbox.com/news.php" target="_blank">DOSBox</a></i>
+  to manage and run DOS applications. The user can configure all
+  settings required by <em>DOSBox</em> without having to concern himself with the
+  rather complex syntax of <em>DOSBox</em> configuration files. The settings are saved
+  for each DOS application separately.<br>
+  For better view the DOS applications can be assigned to different categories.
+</p>
+
+<h3>The functions at a glance:</h3>
+<ul>
+  <li>Assigning the drives of the DOS application:</li>
+  <ul>
+    <li>Any directory on the host system as harddrive</li>
+    <li>Any DVD/CD drive of the host or an ISO image as CD drive</li>
+  </ul>
+  <li>Selection of an executable or a batch file with optional parameters
+    to be started automatically in <em>DOSBox</em></li>
+  <li>Adding of DOS commands to be executed before starting the above executable
+    (e.g. changing directory)</li>
+  <li>Selection of an icon to be displayed in <strong>DosPanel</strong></li>
+  <li>Optional selection of a keymapper</li>
+  <li>Selection of a manual (e.g. text or PDF) for the DOS application</li>
+  <li>Optional comment</li>
+  <li>Additional options: full screen display and automatic closing of <em>DOSBox</em></li>
+  <li>Adjusting the size of the working memory</li>
+  <li>Adjusting the emulation speed</li>  
+</ul>
+
+<h2>DOSBox</h2>
+<p><em>DOSBox</em> is an emulator to run DOS application on different platforms
+  (e.g Windows, Linux). So many of the old DOS games can be resurrected. You will
+  find more information and a download at 
+  <a href="http://www.dosbox.com/news.php" target="_blank">DOSBox</a>. The documentation
+  will be found <a href="http://www.dosbox.com/wiki/Main_Page" target="_blank">
+  here</a>.</p>
+  
+<hr>
+<h2><a name="install">Installing the program</a></h2>
+<p>The program runs on all current Windows systems. Start the executable setup file
+  to install the program. On <em>Windows 7,8 and 10</em> the rights of an administrator
+  are required. Before starting <strong>DosPanel</strong> for the first time it 
+  is necessary to install the current version of <em>DOSBox</em> and run it once.
+</p>
+
+<hr>
+<h2><a name="options">Command line option</a></h2>
+<dl>
+<dt><b>/ini:[<em>IniFile</em>]</b></b></dt>
+<dd>The user configuration is saved in the file <em>DosPanel.ini</em>. This file 
+  is located by default in the Application Data directory of the user:
+  <ul>
+    <li><b>Vista, Windows 7,8  and 10:</b> <i>C:\Users\&lt;Username&gt;\AppData\Roaming</i></li>
+    <li><b>Windows 2000 and XP:</b> <i>C:\Documents and Settings\&lt;Username&gt;\Application Data</i></li>
+  </ul>      
+  Using this option you can select an alternative configuration file at any other location
+  (e.g. <tt>E:\DosBox\DosPanel-1.ini)</tt>.<br>
+  If there is no path specified in <i>[IniFile]</i>, the path of the program
+  installation will be used.
+</dl>
+
+<hr>
+<h2><a name="use">Using the program</a></h2>
+<h3><a name="menu">Main menu</a></h3>
+<dl>
+  <dt><b>Global</b></dt>
+    <dd><a href="#basic"><i>Settings</i></a> - Basic settings</dd>
+    <dd><em>Language</em> - Selection of the destop language for <strong>DosPanel</strong>
+      (currently Englisch and German)</dd>
+    <dd><em>Exit</em> - Close <strong>DosPanel</strong></dd>
+  <dt><b>Application</b></dt>
+    <dd><a href="#add"><i>New</i></a> - Add a DOS application to <strong>DosPanel</strong></dd>
+    <dd><a href="#edit"><i>Edit</i></a> - Edit the configuration of DOS application</dd>
+    <dd><a href="#dup"><i>Duplicate </i></a> - Duplicate the selected DOS application</dd>
+    <dd><a href="#delete"><i>Remove</i></a> - Remove a DOS application from 
+      <strong>DosPanel</strong></dd>
+    <dd><a href="#appmapper"><i>Adjust keymapper</i></a> - Starts the  
+      <em>DOSBox</em> keymapper to make individual mappings of keys on keyboard
+      and joystick.</dd>
+  <dt><b>View</b></dt>
+    <dd><a href="#view"><i>Large icons</i></a> - Show the DOS applicationa as large icons</dd>
+    <dd><a href="#view"><i>Small icons</i></a> - Show the DOS applicationa as small icons</dd>
+    <dd><a href="#view"><i>List</i></a> - Show the DOS applicationa as list</dd>
+    <dd><a href="#view"><i>Details</i></a> - Show the DOS applicationa as detailed list 
+      (e.g. drive mappings)</dd>
+ <dt><b>Action</b></dt>
+     <dd><a href="#start"><i>Run</i></a> - Run the selected DOS application</dd>
+     <dd><a href="#manual"><i>Show manual</i></a> - Show the manual of the selected
+       DOS application</dd>
+     <dd><a href="#dosbox"><i>Run DOSBox</i></a> - Run <em>DOSBox</em> without any
+       DOS application</dd>
+     <dd><em>Convert text</em> - Convert text files to several code pages
+       (e.g. 437 oder 858)</dd>
+  <dt><b>Help</b> - About the program</dt>
+</dl>
+
+<hr style="text-align:left;width:400px;color:#FF0000;">
+<map name="popmenu">
+  <area shape="rect" coords="6,3,157,27" href="#start" alt="Starten">
+  <area shape="rect" coords="4,30,161,50" href="#edit" alt="Bearbeiten">
+  <area shape="rect" coords="1,75,160,95" href="#delete" alt="Entfernen">
+  <area shape="rect" coords="0,96,154,113" href="#manual" alt="Handbuch">
+  <area shape="rect" coords="0,120,148,145" href="#appmapper" alt="Keymapper">
+  <area shape="rect" coords="6,51,155,73" href="#dup" alt="Duplicate">
+</map>
+<img src="images/popmenu.png" width="176" height="123" align="right" border="0" hspace="5" usemap="#popmenu">
+<h3>Context menu of an application</h3>
+<p>A right-click on the icon of an application will open a context menu. 
+  A click on a region of the screenshot at right will lead to specific help for that 
+  function.
+</p>
+<br clear="all">
+  
+<hr style="text-align:left;width:400px;color:#FF0000;">
+<img src="images/basic-options.png" width="423" height="432" align="right" border="0" hspace="5">
+<h3><a name="basic">Basic settings</a></h3>
+<p>When starting <strong>DosPanel</strong> for the first time after the installation,
+  the program searches for an installed <em>DOSBox</em> and will adjust most
+  basic settings automatically. Next, you should enter your individual settings.
+  The screenshot at right will give an overview.</p>
+  <h4>Settings for DOSBox</h4>
+  <ul>
+    <li><b>Root path to DOS applications:</b> Select the root directory of 
+    your DOS applications.</li>
+    <li><b>Path to DOSBox:</b> This entry is made by the program automatically.</li>
+    <li><b>Basic configuration file:</b> This is the file with the basic configuration
+    created from <em>DOSBox</em>. The entry is made by the program automatically. 
+    If required, the configuration file can be changed with any text editor. 
+    Notes about the format you will find in the <em>DOSBox</em> documentation.</li>
+    <li><b>Language file:</b> This entry is made by the program automatically and is
+    only needed for other languages than English.</li>
+    <li><b>Default mapper file:</b> This is the file with settings for redirection of 
+    keys and joystick buttons used by certain DOS applications in <em>DOSBox</em>. 
+    This entry is made by the program automatically. <a href="#appmapper">Application specific</a>
+    adjustments are pssible.</li>
+    <li><b>Keyboard layout:</b> If the automatic detection in <em>DOSBox</em> fails,
+    you can specify your keyboard layout (e.g. <i>GR</i> for a German
+    keyboard) manually.</li>
+    <li><b>Code page used in DOSBox:</b> Select the code page you want to use for
+    screen output of <em>DOSBox</em> .</li>
+    <li><b>Hide console:</b> Starting <em>DOSBox</em> will open a <em>DOSBox console</em>
+    in a second window. If you wish, you can hide this window.</li>
+  </ul> 
+<h4>Settings for DosPanel</h4>
+  <ul>
+    <li><b>Start automatically:</b> If this option is selected, <strong>DosPanel</strong>
+    will be loaded automatically on each Windows start (see <i>Startup</i> folder).</li>
+  </ul>
+<br clear="all">
+
+<hr style="text-align:left;width:400px;color:#FF0000;">
+<h3><a name="add">Configuration of a DOS application</a></h3>
+<img src="images/app-options.png" width="555" height="468" align="right" border="0" hspace="5">
+<h4><img src="images/add.png" width="24" height="24" border="0"> 
+  Add a new application</h4>
+<p>Clicking this button will add a new DOS application to <strong>DosPanel</strong>.
+  In the dialog that follows, you have to enter the settings for this application.
+  Refer to next chapter for more details.</p> 
+  
+<h4><img src="images/edit.png" width="24" height="24" border="0">
+  <a name="edit">Edit the selected application</a></h4>
+<p>All possible settings are shown in the screenshot at right:</p>  
+<ul>
+  <li><b>Name:</b> The name for the application that is shown in <strong>DosPanel</strong>.</li>
+  <li><b>Category:</b> The name of the page where the application ist displayed.
+    If no category is specified, the application will be assigned to 
+    <i>Miscellaneous</i>.</li>
+  <li><b>Mount drive to path:</b> Select a directory on the host system that will
+    be used as main drive in <em>DOSBox</em> (e.g <b>C:</b>).</li>
+  <li><b>Mount CD drive:</b> Select, whether you want to connect the <em>DOSBox</em>
+    CD drive to a physical drive of your host system or to an ISO image on your
+    host system (e.g. <b>D:</b>.</li>
+  <li><b>Application to be started:</b> Select the DOS application or the batch file
+    on your main drive (e.g <b>C:</b>) or any subdirectory that will be started 
+    automatically in <em>DOSBox</em>.</li>
+  <li><b>Parameters of application:</b> Optional parameters for the application to
+    be started automatically.</li>
+  <li><b>Additional commands on startup:</b> Enter the DOS commands that will be executed
+    before starting the above application (e.g. changing drive and directory).</li>
+  <li><b>Icon file:</b> Select an image file (e.g. <i>.ICO</i>) or an exe file 
+    containing an icon for the <strong>DosPanel</strong> display.</li>
+  <li><b>Mapper file:</b> Select the DOS application specific mapper file, if needed
+    (<a href="#appmapper">more ..</a>). Usually this file is located in the
+    main drive directory of the DOS applicatiomn (see above).</li>
+  <li><b>Manual:</b> Select a file on your host system that contains a manual for 
+    the selected DOS application. This may be any file type (e.g. text or PDF)
+    and will be opened with the application assigned in Windows (e.g. Adobe Reader).</li>
+  <li><b>Description:</b> This is a short description for the selected DOS application
+    that will be displayed in <strong>DosPanel</strong> when moving the mouse over
+    the assigned icon.</li>   
+  <li><b>Options:</b> You can make here some more settings for <em>DOSBox</em>.
+    Ususally this is only necessary in those cases the default settings do not work.
+    More information abaout this you will find in the <em>DOSBox</em> documentation.
+  <ul>
+    <li><b>Full screen:</b> <em>DOSBox</em> is started in full screen mode.</li>
+    <li><b>Close DOSBox automatically at end of execution:</b> When ending the
+      DOS application also <em>DOSBox</em> will close automatically.</li>
+    <li><b>Memory size:</b> If necessaryyou can adjust the size of <em>DOSBox</em>
+      memory.</li>
+    <li><b>Instruction cycles per ms:</b> This settings affects the speed of the
+      <em>DOSBox</em> emulation. In most cases the automatic mode will work.
+      Some DOS games may require an individual setting to a lower value. You will
+      find more information about this topic in the <em>DOSBox</em> documentation.</li>
+  </ul>
+  </li>
+</ul>
+
+<h4><a name="dup"><img src="images/copy.png" width="24" height="24" border="0">
+  Duplicate the selected DOS application</a></h4>
+<p>Use this command to add a new DOS application to <strong>DosPanel</strong> and
+  copy all settings from the selected application. Edit the settings as described
+  above.</p>  
+
+<h4><a name="delete"><img src="images/delete.png" width="24" height="24" border="0"> 
+  Remove an application</a></h4>
+<p>Use this command to remove a DOS application from <strong>DosPanel</strong>.</p>
+  
+<h4><a name="appmapper">Adjust keymapper</a></h4>
+<p>Have a look into the <em>DOSBox</em> documentation to learn more about the keymapper.
+  Calling this menu item will open the <em>DOSBox</em> keymapper to make individual
+  settings for keyboard and joystick. This may be useful with some DOS applications
+  to simplify the handling. There is a default mapper file (see <a href="#basic">Basic settings</a>)
+  and optional a mapper file for each DOS application that will be created using
+  this command. The settings will be applied to the configuration automatically.
+  </p>
+  
+<hr style="text-align:left;width:400px;color:#FF0000;">
+<h3><a name="view">View</a></h3>
+<p>The view settings are similar to those in the Windows Explorer. If you select
+   <i>Details</i>, amongst others for each DOS application the assigned drives
+   and the selected application for automatic start will be displayed.</p>
+
+<hr style="text-align:left;width:400px;color:#FF0000;">
+<h3><a name="start">Action</a></h3>
+<h4><img src="images/run.png" width="24" height="24" border="0">Run</h4>
+<p>The selected DOS application will be started in <em>DOSBox</em> using the
+  specified <a href="#edit">settings</a>.</p>
+  
+<h4><a name="manual"><img src="images/manual.png" width="24" height="24" border="0">Show manual</a></h4>
+<p>Show the manual of the selected DOS application. Text files are displayed using
+  an internel viewer, all other file types will use the application assigned by Windows,  
+  e.g. AdobeReader for PDF files.</p>
+  
+<h4><a name="dosbox"><img src="images/dosbox.png" width="24" height="24" border="0">Run DOSBox</a></h4>
+<p><em>DOSBox</em> will be opened without starting a special DOS application.</p>
+
+<hr>
+<img src="images/tp-e.png" width="555" height="516" align="right" border="0" hspace="5">
+<h3><a name="sample">Configuration example to run Turbo-Pascal</a></h3>
+<p>Everybody wishing to use the popular Turbo Pascal IDE with 64-bit versions
+  of Windows, can realize this very simply using DosPanel and DOSBox. The
+  required configuration can be explained using the following example:<br>
+  Create a directory TP on any drive (e.g. E:). Below this, create a
+  subdirectory bin that will hold all binary files belonging to Turbo Pascal
+  and separate subdirectories for the source files of each Pascal project. Copy
+  this Batch file into the root directory TP:</p>
+<pre>
+  rem @echo off
+  echo Start Turbo-Pascal 7.0 (TPX)
+  E:
+  path \BIN;%PATH%
+  if "%1"=="" goto normal
+  cd %1
+  if "%2"=="n" goto quit
+  if "%2"=="N" goto quit
+  if "%2"=="" goto normal
+  TPX %2
+  echo off
+  goto ende
+  :normal
+  TPX
+  echo off
+  :quit
+</pre>
+<p>Then create a new DOS application in <strong>DosPanel</strong> for each
+  project using the settings shown on the right. The entries for <i>Name</i> and
+  <i>Parameter</i> specify the particular project subdirectory.</p>
+
+<hr>
+<dl>
+	<dt><h3><a name="autor">Author:</a></h3></dt>
+	<dd>Dr. Jürgen Rathlev</dd>
+	<dd>24222 Schwentinental, Germany</dd>
+	<dd>E-Mail: kontakt (a) rathlev-home.de</dd>
+</dl>
+
+
+<dl>
+  <dt><h3><a name="hints">Notes:</a></h3></dt>
+  <dd>The program was written in <b>Codegear Delphi 10</b>&reg;.</dd>
+  <dd><a href="http://www.dosbox.com/news.php" target="_blank">DOSBox</a> is 
+    an OpenSource project.</dd>
+</dl>
+
+<dl>
+  <dt><h3><a name="disclaimer">Disclaimer</a></h3>
+  <dd>There is no warranty either for the correct operation of the program or for the
+  correctness of the results. The author shall not be liable for any possible
+  damages to hardware and software arising out of use of the program.
+</dd>
+</dl>
+
+<h3><a name="license">License</a></h3>
+<dl>
+  <dt><b>1. Using the program</b></dt>
+  <dd>The program may be used by anyone, in any way, for any purpose, without charge.
+</dd>
+  <dt><b>2. Distributing the program</b></dt>
+  <dd>The program may be distributed by any means, provided that the original files 
+  as supplied by the author remain intact and no charge is made other than for 
+  reasonable distribution costs.
+  The program may not be distributed as a component of any commercial product
+  without a prior license agreement with the author.
+</dd>
+</dl>
+
+<hr>
+<i>J. Rathlev, 24222 Schwentinental, Germany, August 2018</i>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<OBJECT type="text/site properties">
+	<param name="ImageType" value="Folder">
+</OBJECT>
+<UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="&Uuml;bersicht">
+		<param name="Local" value="dospanel-info.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Installation">
+		<param name="Local" value="dospanel-info.html#install">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Befehlszeilenoption">
+		<param name="Local" value="dospanel-info.html#options">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Hauptmen&uuml;">
+		<param name="Local" value="dospanel-info.html#menu">
+		<param name="ImageNumber" value="11">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Kontextmen&uuml;">
+		<param name="Local" value="dospanel-info.html#popmenu">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Grundeinstellungen">
+		<param name="Local" value="dospanel-info.html#basic">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Konfiguration einer DOS-Anwendung">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Neue Anwendung hinzuf&uuml;gen">
+			<param name="Local" value="dospanel-info.html#add">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Einstellungen einer Anwendung bearbeiten">
+			<param name="Local" value="dospanel-info.html#edit">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Verdoppeln der ausgew&auml;hlten DOS-Anwendung">
+			<param name="Local" value="dospanel-info.html#dup">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Anwendung entfernen">
+			<param name="Local" value="dospanel-info.html#delete">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Keymapper anpassen">
+			<param name="Local" value="dospanel-info.html#appmapper">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Ansicht">
+		<param name="Local" value="dospanel-info.html#view">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Aktionen">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Starten">
+			<param name="Local" value="dospanel-info.html#start">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Anleitung anzeigen">
+			<param name="Local" value="dospanel-info.html#manual">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="DOSBox starten">
+			<param name="Local" value="dospanel-info.html#dosbox">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Beispiel">
+		<param name="Local" value="dospanel-info.html#sample">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Autor">
+		<param name="Local" value="dospanel-info.html#autor">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Lizenz">
+		<param name="Local" value="dospanel-info.html#license">
+		</OBJECT>
+</UL>
+</BODY></HTML>
