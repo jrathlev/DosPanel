@@ -28,7 +28,7 @@ DefaultGroupName=Dos Panel
 OutputDir=.
 OutputBaseFilename=dospanel-setup
 SetupIconFile=DosPanel.ico
-UninstallDisplayIcon=DosPanel-u.ico
+UninstallDisplayIcon={app}\DosPanel-u.ico
 WizardImageFile=Dp-Install-Image.bmp
 WizardSmallImageFile=Dp-Install-Small.bmp
 Compression=lzma
@@ -39,8 +39,8 @@ DisableDirPage=auto
 DisableProgramGroupPage=auto
 
 [Languages]
-Name: "en"; MessagesFile: compiler:Default.isl; LicenseFile:"e:\Delphi2009\Projekte\Common\Privat\license-en.rtf";
-Name: "de"; MessagesFile: compiler:Languages\German.isl; LicenseFile:"e:\Delphi2009\Projekte\Common\Privat\license-de.rtf";
+Name: "en"; MessagesFile: compiler:Default.isl; LicenseFile:"..\docs\license-en.rtf";
+Name: "de"; MessagesFile: compiler:Languages\German.isl; LicenseFile:"..\docs\license-de.rtf";
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
@@ -49,14 +49,15 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "..\Release\Win32\DosPanel.exe"; DestDir: "{app}"; Flags: ignoreversion restartreplace
 Source: "..\Release\Win32\locale\*.mo"; DestDir: "{app}\locale"; Flags: recursesubdirs ignoreversion restartreplace
 Source: "..\Release\Win32\language.cfg"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion restartreplace
-Source: "license-*.rtf"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\docs\license-*.rtf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\docs\DosPanel-de.chm"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\docs\DosPanel-en.chm"; DestDir: "{app}"; Flags: ignoreversion
+Source: "DosPanel-u.ico"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{group}\Dos Panel"; Filename: "{app}\DosPanel.exe"
-Name: "{group}\{cm:UninstallProgram,Dos Panel}"; Filename: "{uninstallexe}"
+Name: "{group}\{cm:UninstallProgram,Dos Panel}"; Filename: "{uninstallexe}"; IconFilename: "{app}\DosPanel-u.ico"
 Name: "{commondesktop}\Dos Panel"; Filename: "{app}\DosPanel.exe"; Tasks: desktopicon
 
 [Run]
@@ -67,7 +68,7 @@ function ReadVersionNumber (const FName : string) : string;
 var
   sv : string;
 begin
-  if GetVersionNumbersString(FName,sv) then Result:=sv else Result:='1.3';
+  if GetVersionNumbersString(FName,sv) then Result:=sv else Result:='1.2';
   end;
 
 
