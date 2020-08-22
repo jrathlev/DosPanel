@@ -1,9 +1,9 @@
-(* Name der Palettenseite für eigene Komponenten
-   Diese Datei muss als "Include" in alle Komponenten-Quelltexte eingefügt
-   werden, die auf dieser Palettenseite erscheinen sollen.
-   J. Rathlev, Okt. 2015 *)
+(* Name of tool palette page 
+  Insert as "Include" into all component sources to be displayed
+  on the tool palette page specified by "CompPalPage" 
+  J. Rathlev,  August 2020 *)
 
 const
-  // Seite in der Komponentenpalette für "RegisterComponents"
+  // tool palette page to be used in "RegisterComponents"
   CompPalPage = 'JR-Comps';
 
