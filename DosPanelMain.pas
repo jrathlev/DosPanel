@@ -14,7 +14,7 @@
    the specific language governing rights and limitations under the License.
 
    J. Rathlev, Dec. 2011
-   last modified: Aug. 2018
+   last modified: Sept 2020
    *)
 
 unit DosPanelMain;
@@ -30,11 +30,9 @@ uses
 
 const
   ProgName = 'DOS Panel';
-  Vers = ' - Vers. 1.5';
-  CopRgt = '© 2018 - Dr. J. Rathlev, D-24222 Schwentinental';
+  Vers = ' - Vers. 1.6';
+  CopRgt = '© 2018-2020 - Dr. J. Rathlev, D-24222 Schwentinental';
   EMailAdr = 'kontakt(a)rathlev-home.de';
-  AppSubDir = 'JR-WeicheWare';    // Unterverz. in Anwendungsdaten für Ini-Dateien
-
 
   ConfName = 'dospanel.conf';
 
@@ -304,7 +302,11 @@ begin
       or (length(Category)=0) and AnsiSameText(sc,MiscName) then begin
     with Icons do begin
       if ImgType=imIco then n:=ilLarge.AddIcon(Icon)
-      else n:=ilLarge.AddMasked(Bitmap,Bitmap.TransparentColor);
+      else begin
+        try n:=ilLarge.AddMasked(ScaleBitmap(Bitmap,32,32),Bitmap.TransparentColor);
+        except n:=ilLarge.AddIcon(imgLarge.Picture.Icon);
+          end;
+        end;
       ilSmall.AddMasked(Small,Small.TransparentColor);
       end;
     with lvApps.Items.Add do begin
@@ -607,7 +609,7 @@ begin
 procedure TfrmMain.actInfoExecute(Sender: TObject);
 begin
   InfoDialog(ProgName,ProgVersName+' - '+ProgVersDate+#13+
-           VersInfo.CopyRight+#13+'E-Mail: '+EmailAdr,CenterPos);
+           VersInfo.CopyRight+#13+'E-Mail: '+EmailAdr);
   end;
 
 procedure TfrmMain.actSettingsExecute(Sender: TObject);

@@ -152,6 +152,7 @@ type
   end;
 
 function MiscName : string;
+function ScaleBitmap(ABitmap: TBitmap; AWidth,AHeight : integer) : TBitMap;
 
 var
   AppSettingsDialog: TAppSettingsDialog;
@@ -170,6 +171,18 @@ const
 function MiscName : string;
 begin
   Result:=_('Miscellaneous');
+  end;
+
+function ScaleBitmap(ABitmap: TBitmap; AWidth,AHeight : integer) : TBitMap;
+begin
+  ABitmap.Transparent:=true;
+  Result:=TBitmap.Create;
+  with Result do begin
+    SetSize(AWidth,AHeight);
+    TransparentMode:=tmAuto;
+    Canvas.StretchDraw(Rect(0,0,AWidth,AHeight),ABitmap);  // scale
+    Transparent:=true;
+    end;
   end;
 
 { ------------------------------------------------------------------- }
@@ -193,7 +206,7 @@ begin
   FImgType:=Icons.ImgType;
   DefLImg:=Icons.DefLImg;
   DefSImg:=Icons.DefSImg;
-  inherited Assign(Icons);
+  inherited Assign(Icons.Graphic);
   Small:=TBitmap.Create;
   Small.Assign(Icons.Small);
   end;
@@ -233,6 +246,7 @@ begin
 procedure TAppIcons.LoadFromFile (const Filename : string);
 var
   ic : TIcon;
+  bj : TPicture;
 
   function GetFileIcon(const FileName: string; const Small: Boolean): TIcon;
   var
@@ -250,16 +264,15 @@ var
     else Result:=nil;
     end;
 
-  function ScaleBitmap(ABitmap: TBitmap; AWidth,AHeight : integer) : TBitMap;
+  function ScalePng(APng: TGraphic; AWidth,AHeight : integer) : TBitMap;
+  var
+    bm : TBitMap;
   begin
-    ABitmap.Transparent:=true;
-    Result:=TBitmap.Create;
-    with Result do begin
-      SetSize(AWidth,AHeight);
-      TransparentMode:=tmAuto;
-      Canvas.StretchDraw(Rect(0,0,AWidth,AHeight),ABitmap);  // scale
-      Transparent:=true;
-      end;
+    bm:=TBitmap.Create;
+    bm.PixelFormat:=pf16Bit;
+    (APng as TPngImage).AssignTo(bm);
+    Result:=ScaleBitmap(bm,AWidth,AHeight);
+    bm.Free;
     end;
 
   function ScaleIcon (AIcon : TIcon; AWidth,AHeight : integer) : TBitMap;
@@ -318,10 +331,18 @@ begin
         Small:=GetSmallImage(DefSImg);
         end;
       end
+    else if ImgType=imPng then begin
+      bj:=TPicture.Create;
+      bj.LoadFromFile(Filename);
+      Bitmap.PixelFormat:=pf16Bit;
+      (bj.Graphic as TPngImage).AssignTo(Bitmap);
+      Small:=ScaleBitmap(Bitmap,16,16);
+      bj.Free;
+      end
     else begin
       inherited LoadFromFile(Filename);
       if ImgType=imIco then Small:=ScaleIcon(Icon,16,16)
-      else Small:=ScaleBitmap(Bitmap,16,16);
+      else Small:=ScaleBitmap(Bitmap,16,16)
       end;
     end
   else begin
@@ -457,7 +478,7 @@ begin
     Title:=_('Select file with icon for this application');
     if Execute then begin
       edIconFile.Text:=Filename;
-      with frmMain do NewIcons.LoadFromFile(Filename);
+      NewIcons.LoadFromFile(Filename);
       imgIcon.Picture.Assign(NewIcons);
       end;
     end;
@@ -514,7 +535,7 @@ begin
     DelimitedText:=edCommands.Text;
     end;
   if SelectFromListDialog.Execute(CursorPos,_('Edit startup commands'),_('List of commands'),'',
-              true,true,false,1,tcNone,'',sl,s) then edCommands.Text:=sl.DelimitedText;
+              [soEdit,soOrder],1,tcNone,'',sl,s) then edCommands.Text:=sl.DelimitedText;
   sl.Free;
   end;
 

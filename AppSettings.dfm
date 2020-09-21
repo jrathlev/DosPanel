@@ -102,6 +102,7 @@ object AppSettingsDialog: TAppSettingsDialog
     Top = 18
     Width = 32
     Height = 32
+    Stretch = True
     Transparent = True
   end
   object btCommands: TSpeedButton
@@ -434,7 +435,7 @@ object AppSettingsDialog: TAppSettingsDialog
       Width = 56
       Height = 21
       TabOrder = 3
-      Text = '1000'
+      Text = '1.000'
     end
     object udCycles: TUpDown
       Left = 151
