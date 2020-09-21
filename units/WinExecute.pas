@@ -26,18 +26,22 @@ uses Winapi.Windows, Vcl.Forms, System.Classes, System.SysUtils;
 
 type
   EProcessError = class(Exception);
+  TProcessFlag = (pfConsole,pfShowConsole,pfShowOutput,pfShowError);
+  TProcessFlags = set of TProcessFlag;
 
-function ExecuteProcess (const AppName,Options,WorkDir : string; ShowCon,ShowErr : boolean; WaitTime : integer = 0;
-                         IgnoreTimeout : boolean = false; Output : TStringList = nil) : HResult; overload;
+function ExecuteProcess (const AppName,Options,WorkDir : string; Flags : TProcessFlags;
+                         WaitTime : integer = 0; IgnoreTimeout : boolean = false;
+                         Output : TStringList = nil; CodePage : integer = 850) : HResult; overload;
 
-function ExecuteProcess (const AppName,Options,WorkDir : string; ShowCon : boolean; WaitTime : integer = 0;
-                         IgnoreTimeout : boolean = false; Output : TStringList = nil) : HResult; overload;
+function ExecuteProcess (const CmdLine,WorkDir : string; Flags : TProcessFlags;
+                         WaitTime : integer = 0; IgnoreTimeout : boolean = false;
+                         Output : TStringList = nil) : HResult; overload;
 
-function ExecuteProcess (const CmdLine,WorkDir : string; ShowCon,ShowErr : boolean; WaitTime : integer = 0;
-                         IgnoreTimeout : boolean = false; Output : TStringList = nil) : HResult; overload;
+function ExecuteProcess (const CmdLine,WorkDir : string; Output : TStringList = nil; CodePage : integer = 850) : HResult; overload;
 
-function ExecuteProcess (const CmdLine,WorkDir : string; ShowCon : boolean; WaitTime : integer = 0;
-                         IgnoreTimeout : boolean = false; Output : TStringList = nil) : HResult; overload;
+function ExecuteConsoleProcess (const CmdLine,WorkDir : string; Output : TStringList; CodePage : integer = 850) : HResult;
+
+procedure CancelProcess;
 
 function StartProcess (const CmdLine,WorkDir : string) : THandle;
 
@@ -60,6 +64,9 @@ implementation
 
 uses Winapi.Shellapi, Show, WinUtils, WinApiUtils, StringUtils, UnitConsts;
 
+var
+  FCancelProcess : boolean;
+
 function RawByteToUnicode(sa : RawByteString; CodePage : integer = 1252) : string;
 var
   ta,tu : TBytes;
@@ -78,19 +85,19 @@ begin
 
 { ------------------------------------------------------------------- }
 // Prozess mit Befehlszeile "CmdLine" starten
-// ShowCon  = true : Anzeige von StdOut
-//          = false: Keine Anzeige von StdOut
-// ShowErr  = true : Anzeige von Fehlern
-// WaitTime > 0 : Warte auf das Ende des Prozesses für max. "WaitTime" in Millisekunden
-//          = 0 : Warten auf den gestarteten Prozess
+// ShowConsole = true : keine Anzeige von StdOut
+//           = false: Anzeige von StdOut
+// ShowErr   = true : Anzeige von Fehlern
+// WaitTime  > 0 : Warte auf das Ende des Prozesses für max. "WaitTime" in Millisekunden
+//           = 0 : Warten auf den gestarteten Prozess
 // IgnoreTimeout = true: Timeout nicht als Fehler zurück geben
 // Output : TStringList für die Anzeige von StdOut
 // Result: = 0: ok
 //         > 0 :  Bit 29 ($20000000) gesetzt : ExitCode = Result and $FF
 //                sonst  Systemfehler von GetLastErr (siehe SysErrorMessage)
-function ExecuteProcess (const AppName,Options,WorkDir : string; ShowCon,ShowErr : boolean;
+function ExecuteProcess (const AppName,Options,WorkDir : string; Flags : TProcessFlags;
                          WaitTime : integer = 0; IgnoreTimeout : boolean = false;
-                         Output : TStringList = nil) : HResult; overload;
+                         Output : TStringList = nil; CodePage : integer = 850) : HResult; overload;
 const
   BUFSIZE = 1024;
 var
@@ -106,6 +113,7 @@ var
 //  frmShow   : TfrmShow;
   pApp,pDir : PWideChar;
 begin
+  FCancelProcess:=false;
 // Set the bInheritHandle flag so pipe handles are inherited.
   with saPipe do begin
     nLength:=sizeof(TSecurityAttributes);
@@ -126,7 +134,7 @@ begin
 //    hSaveStdout:=GetStdHandle(STD_OUTPUT_HANDLE);
 // Create a pipe for the child process's STDOUT.
   if not CreatePipe(hChildStdoutRd,hChildStdoutWr,@saPipe, 0) then begin
-    if ShowErr then ErrorDialog(rsExecuteError,rsCreatePipeError);
+    if pfShowError in Flags then ErrorDialog(rsExecuteError,rsCreatePipeError);
     Result:=ERROR_PIPE_CONNECTED;
     exit;
     end;
@@ -136,7 +144,7 @@ begin
   if not DuplicateHandle(GetCurrentProcess,hChildStdoutRd,GetCurrentProcess,
                          @hChildStdoutRdDup , 0, FALSE,
                          DUPLICATE_SAME_ACCESS) then begin
-    if ShowErr then ErrorDialog(rsExecuteError,rsDupHandleError);
+    if pfShowError in Flags then ErrorDialog(rsExecuteError,rsDupHandleError);
     Result:=E_HANDLE;
     exit;
     end;
@@ -148,11 +156,13 @@ begin
     cb:=Sizeof(TStartupInfo);
     dwFlags:=STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
     wShowWindow:=SW_SHOWNORMAL;
-    hStdOutput :=hChildStdoutWr;
+    if (pfConsole in Flags) and not (pfShowConsole in Flags) then hStdOutput:=hChildStdoutWr;
     end;
 
   cf:=NORMAL_PRIORITY_CLASS;
-  if ShowCon then cf:=cf or CREATE_NO_WINDOW;
+  if pfConsole in Flags then begin
+    if pfShowConsole in Flags then cf:=cf or CREATE_NEW_CONSOLE else cf:=cf or CREATE_NO_WINDOW;
+    end;
   if length(AppName)=0 then pApp:=nil else pApp:=pchar(AppName);
   if length(WorkDir)=0 then pDir:=nil else pDir:=pchar(WorkDir);
 
@@ -161,14 +171,16 @@ begin
                    nil,                // Security process
                    nil,                // Security thread
                    true,               // use InheritHandles
-                   cf,                 // Priorität
+                   cf,                 // Creation flags
                    nil,                // Environment
-                   pDir,               // Verzeichnis
+                   pDir,               // Work directory
                    si,pi) then begin
 //    while WaitForSingleObject(pi.hProcess,10)=WAIT_TIMEOUT do Application.ProcessMessages;
     if WaitTime=0 then begin  // wait for end
-      while WaitForSingleObject(pi.hProcess,100)<>WAIT_OBJECT_0 do Application.ProcessMessages;
-      Result:=0;
+      while (WaitForSingleObject(pi.hProcess,100)<>WAIT_OBJECT_0) and not FCancelProcess
+        do Application.ProcessMessages;
+      if FCancelProcess then Result:=WAIT_TIMEOUT
+      else Result:=0;
       end
     else begin   // wait for timeout
       if WaitForSingleObject(pi.hProcess,abs(WaitTime))<>WAIT_TIMEOUT then Result:=0
@@ -176,17 +188,20 @@ begin
       end;
     if (Result=0) or IgnoreTimeout then begin
       if GetExitCodeProcess(pi.hProcess,ec) then begin
-        if ec>0 then Result:=ec or UserError;  // return exit code
+        if ec>0 then begin
+          if ec<$10000 then Result:=ec or UserError;  // return exit code
+          end;
         end
       else Result:=GetLastError;
       end;
 
-    CloseHandle(pi.hProcess); CloseHandle(pi.hThread);
+    if (pfConsole in Flags) and (pfShowConsole in Flags) then TerminateProcess(pi.hProcess,0);
+    CloseHandle(pi.hThread); CloseHandle(pi.hProcess);
 
 // Close the write end of the pipe before reading from the
 // read end of the pipe.
     if not CloseHandle(hChildStdoutWr) then begin
-      if ShowErr  then ErrorDialog(rsExecuteError,rsCloseHandleError);
+      if pfShowError in Flags then ErrorDialog(rsExecuteError,rsCloseHandleError);
       Result:=E_HANDLE;
       exit;
       end;
@@ -200,34 +215,37 @@ begin
         sa:=sa+chBuf;
         end;
       end;
-    s:=RawByteToUnicode(sa,850);
+    s:=RawByteToUnicode(sa,CodePage);
     CloseHandle(hChildStdoutRdDup);
-// show console output
-    if assigned(Output) then Output.Text:=s
-    else if ShowCon then ShowText(AppName,s);
+// copy console output
+    if pfConsole in Flags then begin
+      if assigned(Output) then Output.Text:=s
+      else if (pfShowOutput in Flags) and (length(s)>0) then ShowText(AppName,s);
+      end;
     end
   else Result:=GetLastError;
   end;
 
-function ExecuteProcess (const AppName,Options,WorkDir : string; ShowCon : boolean;
-                         WaitTime : integer = 0; IgnoreTimeout : boolean = false;
-                         Output : TStringList = nil) : HResult; overload;
-begin
-  Result:=ExecuteProcess(AppName,Options,WorkDir,ShowCon,false,WaitTime,IgnoreTimeout,Output);
-  end;
-
-function ExecuteProcess (const CmdLine,WorkDir : string; ShowCon,ShowErr : boolean;
+function ExecuteProcess (const CmdLine,WorkDir : string; Flags : TProcessFlags;
                          WaitTime : integer = 0; IgnoreTimeout : boolean = false;
                          Output : TStringList = nil) : HResult;
 begin
-  Result:=ExecuteProcess('',CmdLine,WorkDir,ShowCon,ShowErr,WaitTime,IgnoreTimeout,Output);
+  Result:=ExecuteProcess('',CmdLine,WorkDir,Flags,WaitTime,IgnoreTimeout,Output);
   end;
 
-function ExecuteProcess (const CmdLine,WorkDir : string; ShowCon : boolean;
-                         WaitTime : integer = 0; IgnoreTimeout : boolean = false;
-                         Output : TStringList = nil) : HResult;
+function ExecuteProcess (const CmdLine,WorkDir : string; Output : TStringList; CodePage : integer) : HResult;
 begin
-  Result:=ExecuteProcess('',CmdLine,WorkDir,ShowCon,false,WaitTime,IgnoreTimeout,Output);
+  Result:=ExecuteProcess('',CmdLine,WorkDir,[],0,false,Output,CodePage);
+  end;
+
+function ExecuteConsoleProcess (const CmdLine,WorkDir : string; Output : TStringList; CodePage : integer) : HResult;
+begin
+  Result:=ExecuteProcess('',CmdLine,WorkDir,[pfConsole],0,false,Output,CodePage);
+  end;
+
+procedure CancelProcess;
+begin
+  FCancelProcess:=true;
   end;
 
 { ------------------------------------------------------------------- }
@@ -380,8 +398,6 @@ begin
   end;
 
 function GetParams : string;
-var
-  i : integer;
 begin
   Result:=CmdLine;
   ReadNxtQuotedStr(Result,' ','"');
@@ -399,6 +415,9 @@ function RunElevated (const ExecuteFile : string) : boolean;
 begin
   Result:=RunElevated(ExecuteFile,GetParams);
   end;
+
+initialization
+  FCancelProcess:=false;
 
 end.
 

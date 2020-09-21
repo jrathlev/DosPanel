@@ -3,9 +3,9 @@
    =======================================
    Design ähnlich wie Windows-Datei-Dialog
    
-   © 2007 J. Rathlev 24222 Schwentinental
-      Web:  www.rathlev-home.de
-      Mail: kontakt(a)rathlev-home.de
+   © Dr. J. Rathlev 24222 Schwentinental
+     Web:  www.rathlev-home.de
+     Mail: kontakt(a)rathlev-home.de
 
    The contents of this file may be used under the terms of the
    Mozilla Public License ("MPL") or
@@ -25,6 +25,7 @@
    Vers. 2.4 - Mar. 2010 : adjustable window sizes
    Vers. 3.0 - Apr. 2012 : Delphi XE2
    Vers. 3.1 - Nov. 2015 : Delph 10, adaption to new shell control components
+   last modified: January 2020
    *)
 
 unit ShellDirDlg;
@@ -87,6 +88,8 @@ type
     procedure ShellTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure PopupMenuPopup(Sender: TObject);
+    procedure cbxSelectedDirCloseUp(Sender: TObject);
+    procedure cbxSelectedDirChange(Sender: TObject);
   private
     { Private declarations }
     FDefaultDir,FIniName,FIniSection : string;
@@ -94,6 +97,7 @@ type
     procedure ShowFiles (AShow : boolean);
     procedure AddHistory (ADir : string);
     procedure DeleteHistory (ADir : string);
+    procedure SelectDir (const ADir : string);
   public
     { Public declarations }
     procedure LoadFromIni(IniName, Section : string);
@@ -118,7 +122,7 @@ implementation
 {$R *.dfm}
 
 uses System.IniFiles, Vcl.Dialogs, System.StrUtils, Winapi.ShlObj, Winapi.Shellapi,
-  Winapi.ActiveX, ExtSysUtils, WinShell, WinUtils, FileUtils, IniFileUtils,
+  Winapi.ActiveX, ExtSysUtils, WmiUtils, WinShell, WinUtils, FileUtils, IniFileUtils,
   GnuGetText, SelectDlg;
 
 const
@@ -141,6 +145,8 @@ begin
   panRoot.ParentBackground:=false;
   Top:=(Screen.Height-Height) div 2;
   Left:=(Screen.Width-Width) div 2;
+  if (Win32Platform=VER_PLATFORM_WIN32_NT) and (Win32MajorVersion>=10) then // Windows 10
+    spbNetwork.Visible:=Smb1Installed;
   end;
 
 { ------------------------------------------------------------------- }
@@ -457,11 +463,49 @@ begin
     end;
   ClientWidth:=d;
   cbxSelectedDir.Text:=ShellTreeView.Path;
+  btbOk.Enabled:=DirectoryExists(cbxSelectedDir.Text);
   end;
 
 procedure TShellDirDialog.cbxFilesClick(Sender: TObject);
 begin
   if Visible then ShowFiles(cbxFiles.Checked);
+  end;
+
+procedure TShellDirDialog.cbxSelectedDirChange(Sender: TObject);
+begin
+  btbOk.Enabled:=DirectoryExists(cbxSelectedDir.Text);
+  end;
+
+procedure TShellDirDialog.cbxSelectedDirCloseUp(Sender: TObject);
+begin
+  with cbxSelectedDir do SelectDir(Items[ItemIndex]);
+  end;
+
+procedure TShellDirDialog.SelectDir (const ADir : string);
+var
+  s,r : string;
+begin
+  s:=ADir;
+  if length(s)=0 then s:=FDefaultDir;
+  if (length(s)=0) or not DirectoryExists(s)then begin
+    s:=GetDesktopFolder(CSIDL_PERSONAL);
+    r:='rfMyComputer';
+//    r:='rfPersonal';
+    if length(s)=0 then begin
+      s:=GetCurrentDir;
+      end;
+    end
+  else begin
+    if copy(s,1,2)='\\' then begin
+      r:='rfNetwork';
+      end
+    else r:='rfMyComputer';
+    end;
+  with ShellTreeView do begin
+    Root:=r;
+    Path:=s;
+    if assigned(Selected) then try Selected.Expand(false); except end;
+    end;
   end;
 
 {------------------------------------------------------------------- }
@@ -472,30 +516,19 @@ function TShellDirDialog.Execute (const ATitle  : string;
                                   var Dir : string) : boolean;
 var
   ok : boolean;
-  s,r : string;
 begin
   Caption:=ATitle; FDefaultDir:=HomeDir;
-  s:=Dir;
-  if length(s)=0 then s:=HomeDir;
-  if (length(s)=0) or not DirectoryExists(s)then begin
-    s:=GetDesktopFolder(CSIDL_PERSONAL);
-    r:='rfPersonal';
-    if length(s)=0 then begin
-      s:=GetCurrentDir;
-      r:='rfMyComputer';
-      end;
-    end
-  else begin
-    if copy(s,1,2)='\\' then r:='rfNetwork' else r:='rfMyComputer';
-    end;
   with ShellTreeView do begin
-    Root:=r;
     if Hidden then ObjectTypes:=ObjectTypes+[otHidden,otHiddenSystem]
     else ObjectTypes:=ObjectTypes-[otHidden,otHiddenSystem];
     ShowZip:=not ZipAsFiles;
-    Path:=s;
-    if assigned(Selected) then try Selected.Expand(false); except end;
     end;
+  if (copy(Dir,1,2)='\\') and not spbNetwork.Visible then begin
+    ErrorDialog(_('Browsing the network is not supported on this system!'));
+    SelectDir(HomeDir);
+//    Exit;
+    end
+  else SelectDir(Dir);
   with ShellListView do begin
     if Hidden then ObjectTypes:=ObjectTypes+[otHidden,otHiddenSystem]
     else ObjectTypes:=ObjectTypes-[otHidden,otHiddenSystem];

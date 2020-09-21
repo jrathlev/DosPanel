@@ -2,7 +2,7 @@
    Abfrage der Angaben für eine Anmeldung (Name + Passwort)
    ========================================================
 
-   © Dr. J. Rathlev, D-24222 Schwentinental (info(a)rathlev-home.de)
+   © Dr. J. Rathlev, D-24222 Schwentinental (kontakt(a)rathlev-home.de)
 
    The contents of this file may be used under the terms of the
    Mozilla Public License ("MPL") or
@@ -13,6 +13,7 @@
    the specific language governing rights and limitations under the License.
    
    Vers. 1 - Dez. 2004
+   last modified: August 2020
    *)
 
 unit LogonDlg;
@@ -20,7 +21,7 @@ unit LogonDlg;
 interface
 
 uses WinApi.Windows, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Forms,
-  Vcl.Controls, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, HListBox;
+  Vcl.Controls, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, WinUtils;
 
 type
   TLogonDialog = class(TForm)
@@ -29,14 +30,16 @@ type
     Label1: TLabel;
     Label2: TLabel;
     PwdEdit: TEdit;
-    NameEdit: THistoryCombo;
     SkipBtn: TBitBtn;
     laHinweis: TLabel;
+    cbName: TComboBox;
     procedure NameEditEnter(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
+    FIniName,FSection : string;
   public
     { Public declarations }
     procedure LoadFromIni(IniName, IniSection : string);
@@ -60,10 +63,10 @@ uses GnuGetText, FileUtils;
 { ------------------------------------------------------------------- }
 procedure TLogonDialog.LoadFromIni(IniName,IniSection : string);
 begin
-  with NameEdit do begin
-    LoadFromIni(IniName,IniSection);
+  FIniName:=IniName; FSection:=IniSection;
+  LoadHistory(FIniName,FSection,cbName);
+  with cbName do
     if Items.Count=0 then Style:=csSimple else Style:=csDropDown;
-    end;
   end;
 
 { ------------------------------------------------------------------- }
@@ -73,7 +76,14 @@ begin
   WriteDebugLog('Create LogonDlg');
 {$EndIf}
   TranslateComponent (self,'dialogs');
-  NameEdit.Style:=csSimple;
+  cbName.Style:=csSimple;
+  FIniName:=''; FSection:=''
+  end;
+
+procedure TLogonDialog.FormDestroy(Sender: TObject);
+begin
+  if (length(FIniName)>0) and (length(FSection)>0) then
+    SaveHistory(FIniName,FSection,true,cbName);
   end;
 
 procedure TLogonDialog.NameEditEnter(Sender: TObject);
@@ -84,7 +94,7 @@ begin
 procedure TLogonDialog.FormActivate(Sender: TObject);
 begin
   BringToFront;
-  if length(NameEdit.Text)=0 then NameEdit.SetFocus
+  with cbName do if length(Text)=0 then SetFocus
   else PwdEdit.SetFocus;
   end;
 
@@ -98,12 +108,13 @@ var
 begin
   Caption:=Titel;
   laHinweis.Caption:=Hinweis;
-  NameEdit.Text:=User;
+  cbName.Text:=User;
   PwdEdit.Text:='';
   SkipBtn.Visible:=ShowSkip;
   mr:=ShowModal;
   if mr=mrOK then begin
-    User:=NameEdit.Text; Pwd:=PwdEdit.Text;
+    User:=cbName.Text; Pwd:=PwdEdit.Text;
+    AddToHistory(cbName,User);
     end;
   Result:=mr;
   end;

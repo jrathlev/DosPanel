@@ -22,7 +22,7 @@ interface
 uses Winapi.Windows, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Forms,
   Vcl.Controls, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.OleCtrls, SHDocVw,
   Vcl.ComCtrls, Vcl.ActnList, Vcl.ImgList, Vcl.ToolWin, Winapi.Messages,
-  System.ImageList, System.Actions;
+  System.Actions, System.ImageList;
 
 type
   TDownloadEvent = procedure(Sender: TObject; const URL : string; var Done : boolean) of object;
@@ -400,8 +400,8 @@ begin
       if Modal then Result:=ShowModal=mrOK
       else Show;
       end
-    else ErrorDialog ('',dgettext('dialogs','The integrated web browser is not available on your system'+sLineBreak+
-                'You need to install Internet Explorer Vers. 4 or newer.'),CenterPos);
+    else ErrorDialog (CenterPos,dgettext('dialogs','The integrated web browser is not available on your system'+sLineBreak+
+                'You need to install Internet Explorer Vers. 4 or newer.'));
     end
   else if AVailable then begin
 //    WebBrowser.Refresh;

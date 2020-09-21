@@ -13,7 +13,7 @@
 
    Vers. 1 - Sep. 2002
    Vers. 2 - April 2016: IFileOperation added
-   last updated: Feb. 2017
+   last updated: June 2020
    *)
 
 unit WinShell;
@@ -96,6 +96,9 @@ type
   TProgramFolder = (pfProgramFiles,pfCommonProgramFiles,pfProgramFiles86,pfCommonProgramFiles86,
     pfProgramFiles64,pfCommonProgramFiles64);
 
+// exe file types
+  TFileExeType = (etError, etLink, etMsDos, etWin16, etWin32Gui, etWin32Con);
+
 (*   IID_ITaskbarList: TGUID = '{56FDF342-FD6D-11d0-958A-006097C9A090}';
   IID_ITaskbarList2: TGUID = '{602D4995-B13A-429b-A66E-1935E44F4317}';
   IID_ITaskbarList3: TGUID = '{ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf}';
@@ -157,10 +160,14 @@ function GetDirectory (Title      : string;
                        var Dir    : string;
                        var ImgNdx : integer) : boolean;
 
-function MakeLink(const LinkObj,ProgName,IconLocation,Arg,WorkDir,Desc: string) : boolean; overload;
-function MakeLink(const LinkObj,ProgName,Arg,WorkDir,Desc: string) : boolean; overload;
+function MakeLink (const LinkObj,ProgName,IconLocation,Arg,WorkDir,Desc: string;
+                   RunAs : boolean = false) : HResult; overload;
+function MakeLink (const LinkObj,ProgName,Arg,WorkDir,Desc: string;
+                   RunAs : boolean = false) : HResult; overload;
 
-function GetLink (const LinkObj : string; var ProgName,Arg,WorkDir,Desc: string) : Boolean;
+function GetLink (const LinkObj : string; var ProgName,Arg,WorkDir,Desc: string;
+                  var RunAs : boolean) : HResult; overload;
+function GetLink (const LinkObj : string; var ProgName,Arg,WorkDir,Desc: string) : boolean; overload;
 
 { ---------------------------------------------------------------- }
 // Icon in Taskbar aufnehmen
@@ -249,6 +256,10 @@ function ShellDeleteAll (WinHandle   : HWnd;
 function GetClientArea : TRect;
 
 { ---------------------------------------------------------------- }
+// Get file information
+function IsConsoleApp (const Filename : string) : boolean;
+
+{ ---------------------------------------------------------------- }
 // Windows 7 Bibliotheken
 function GetShellLibraryforLibrary(const LibraryName: String; grfMode: DWORD; var ppv: IShellLibrary): Boolean;
 function GetLibraryFileSystemFolders(const LibraryName: String; Folders: TStrings): Boolean;
@@ -303,7 +314,6 @@ begin
 function GetKnownFolder (rfId : TGUID) : string;  // available since Vista
 var
   ppszPath : PWideChar;
-  hr       : hresult;
 begin
   Result:='';
   if (Win32Platform=VER_PLATFORM_WIN32_NT) and (Win32MajorVersion>=6) and
@@ -401,24 +411,38 @@ begin
 
 
 { ---------------------------------------------------------------- }
-function MakeLink(const LinkObj,ProgName,IconLocation,Arg,WorkDir,Desc: string) : boolean;
+function MakeLink (const LinkObj,ProgName,IconLocation,Arg,WorkDir,Desc: string;
+                   RunAs : boolean = false) : HResult;
 var
   psl : IShellLink;
   ppf : IPersistFile;
+  pdl : IShellLinkDataList;
+  dwFlags : DWORD;
 begin
-  Result:=false;
-  if SUCCEEDED(CoCreateInstance(CLSID_ShellLink,     // ID von ShellLink (Typ TGUID)
-                      nil,
-                      CLSCTX_INPROC_SERVER,
-                      IID_IShellLinkW,     // Referenz auf die Funktion
-                      psl)) then with psl do begin
-    if SUCCEEDED(SetPath(pChar(ProgName))) then begin
+  Result:=CoCreateInstance(CLSID_ShellLink,     // ID von ShellLink (Typ TGUID)
+                      nil,CLSCTX_INPROC_SERVER,
+                      IID_IShellLinkW,          // Referenz auf die Funktion
+                      psl);
+  if SUCCEEDED(Result) then with psl do begin
+    Result:=SetPath(pChar(ProgName));
+    if SUCCEEDED(Result) then begin
       SetArguments(PChar(Arg));
       if length(ProgName)>0 then SetIconLocation(PChar(IconLocation),0);
       if length(WorkDir)>0 then SetWorkingDirectory(PChar(WorkDir));
       if length(Desc)>0 then SetDescription(PChar(Desc));
-      if SUCCEEDED(QueryInterface(IID_IPersistFile,ppf)) then begin
-        Result:=SUCCEEDED(ppf.Save(PChar(LinkObj),true));
+      Result:=QueryInterface(IID_IPersistFile,ppf);
+      if SUCCEEDED(Result) then begin
+        if RunAs then begin
+          Result:=QueryInterface(IID_IShellLinkDataList,pdl);
+          if SUCCEEDED(Result) then begin
+            Result:=pdl.GetFlags(dwFlags);
+            if SUCCEEDED(Result) and ((SLDF_RUNAS_USER and dwFlags)=0) then
+                Result:=pdl.SetFlags(SLDF_RUNAS_USER or dwFlags);
+            end
+          end
+        else Result:=S_OK;
+        if SUCCEEDED(Result) then Result:=ppf.Save(PChar(LinkObj),true);
+        if SUCCEEDED(Result) then ppf.SaveCompleted(nil);
         end;
 //      ppf:=nil;
       end;
@@ -426,40 +450,60 @@ begin
     end;
   end;
 
-function MakeLink(const LinkObj,ProgName,Arg,WorkDir,Desc: string) : boolean;
+function MakeLink(const LinkObj,ProgName,Arg,WorkDir,Desc: string; RunAs : boolean = false) : HResult;
 begin
-  Result:=MakeLink(LinkObj,ProgName,ProgName,Arg,WorkDir,Desc);
+  Result:=MakeLink(LinkObj,ProgName,ProgName,Arg,WorkDir,Desc,RunAs);
   end;
 
-function GetLink (const LinkObj : string; var ProgName,Arg,WorkDir,Desc: string) : Boolean;
+function GetLink (const LinkObj : string; var ProgName,Arg,WorkDir,Desc: string;
+                  var RunAs : boolean) : HResult;
 var
   psl : IShellLink;
   ppf : IPersistFile;
   sb  : PChar;
+  pdl : IShellLinkDataList;
   pfd : TWin32FindData;
+  dwFlags : DWORD;
 begin
-  Result:=false;
-  if FileExists(LinkObj) and
-     SUCCEEDED(CoCreateInstance(CLSID_ShellLink,     // ID von ShellLink (Typ TGUID)
-                      nil,
-                      CLSCTX_INPROC_SERVER,
+  RunAs:=false; ProgName:=''; Arg:=''; WorkDir:=''; Desc:='';
+  if FileExists(LinkObj) then begin
+    Result:=CoCreateInstance(CLSID_ShellLink,     // ID von ShellLink (Typ TGUID)
+                      nil,CLSCTX_INPROC_SERVER,
                       IID_IShellLinkW,     // Referenz auf die Funktion
-                      psl)) then with psl do begin
-    if SUCCEEDED(QueryInterface(IID_IPersistFile,ppf)) then begin
-      ppf.Load(PChar(LinkObj),STGM_READ);
-      sb:=StrAlloc(MAX_PATH+1);
-      with psl do if succeeded(GetPath(sb,MAX_PATH,pfd,SLGP_UNCPRIORITY)) then begin
-        ProgName:=sb;
-        if succeeded(GetArguments(sb,MAX_PATH)) then Arg:=sb;
-        if succeeded(GetWorkingDirectory(sb,MAX_PATH)) then WorkDir:=sb;
-        if succeeded(GetDescription(sb,MAX_PATH)) then Desc:=sb;
-        Result:=true;
+                      psl);
+    if SUCCEEDED(Result) then with psl do begin
+      Result:=QueryInterface(IID_IPersistFile,ppf);
+      if SUCCEEDED(Result) then begin
+        ppf.Load(PChar(LinkObj),STGM_READ);
+        Result:=QueryInterface(IID_IShellLinkDataList,pdl);
+        if SUCCEEDED(Result) then begin
+          Result:=pdl.GetFlags(dwFlags);
+          if SUCCEEDED(Result) then RunAs:=(SLDF_RUNAS_USER and dwFlags)<>0;
+          end;
+        if SUCCEEDED(Result) then begin
+          sb:=StrAlloc(MAX_PATH+1);
+          Result:=GetPath(sb,MAX_PATH,pfd,SLGP_UNCPRIORITY);
+          if succeeded(Result) then begin
+            ProgName:=sb;
+            if succeeded(GetArguments(sb,MAX_PATH)) then Arg:=sb;
+            if succeeded(GetWorkingDirectory(sb,MAX_PATH)) then WorkDir:=sb;
+            if succeeded(GetDescription(sb,MAX_PATH)) then Desc:=sb;
+            end;
+          StrDispose(sb);
+//          ppf:=nil;
+          end;
         end;
-      StrDispose(sb);
-      ppf:=nil;
       end;
-    psl:=nil;
+//    psl:=nil;
     end
+  else Result:=ERROR_FILE_NOT_FOUND;
+  end;
+
+function GetLink (const LinkObj : string; var ProgName,Arg,WorkDir,Desc: string) : boolean;
+var
+  ra : boolean;
+begin
+  Result:=SUCCEEDED(GetLink (LinkObj,ProgName,Arg,WorkDir,Desc,ra));
   end;
 
 { ---------------------------------------------------------------- }
@@ -473,8 +517,9 @@ function TaskBarAddIcon (WinHandle  : HWnd;
 var
   tnid : TNOTIFYICONDATA;
 begin
+  FillChar(tnid,sizeof(tnid),0);
   with tnid do begin
-    cbSize := system.sizeof(TNOTIFYICONDATA); // Größenangabe der Struktur
+    cbSize := system.sizeof(tnid);     // Größenangabe der Struktur
     Wnd := WinHandle;                  // Handle des Message-Empfängers
     uID := UserId;                     // ID beliebig
     uFlags := 0;                       // siehe Tabelle
@@ -507,8 +552,9 @@ function TaskBarChangeTip (WinHandle  : HWnd;
 var
   tnid : TNOTIFYICONDATA;
 begin
+  FillChar(tnid,sizeof(tnid),0);
   with tnid do begin
-    cbSize := system.sizeof(TNOTIFYICONDATA);  // Größenangabe der Struktur
+    cbSize := system.sizeof(tnid);        // Größenangabe der Struktur
     Wnd := WinHandle;                     // Handle des Message-Empfängers
     uID := UserId;                        // ID beliebig
     uFlags := 0;                          // siehe Tabelle
@@ -529,8 +575,9 @@ function TaskBarChangeBalloonTip (WinHandle  : HWnd;
 var
   tnid : TNOTIFYICONDATA;
 begin
+  FillChar(tnid,sizeof(tnid),0);
   with tnid do begin
-    cbSize := system.sizeof(TNOTIFYICONDATA);  // Größenangabe der Struktur
+    cbSize := system.sizeof(tnid);        // Größenangabe der Struktur
     Wnd := WinHandle;                     // Handle des Message-Empfängers
     uID := UserId;                        // ID beliebig
     uFlags := 0;                          // siehe Tabelle
@@ -554,8 +601,9 @@ function TaskBarChangeIcon (WinHandle  : HWnd;
 var
   tnid : TNOTIFYICONDATA ;
 begin
+  FillChar(tnid,sizeof(tnid),0);
   with tnid do begin
-    cbSize := system.sizeof(TNOTIFYICONDATA);
+    cbSize := system.sizeof(tnid);        // Größenangabe der Struktur
     Wnd := WinHandle;
     uID := UserId;
     uFlags := 0;                          // siehe Tabelle
@@ -584,7 +632,8 @@ function TaskBarRemoveIcon (WinHandle  : HWnd;
 var
   tnid : TNOTIFYICONDATA ;
 begin
-  tnid.cbSize := system.sizeof(TNOTIFYICONDATA);
+  FillChar(tnid,sizeof(tnid),0);
+  tnid.cbSize := system.sizeof(tnid);
   tnid.Wnd := WinHandle;
   tnid.uID := UserId;
   Result:=Shell_NotifyIcon(NIM_DELETE, @tnid);
@@ -771,15 +820,43 @@ begin
   end;
 
 { ---------------------------------------------------------------- }
+// Get file information
+function GetFileExeType (const FileName: string): TFileExeType;
+var
+  FileInfo: TSHFileInfo;
+  rv : DWORD;
+begin
+  Result:=etError;
+  FileInfo.dwAttributes := 0;
+  rv:=SHGetFileInfo(PChar(FileName),0,FileInfo,SizeOf(FileInfo),SHGFI_EXETYPE);
+  if rv=0 then begin
+    if (SHGetFileInfo(PChar(FileName),0,FileInfo,SizeOf(FileInfo),SHGFI_ATTRIBUTES)<>0)
+      and (fileInfo.dwAttributes and SFGAO_LINK <>0) then Result:=etLink;
+    end
+  else case LoWord(rv) of
+    IMAGE_DOS_SIGNATURE: Result:=etMsDos;        // MZ
+    IMAGE_OS2_SIGNATURE: Result:=etWin16;        // NE
+    Word(IMAGE_NT_SIGNATURE):                    // PE
+      if HiWord(rv)=0 then Result:=etWin32Con
+      else Result:=etWin32Gui;
+      end;
+  end;
+
+function IsConsoleApp (const Filename : string) : boolean;
+begin
+  Result:=GetFileExeType(Filename)=etWin32Con;
+  end;
+
+{ ---------------------------------------------------------------- }
 // SHLoadLibraryFromItem() is defined wrong in ShlObj.pas!!! See QC #109306
 function GetSHLoadLibraryFromItem(const psiLibrary: IShellItem; grfMode: DWORD; const riid: TIID; out ppv): HResult;
 var
   plib: IShellLibrary;
 begin
-  Result := CoCreateInstance(CLSID_ShellLibrary, nil, CLSCTX_INPROC_SERVER, IID_IShellLibrary, plib);
+  Result:=CoCreateInstance(CLSID_ShellLibrary, nil, CLSCTX_INPROC_SERVER, IID_IShellLibrary, plib);
   if Succeeded(Result) then begin
-    Result := plib.LoadLibraryFromItem(psiLibrary, grfMode);
-    if Succeeded(Result) then Result := plib.QueryInterface(riid, ppv);
+    Result:=plib.LoadLibraryFromItem(psiLibrary, grfMode);
+    if Succeeded(Result) then Result:=plib.QueryInterface(riid, ppv);
     end;
   end;
 
@@ -791,27 +868,27 @@ var
   DisplayName: LPWSTR;
   hr: HRESULT;
 begin
-  Result := False;
-  ppv := nil;
+  Result:=False;
+  ppv:=nil;
 
   if FAILED(SHGetKnownFolderItem(FOLDERID_Libraries, 0, 0, IShellItem, PPointer(@Item)^)) then Exit;
 
-  hr := Item.BindToHandler(nil, BHID_EnumItems, IEnumShellItems, Enum);
+  hr:=Item.BindToHandler(nil, BHID_EnumItems, IEnumShellItems, Enum);
   if FAILED(hr) then Exit;
 
-  Item := nil;
+  Item:=nil;
   while Enum.Next(1, Item, nil) = S_OK do begin
     if FAILED(Item.GetDisplayName(SIGDN_NORMALDISPLAY, DisplayName)) then Exit;
     try
       if AnsiSameText(DisplayName, LibraryName) then
       begin
-        Result := SUCCEEDED(GetSHLoadLibraryFromItem(Item, grfMode, IShellLibrary, ppv));
+        Result:=SUCCEEDED(GetSHLoadLibraryFromItem(Item, grfMode, IShellLibrary, ppv));
         Break;
         end;
     finally
       CoTaskMemFree(DisplayName);
       end;
-    Item := nil;
+    Item:=nil;
     end;
   end;
 
@@ -823,7 +900,7 @@ var
   Item: IShellItem;
   Path: LPWSTR;
 begin
-  Result := False;
+  Result:=False;
 
   if not GetShellLibraryforLibrary(LibraryName, STGM_READ, SL) then Exit;
   if FAILED(SL.GetFolders(LFF_FORCEFILESYSTEM, IShellItemArray, Arr)) then Exit;
@@ -836,9 +913,9 @@ begin
     finally
       CoTaskMemFree(Path);
       end;
-    Item := nil;
+    Item:=nil;
     end;
-  Result := True;
+  Result:=True;
   end;
 
 end.

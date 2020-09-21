@@ -14,7 +14,7 @@
 
    New compilation: April 2015
    language dependend strings in UnitConsts
-   last modified:  Feb. 2017
+   last modified: August 2020
    *)
 
 unit WinUtils;
@@ -22,11 +22,12 @@ unit WinUtils;
 interface
 
 uses Winapi.Windows, System.SysUtils, System.Classes, System.Types, Vcl.Graphics,
-  Vcl.Controls, Vcl.ExtCtrls, Vcl.Forms, Vcl.ComCtrls, Vcl.Printers, System.IniFiles,
-  Vcl.Dialogs;
+  Vcl.Controls, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Forms, Vcl.ComCtrls, Vcl.Printers,
+  System.IniFiles, Vcl.Dialogs;
 
 const
   CenterPos : TPoint = (X : -1; Y : -1);
+  DesignPos : TPoint = (X : 0; Y : -1);
   MaxHist : integer = 50;
 
   // errors from SHgetFileOperation
@@ -59,6 +60,9 @@ type
 
   TFPoint = record
     X,Y : double;
+  public
+    procedure Offset(const DX, DY : double); overload;
+    procedure Offset(const Point: TFPoint); overload;
     end;
 
   TFRect = record
@@ -125,11 +129,11 @@ function GetFilterIndex(AFilter,AExtension : string) : integer;
 function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
                        Buttons: TMsgDlgButtons; DefaultButton : TMsgDlgBtn;
                        Pos : TPoint; Delay : integer;
-                       ADefaultMonitor : TDefaultMonitor = dmActiveForm) : integer; overload;
+                       AMonitor : TDefaultMonitor = dmActiveForm) : integer; overload;
 function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
                        Buttons: TMsgDlgButtons;
                        Pos : TPoint; Delay : integer;
-                       ADefaultMonitor : TDefaultMonitor = dmActiveForm) : integer; overload;
+                       AMonitor : TDefaultMonitor = dmActiveForm) : integer; overload;
 function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
                        Buttons: TMsgDlgButtons) : integer; overload;
 function MessageDialog(const Msg: string; DlgType: TMsgDlgType;
@@ -137,26 +141,40 @@ function MessageDialog(const Msg: string; DlgType: TMsgDlgType;
 function MessageDialog(Pos : TPoint; const Msg: string; DlgType: TMsgDlgType;
                        Buttons: TMsgDlgButtons) : integer;  overload;
 
-function ConfirmDialog (const Title,Msg : string; Pos : TPoint) : boolean; overload;
-function ConfirmDialog (const Title,Msg : string) : boolean; overload;
-function ConfirmDialog (const Msg : string; DefaultButton : TMsgDlgBtn = mbYes) : boolean; overload;
+function ConfirmDialog (const Title,Msg : string;
+                        AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
+function ConfirmDialog (const Msg : string; DefaultButton : TMsgDlgBtn = mbYes;
+                        AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
 function ConfirmDialog (Pos : TPoint; const Msg : string; DefaultButton : TMsgDlgBtn = mbYes;
-                        ADefaultMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
-function ConfirmDialog (Pos : TPoint; const Title,Msg : string; DefaultButton : TMsgDlgBtn = mbYes;
-                        ADefaultMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
+                        AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
+function ConfirmDialog (Pos : TPoint; const Title,Msg : string;
+                        AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
+function ConfirmDialog (Pos : TPoint; const Title,Msg : string; DefaultButton : TMsgDlgBtn;
+                        AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
 
-procedure InfoDialog (const Title,Msg : string; Pos : TPoint); overload;
-procedure InfoDialog (const Title,Msg : string; Delay : integer); overload;
-procedure InfoDialog (const Title,Msg : string); overload;
-procedure InfoDialog (const Msg : string); overload;
-procedure InfoDialog (Pos : TPoint; const Msg : string); overload;
+procedure InfoDialog (const Title,Msg : string; Delay : integer;
+                      AMonitor : TDefaultMonitor = dmActiveForm); overload;
+procedure InfoDialog (const Title,Msg : string;
+                      AMonitor : TDefaultMonitor = dmActiveForm); overload;
+procedure InfoDialog (const Msg : string;
+                      AMonitor : TDefaultMonitor = dmActiveForm); overload;
+procedure InfoDialog (Pos : TPoint; const Title,Msg : string;
+                      AMonitor : TDefaultMonitor = dmActiveForm); overload;
+procedure InfoDialog (Pos : TPoint; const Msg : string;
+                      AMonitor : TDefaultMonitor = dmActiveForm); overload;
 
-procedure ErrorDialog (const Title,Msg : string; Pos : TPoint); overload;
-procedure ErrorDialog (const Title,Msg : string; x,y : integer); overload;
-procedure ErrorDialog (const Title,Msg : string; Delay : integer); overload;
-procedure ErrorDialog (const Title,Msg : string); overload;
-procedure ErrorDialog (const Msg : string); overload;
-procedure ErrorDialog (Pos : TPoint; const Msg : string); overload;
+procedure ErrorDialog (const Title,Msg : string; x,y : integer;
+                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
+procedure ErrorDialog (const Title,Msg : string; Delay : integer;
+                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
+procedure ErrorDialog (const Title,Msg : string;
+                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
+procedure ErrorDialog (const Msg : string;
+                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
+procedure ErrorDialog (Pos : TPoint; const Title,Msg : string;
+                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
+procedure ErrorDialog (Pos : TPoint; const Msg : string;
+                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
 
 { ---------------------------------------------------------------- }
 // get current cursor position
@@ -180,6 +198,9 @@ function BottomRightPos (AControl : TControl) : TPoint; overload;
 function BottomRightPos (AControl : TControl; X,Y : integer) : TPoint; overload;
 function BottomRightPos (AControl : TControl; Offset : TPoint) : TPoint; overload;
 
+// enable/disable all child controls
+procedure EnableControls (AControl : TWinControl; AEnabled : boolean; Recursive : boolean = false);
+
 // area of component
 function GetRect (AControl : TControl) : TRect;
 
@@ -190,25 +211,30 @@ procedure AdjustClientWidth (AForm : TForm; AControl : TControl; Dist : integer 
 { ---------------------------------------------------------------- }
 // History list management
 procedure LoadHistory (IniFile : TIniFile; const Section,Ident : string;
-                       History : TStrings; MaxCount : integer); overload;
+                       History : TStrings; MaxCount : integer; CvQuote : boolean = false); overload;
 procedure LoadHistory (IniFile : TIniFile; const Section,Ident : string;
-                       History : TStrings); overload;
+                       History : TStrings; CvQuote : boolean = false); overload;
 procedure LoadHistory (const IniName,Section,Ident : string;
-                       History : TStrings; MaxCount : integer); overload;
+                       History : TStrings; MaxCount : integer; CvQuote : boolean = false); overload;
 procedure LoadHistory (const IniName,Section,Ident : string;
-                       History : TStrings); overload;
+                       History : TStrings; CvQuote : boolean = false); overload;
+procedure LoadHistory (const IniName,Section : string;
+                       Combo : TComboBox; MaxHist : integer = 0; CvQuote : boolean = false); overload;
 
 procedure SaveHistory (IniFile : TIniFile; const Section,Ident : string;
-                       Erase : boolean; History : TStrings; MaxCount : integer); overload;
+                       Erase : boolean; History : TStrings; MaxCount : integer; CvQuote : boolean = false); overload;
 procedure SaveHistory (IniFile : TIniFile; const Section,Ident : string;
-                       Erase : boolean; History : TStrings); overload;
+                       Erase : boolean; History : TStrings; CvQuote : boolean = false); overload;
 procedure SaveHistory (const IniName,Section,Ident : string;
-                       Erase : boolean; History : TStrings; MaxCount : integer); overload;
+                       Erase : boolean; History : TStrings; MaxCount : integer; CvQuote : boolean = false); overload;
 procedure SaveHistory (const IniName,Section,Ident : string;
-                       Erase : boolean; History : TStrings); overload;
+                       Erase : boolean; History : TStrings; CvQuote : boolean = false); overload;
+procedure SaveHistory (const IniName,Section : string; Erase : boolean;
+                       Combo : TComboBox; MaxHist : integer = 0; CvQuote : boolean = false); overload;
 
 procedure AddToHistory (History : TStrings; const hs : string; MaxCount : integer); overload;
 procedure AddToHistory (History : TStrings; const hs : string); overload;
+procedure AddToHistory (Combo : TComboBox; const hs : string); overload;
 procedure RemoveFromHistory (History : TStrings; const hs : string);
 
 { ---------------------------------------------------------------- }
@@ -254,6 +280,17 @@ uses WinApi.WinSpool, Winapi.Messages, System.StrUtils, System.Math,
 
 const
   SE_SHUTDOWN_NAME = 'SeShutdownPrivilege';
+
+{ ------------------------------------------------------------------- }
+procedure TFPoint.Offset(const DX, DY: double);
+begin
+  X:=X+DX; Y:=Y+DY;
+  end;
+
+procedure TFPoint.Offset(const Point: TFPoint);
+begin
+  Offset(Point.X, Point.Y);
+  end;
 
 { ------------------------------------------------------------------- }
 // Anzeige eines Hinweisfensters (THintWindow), das nach einstellbarer Zeit (Delay)
@@ -500,12 +537,12 @@ begin
 function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
                 Buttons: TMsgDlgButtons; DefaultButton : TMsgDlgBtn;
                 Pos : TPoint; Delay : integer;
-                ADefaultMonitor : TDefaultMonitor = dmActiveForm) : integer;
+                AMonitor : TDefaultMonitor = dmActiveForm) : integer;
 var
   w : integer;
 begin
   with CreateMessageDialog(Msg,DlgType,Buttons,DefaultButton) do begin
-    DefaultMonitor:=ADefaultMonitor;
+    DefaultMonitor:=AMonitor;
 //    ScaleBy(Screen.PixelsPerInch,PixelsPerInchOnDesign);
     Scaled:=true;
     try
@@ -548,14 +585,14 @@ begin
 function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
                 Buttons: TMsgDlgButtons;
                 Pos : TPoint; Delay : integer;
-                ADefaultMonitor : TDefaultMonitor = dmActiveForm) : integer;
+                AMonitor : TDefaultMonitor = dmActiveForm) : integer;
 var
   DefaultButton: TMsgDlgBtn;
 begin
   if mbOk in Buttons then DefaultButton := mbOk else
     if mbYes in Buttons then DefaultButton := mbYes else
       DefaultButton := mbRetry;
-  Result:=MessageDialog(Title,Msg,DlgType,Buttons,DefaultButton,Pos,Delay,ADefaultMonitor);
+  Result:=MessageDialog(Title,Msg,DlgType,Buttons,DefaultButton,Pos,Delay,AMonitor);
 end;
 
 function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
@@ -578,94 +615,108 @@ begin
 
 { ---------------------------------------------------------------- }
 // Bestätigung in Bildschirmmitte (X<0) oder an Position X,Y
-function ConfirmDialog (const Title,Msg : string; Pos : TPoint) : boolean;
+function ConfirmDialog (Pos : TPoint; const Title,Msg : string;
+                        AMonitor : TDefaultMonitor) : boolean;
 begin
-  Result:=MessageDialog (Title,Msg,mtConfirmation,[mbYes,mbNo],Pos,0)=mrYes;
+  Result:=MessageDialog (Title,Msg,mtConfirmation,[mbYes,mbNo],Pos,0,AMonitor)=mrYes;
   end;
 
 // Bestätigung auf einstellbarem Monitor
-function ConfirmDialog (Pos : TPoint; const Msg : string; DefaultButton : TMsgDlgBtn = mbYes;
-                        ADefaultMonitor : TDefaultMonitor = dmActiveForm) : boolean;
+function ConfirmDialog (Pos : TPoint; const Msg : string; DefaultButton : TMsgDlgBtn;
+                        AMonitor : TDefaultMonitor) : boolean;
 begin
-  Result:=MessageDialog ('',Msg,mtConfirmation,[mbYes,mbNo],DefaultButton,Pos,0,ADefaultMonitor)=mrYes;
+  Result:=MessageDialog ('',Msg,mtConfirmation,[mbYes,mbNo],DefaultButton,Pos,0,AMonitor)=mrYes;
   end;
 
-function ConfirmDialog (Pos : TPoint; const Title,Msg : string; DefaultButton : TMsgDlgBtn = mbYes;
-                        ADefaultMonitor : TDefaultMonitor = dmActiveForm) : boolean;
+function ConfirmDialog (Pos : TPoint; const Title,Msg : string; DefaultButton : TMsgDlgBtn;
+                        AMonitor : TDefaultMonitor) : boolean;
 begin
-  Result:=MessageDialog (Title,Msg,mtConfirmation,[mbYes,mbNo],DefaultButton,Pos,0,ADefaultMonitor)=mrYes;
+  Result:=MessageDialog (Title,Msg,mtConfirmation,[mbYes,mbNo],DefaultButton,Pos,0,AMonitor)=mrYes;
   end;
 
 // Bestätigung in Bildschirmmitte
-function ConfirmDialog (const Title,Msg  : string) : boolean;
+function ConfirmDialog (const Title,Msg : string;
+                        AMonitor : TDefaultMonitor) : boolean;
 begin
-  Result:=ConfirmDialog(Title,Msg,CenterPos);
+  Result:=ConfirmDialog(CenterPos,Title,Msg,AMonitor);
   end;
 
-function ConfirmDialog (const Msg : string; DefaultButton : TMsgDlgBtn) : boolean;
+function ConfirmDialog (const Msg : string; DefaultButton : TMsgDlgBtn;
+                        AMonitor : TDefaultMonitor) : boolean;
 begin
-  Result:=MessageDialog ('',Msg,mtConfirmation,[mbYes,mbNo],DefaultButton,CenterPos,0)=mrYes;
+  Result:=MessageDialog ('',Msg,mtConfirmation,[mbYes,mbNo],DefaultButton,CenterPos,0,AMonitor)=mrYes;
   end;
 
 // Information an Position ausgeben
-procedure InfoDialog (const Title,Msg : string; Pos : TPoint);
+procedure InfoDialog (Pos : TPoint; const Title,Msg : string;
+                     AMonitor : TDefaultMonitor);
 begin
-  MessageDialog (Title,Msg,mtInformation,[mbOK],Pos,0);
+  MessageDialog (Title,Msg,mtInformation,[mbOK],Pos,0,AMonitor);
   end;
 
-procedure InfoDialog (Pos : TPoint; const Msg :string);
+procedure InfoDialog (Pos : TPoint; const Msg : string;
+                      AMonitor : TDefaultMonitor);
 begin
-  InfoDialog('',Msg,Pos);
+  InfoDialog(Pos,'',Msg,AMonitor);
   end;
 
 // Information in Bildschirmmitte ausgeben
-procedure InfoDialog (const Title,Msg :string);
+procedure InfoDialog (const Title,Msg : string;
+                      AMonitor : TDefaultMonitor);
 begin
-  InfoDialog(Title,Msg,CenterPos);
+  InfoDialog(CenterPos,Title,Msg,AMonitor);
   end;
 
 // Information in Bildschirmmitte ausgeben und für Delay s anzeigen
-procedure InfoDialog (const Title,Msg : string; Delay : integer); overload;
+procedure InfoDialog (const Title,Msg : string; Delay : integer;
+                      AMonitor : TDefaultMonitor);
 begin
-  MessageDialog (Title,Msg,mtInformation,[mbOK],CenterPos,Delay);
+  MessageDialog (Title,Msg,mtInformation,[mbOK],CenterPos,Delay,AMonitor);
   end;
 
-procedure InfoDialog (const Msg :string);
+procedure InfoDialog (const Msg :string;
+                      AMonitor : TDefaultMonitor);
 begin
-  InfoDialog('',Msg,CenterPos);
+  InfoDialog(CenterPos,'',Msg,AMonitor);
   end;
 
 // Fehlermeldung an Position ausgeben
-procedure ErrorDialog (const Title,Msg : string; Pos : TPoint);
+procedure ErrorDialog (const Title,Msg : string; x,y : integer;
+                       AMonitor : TDefaultMonitor);
 begin
-  MessageDialog (Title,Msg,mtError,[mbOK],Pos,0);
+  MessageDialog (Title,Msg,mtError,[mbOK],Point(x,y),0,AMonitor);
   end;
 
-procedure ErrorDialog (const Title,Msg : string; x,y : integer);
+procedure ErrorDialog (Pos : TPoint; const Title,Msg : string;
+                       AMonitor : TDefaultMonitor);
 begin
-  MessageDialog (Title,Msg,mtError,[mbOK],Point(x,y),0);
+  MessageDialog (Title,Msg,mtError,[mbOK],Pos,0,AMonitor);
   end;
 
-procedure ErrorDialog (Pos : TPoint; const Msg : string);
+procedure ErrorDialog (Pos : TPoint; const Msg : string;
+                       AMonitor : TDefaultMonitor);
 begin
-  ErrorDialog('',Msg,Pos);
+  ErrorDialog(Pos,'',Msg,AMonitor);
   end;
 
 // Fehlermeldung in Bildschirmmitte ausgeben und für Delay s anzeigen
-procedure ErrorDialog (const Title,Msg : string; Delay : integer); overload;
+procedure ErrorDialog (const Title,Msg : string; Delay : integer;
+                       AMonitor : TDefaultMonitor);
 begin
-  MessageDialog (Title,Msg,mtError,[mbOK],CenterPos,Delay);
+  MessageDialog (Title,Msg,mtError,[mbOK],CenterPos,Delay,AMonitor);
   end;
 
 // Fehlermeldung in Bildschirmmitte ausgeben
-procedure ErrorDialog (const Title,Msg : string);
+procedure ErrorDialog (const Title,Msg : string;
+                       AMonitor : TDefaultMonitor);
 begin
-  ErrorDialog(Title,Msg,CenterPos);
+  ErrorDialog(CenterPos,Title,Msg,AMonitor);
   end;
 
-procedure ErrorDialog (const Msg : string);
+procedure ErrorDialog (const Msg : string;
+                       AMonitor : TDefaultMonitor);
 begin
-  ErrorDialog('',Msg,CenterPos);
+  ErrorDialog(CenterPos,'',Msg,AMonitor);
   end;
 
 { ------------------------------------------------------------------- }
@@ -773,6 +824,20 @@ begin
   Result:=BottomRightPos(AControl,Point(X,Y));
   end;
 
+// enable/disable all child controls
+procedure EnableControls (AControl : TWinControl; AEnabled,Recursive : boolean);
+var
+  i : integer;
+begin
+  with AControl do begin
+    for i:=0 to ControlCount-1 do begin
+      if Recursive then EnableControls(Controls[i] as TWinControl,AEnabled);
+      Controls[i].Enabled:=AEnabled;
+      end;
+    Enabled:=AEnabled;
+    end;
+  end;
+
 // area of component
 function GetRect (AControl : TControl) : TRect;
 begin
@@ -810,7 +875,7 @@ const
   iniHist = 'History';
 
 procedure LoadHistory (IniFile : TIniFile; const Section,Ident : string;
-                       History : TStrings; MaxCount : integer);
+                       History : TStrings; MaxCount : integer; CvQuote : boolean);
 var
   i : integer;
   s,si : string;
@@ -821,70 +886,99 @@ begin
       History.Clear;
       for i:=0 to MaxCount-1 do begin
         s:=ReadString(Section,si+IntToStr(i),'');
-        if s<>'' then History.Add(s);
+        if length(s)>0 then begin
+          if CvQuote then s:=ReplChars(s,'#',Quote);
+          History.Add(s);
+          end;
         end;
       end;
     end;
   end;
 
 procedure LoadHistory (IniFile : TIniFile; const Section,Ident : string;
-                       History : TStrings);
+                       History : TStrings; CvQuote : boolean);
 begin
-  LoadHistory(IniFile,Section,Ident,History,MaxHist);
+  LoadHistory(IniFile,Section,Ident,History,MaxHist,CvQuote);
   end;
 
 procedure LoadHistory (const IniName,Section,Ident : string;
-                       History : TStrings; MaxCount : integer);
+                       History : TStrings; MaxCount : integer; CvQuote : boolean);
 var
   IniFile : TIniFile;
 begin
   IniFile:=TIniFile.Create(IniName);
-  LoadHistory(IniFile,Section,Ident,History,MaxCount);
+  LoadHistory(IniFile,Section,Ident,History,MaxCount,CvQuote);
   IniFile.Free;
   end;
 
 procedure LoadHistory (const IniName,Section,Ident : string;
-                       History : TStrings); overload;
+                       History : TStrings; CvQuote : boolean); overload;
 begin
-  LoadHistory(IniName,Section,Ident,History,MaxHist);
+  LoadHistory(IniName,Section,Ident,History,MaxHist,CvQuote);
+  end;
+
+procedure LoadHistory (const IniName,Section : string;
+                       Combo : TComboBox; MaxHist : integer; CvQuote : boolean); overload;
+var
+  n : integer;
+begin
+  with Combo do begin
+    if MaxHist=0 then n:=DropDownCount else n:=MaxHist;
+    LoadHistory(IniName,Section,'',Items,n,CvQuote);
+    end;
   end;
 
 procedure SaveHistory (IniFile : TIniFile; const Section,Ident : string;
-                       Erase : boolean; History : TStrings; MaxCount : integer);
+                       Erase : boolean; History : TStrings; MaxCount : integer; CvQuote : boolean);
 var
   i,n : integer;
-  si  : string;
+  s,si : string;
 begin
   with IniFile do begin
     if length(Ident)=0 then si:=iniHist else si:=Ident;
     if Erase then EraseSection (Section);
     with History do begin
       if Count>MaxCount then n:=MaxCount else n:=Count;
-      for i:=0 to n-1 do WriteString(Section,si+IntToStr(i),Strings[i]);
+      for i:=0 to n-1 do begin
+        s:=Strings[i];
+        if CvQuote then s:=ReplChars(s,Quote,'#');
+        WriteString(Section,si+IntToStr(i),s);
+        end;
       end;
     end;
   end;
 
 procedure SaveHistory (IniFile : TIniFile; const Section,Ident : string;
-                       Erase : boolean; History : TStrings);
+                       Erase : boolean; History : TStrings; CvQuote : boolean);
 begin
-  SaveHistory(IniFile,Section,Ident,Erase,History,MaxHist);
+  SaveHistory(IniFile,Section,Ident,Erase,History,MaxHist,CvQuote);
   end;
 
 procedure SaveHistory (const IniName,Section,Ident : string;
-                       Erase : boolean; History : TStrings; MaxCount : integer);
+                       Erase : boolean; History : TStrings; MaxCount : integer; CvQuote : boolean);
 var
   IniFile : TIniFile;
 begin
   IniFile:=TIniFile.Create(IniName);
-  SaveHistory(IniFile,Section,Ident,Erase,History,MaxHist);
+  SaveHistory(IniFile,Section,Ident,Erase,History,MaxHist,CvQuote);
   IniFile.Free;
   end;
 
 procedure SaveHistory (const IniName,Section,Ident : string;
-                       Erase : boolean; History : TStrings);
+                       Erase : boolean; History : TStrings; CvQuote : boolean);
 begin
-  SaveHistory(IniName,Section,Ident,Erase,History,MaxHist);
+  SaveHistory(IniName,Section,Ident,Erase,History,MaxHist,CvQuote);
+  end;
+
+procedure SaveHistory (const IniName,Section : string; Erase : boolean;
+                       Combo : TComboBox; MaxHist : integer; CvQuote : boolean); overload;
+var
+  n : integer;
+begin
+  with Combo do begin
+    if MaxHist=0 then n:=DropDownCount else n:=MaxHist;
+    SaveHistory(IniName,Section,'',Erase,Items,n,CvQuote);
+    end;
   end;
 
 // move or add item "hs" to begin of history list
@@ -907,13 +1001,18 @@ begin
   AddToHistory (History,hs,MaxHist);
   end;
 
+procedure AddToHistory (Combo : TComboBox; const hs : string); overload;
+begin
+  with Combo do AddToHistory (Items,hs,DropDownCount);
+  end;
+
 procedure RemoveFromHistory (History : TStrings; const hs : string);
 var
   n : integer;
 begin
   if length(hs)>0 then with History do begin
     n:=IndexOf(hs);
-    if n>=0 then Delete (n);
+    if n>=0 then Delete(n);
     end;
   end;
 
@@ -924,7 +1023,8 @@ var
 begin
   with Liste do begin
     for i:=0 to Count-1 do if assigned(Objects[i]) then begin
-      Objects[i].Free; Objects[i]:=nil;
+      try Objects[i].Free; except end;
+      Objects[i]:=nil;
       end;
     end;
   end;
@@ -1039,7 +1139,8 @@ begin
   end;
 
 {------------------------------------------------------------------}
-(* erzeugen einer System-Fehlermeldung *)
+// erzeugen einer System-Fehlermeldung
+// siehe: Win-SDK - Structure of COM Error Codes
 function SystemErrorMessage(ASysError : cardinal) : string;
 begin
   if Win32MajorVersion<6 then begin

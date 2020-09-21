@@ -40,6 +40,7 @@ object LogonDialog: TLogonDialog
   Position = poMainFormCenter
   OnActivate = FormActivate
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -141,7 +142,7 @@ object LogonDialog: TLogonDialog
       0303}
     ModalResult = 1
     NumGlyphs = 2
-    TabOrder = 2
+    TabOrder = 1
   end
   object CancelBtn: TBitBtn
     Left = 230
@@ -208,7 +209,7 @@ object LogonDialog: TLogonDialog
     ModalResult = 2
     NumGlyphs = 2
     Style = bsNew
-    TabOrder = 3
+    TabOrder = 2
   end
   object PwdEdit: TEdit
     Left = 100
@@ -216,16 +217,7 @@ object LogonDialog: TLogonDialog
     Width = 221
     Height = 21
     PasswordChar = '*'
-    TabOrder = 1
-  end
-  object NameEdit: THistoryCombo
-    Left = 100
-    Top = 55
-    Width = 221
-    Height = 21
     TabOrder = 0
-    OnEnter = NameEditEnter
-    MaxItems = 15
   end
   object SkipBtn: TBitBtn
     Left = 35
@@ -282,6 +274,14 @@ object LogonDialog: TLogonDialog
       FAFAFAFAFA300707070707070000070707070707070707070707070707070707
       0000}
     ModalResult = 5
+    TabOrder = 3
+  end
+  object cbName: TComboBox
+    Left = 100
+    Top = 55
+    Width = 221
+    Height = 21
+    DropDownCount = 10
     TabOrder = 4
   end
 end

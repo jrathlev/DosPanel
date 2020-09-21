@@ -19,7 +19,7 @@
 
    Vers. 1 - Jun. 1989
    Vers. 2 - May 2015
-   last modified:  Feb. 2017
+   last modified:  April 2020
    *)
 
 unit NumberUtils;
@@ -216,7 +216,8 @@ function StrToSize (s : string; var size : int64; DecSep : char = #0) : boolean;
 function SetToHex (ASet : PSetArray; Low,High : integer) : string;
 procedure HexToSet (const S : string; ASet: PSetArray);
 
-function SetToByte (ASet : PSetArray) : word;
+function SetToWord (ASet : PSetArray) : word;
+procedure WordToSet (n : word; ASet : PSetArray);
 
 //=====================================================================
 implementation
@@ -654,15 +655,15 @@ begin
     if DecSep<>#0 then fs.DecimalSeparator:=DecSep;
     if Digits=0 then Result:=FloatToStrF (Value,ffGeneral,1,1,fs)
     else begin
-      Digits:=Digits mod 100; k:=Digits div 100;
+      k:=Digits div 100; Digits:=Digits mod 100;
       if k=0 then begin
-        if abs(Value)<MinDouble then k:=1 else k:=round(aint(ln(abs(Value)/ln(10))))+1;
-        if k<=0 then begin
-          if k+Digits>0 then begin
+        if abs(Value)<MinDouble then k:=1 else k:=round(aint(Log10(abs(Value))))+1;
+        if k<0 then begin
+          if k+Digits>=0 then begin
             k:=Digits; inc(Digits);
             end;
           end
-        else if Digits>k then k:=Digits-k
+        else if Digits>=k then k:=Digits-k
         else k:=0;
         end;
       if k>=0 then Result:=FloatToStrF (Value,ffFixed,Digits,k,fs)
@@ -736,9 +737,9 @@ begin
 (* Winkel in String mit vorgebenem Format umsetzen
    Stellen: w : gesamt
             d : hinter Komma (einschl. Minuten und Sekunden
-   Typ : m = fmDezGrad  : Grad,xxx
-             fmDezMin   : Grad:Minuten,xx
-             fmSekunden : Grad:Minuten:Sekunden,xxx *)
+   Typ : m = afDecDegree  : Grad,xxx
+             afDecMinutes : Grad:Minuten,xx
+             afSeconds    : Grad:Minuten:Sekunden,xxx *)
 function DegToStr(v       : extended;
                   Format  : TAngleFormat;
                   w,d     : integer;
@@ -749,35 +750,37 @@ var
   fs    : TFormatSettings;
 begin
   x:=int(abs(v)); y:=60.0*frac(abs(v));
-  fs:=FormatSettings; fs.DecimalSeparator:=DecSep;
+  if DecSep=#0 then DecSep:=FormatSettings.DecimalSeparator;
+  fs:=FormatSettings;
+  fs.DecimalSeparator:=DecSep;
   case Format of
   afDecDegree : Result:=FloatToStrF(v,ffFixed,w,d,fs); //str(v:w:d,s);
   afDecMinutes : begin (* Grad:Min *)
       t:=FloatToStrF(y,ffFixed,w-2,d-2);  // Minuten
       if copy(t,1,2)='60' then begin
         y:=0.0; x:=x+1.0;
-        t:=FloatToStrF(y,ffFixed,w-2,d-2);  // Minuten
+        t:=FloatToStrF(y,ffFixed,w-2,d-2,fs);  // Minuten
         end;
       if y<10 then t:='0'+t;
       if v<0.0 then x:=-x;
-      Result:=FloatToStrF(x,ffFixed,2,0)+':'+t; // Grade
+      Result:=FloatToStrF(x,ffFixed,2,0,fs)+':'+t; // Grade
       end;
   afSeconds : begin (* Grad:Min:Sek *)
       z:=int(y); y:=60.0*frac(y);
-      t:=FloatToStrF(y,ffFixed,w-4,d-4);  // Sekunden
+      t:=FloatToStrF(y,ffFixed,w-4,d-4,fs);  // Sekunden
       if copy(t,1,2)='60' then begin
         y:=0.0; z:=z+1.0;
         if z>=60.0 then begin
           z:=0.0; x:=x+1.0;
           end;
-        t:=FloatToStrF(y,ffFixed,w-4,d-4);  // Sekunden
+        t:=FloatToStrF(y,ffFixed,w-4,d-4,fs);  // Sekunden
         end;
       if y<10 then t:='0'+t;
       s:=FloatToStrF(z,ffFixed,2,0);  // Minuten
       if z<10 then s:='0'+s;
       t:=s+':'+t;
       if v<0.0 then x:=-x;
-      Result:=FloatToStrF(x,ffFixed,2,0)+':'+t; // Grade
+      Result:=FloatToStrF(x,ffFixed,2,0,fs)+':'+t; // Grade
       end;
     end;
   end;
@@ -1062,6 +1065,7 @@ begin
     delete(s,length(s),1);   // optional "i"
     fac:=1024;
     end;
+  s:=Trim(s);
   c:=UpCase(s[length(s)]);
   if (c>='0') then begin
     f:=1;
@@ -1105,9 +1109,14 @@ begin
     end;
   end;
 
-function SetToByte (ASet : PSetArray) : word;
+function SetToWord (ASet : PSetArray) : word;
 begin
   Move(ASet^[1],Result,2);
+  end;
+
+procedure WordToSet (n : word; ASet : PSetArray);
+begin
+  Move(n,ASet^[1],2);
   end;
 
 end.

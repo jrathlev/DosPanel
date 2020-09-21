@@ -79,6 +79,8 @@ resourcestring
   rsTmpFile      = 'Could not rename temporary file';
   rsZipRdSeg     = 'Error reading next zip segment';
   rsAltStreams   = 'Error copying alternate data streams';
+  rsFileDel      = 'Error deleting file';
+  rsFileRen      = 'Error renaming file';
 
   rsUserBreak    = 'Terminated by user';
   rsUnknownErrCode  = 'Unknown error code ($%.8x)';

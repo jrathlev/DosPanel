@@ -12,7 +12,7 @@
    the specific language governing rights and limitations under the License.
 
    Vers. 1 - Sep. 2002
-   last updated: Feb. 2017
+   last updated: June 2020
    *)
 
 unit WinNet;
@@ -34,9 +34,15 @@ function GetUserName : string;
 // StdUser: Name des angemeldeten Benutzers oder leer
 function NetPathAvailable (const Path,StdUser : string; const AltUser : TUserAccount; ReadOnly,Prompt : boolean) : integer; overload;
 function NetPathAvailable (const Path,StdUser : string; ReadOnly,Prompt : boolean) : integer; overload;
+function CheckNetPath (const Path,StdUser : string; const AltUser : TUserAccount; ReadOnly,Prompt : boolean) : integer; overload;
+function CheckNetPath (const Path,StdUser : string; ReadOnly,Prompt : boolean) : integer; overload;
 
 function ReconnectPathEx (const Path : string) : cardinal;
 function ReconnectPath (const Path : string) : boolean;
+
+// check if path is valid
+function PathIsAvailable (const Path : string) : boolean;
+function CheckForWritablePath (const Path : string) : boolean;
 
 function CheckForDirectory (const Path : string) : boolean;
 function CheckForFile (const Filename : string) : boolean;
@@ -184,6 +190,77 @@ begin
   Result:=NetPathAvailable(Path,StdUser,AltUserAccount,ReadOnly,Prompt);
   end;
 
+// wie NetPathAvailable, aber wenn nicht verfügbar wird zuerst mit AltUser versucht
+function CheckNetPath (const Path,StdUser : string; const AltUser : TUserAccount; ReadOnly,Prompt : boolean) : integer;
+var
+  ec,nl    : dword;
+  NetRes   : TNetResource;
+  FindData : TWin32FindData;
+begin
+//  AltConnect:=false;
+  AltUserName:=''; RemoteName:='';
+  // prüfe, ob Verbindung vorhanden
+  if FindFirstFile(PChar(IncludeTrailingPathDelimiter(ExtractFileDrive(Path))+'*.*'),FindData)=INVALID_HANDLE_VALUE then begin
+    ec:=MakeNetRes(Path,NetRes);
+    if ec<>NO_ERROR then begin
+      // Mit alternativem Benutzer versuchen
+      if (length(AltUser.Username)>0) then begin
+        nl:=0;
+        repeat
+          if nl>0 then Sleep(1000); // wait 1 s
+          ec:=WNetAddConnection2(NetRes,pchar(AltUser.Password),pchar(AltUser.Username),CONNECT_TEMPORARY);
+          if (ec=ERROR_ALREADY_ASSIGNED) or (ec=ERROR_DEVICE_ALREADY_REMEMBERED)
+            or (ec=ERROR_SESSION_CREDENTIAL_CONFLICT) then ec:=NO_ERROR;
+          inc(nl);
+          until (ec<>ERROR_NETNAME_DELETED) or (nl=3);  // try 3 times
+        end
+      else if (length(StdUser)>0) then begin  // als angemeldeter Benutzer versuchen
+        nl:=0;
+        repeat
+          if nl>0 then Sleep(1000); // wait 1 s
+          ec:=WNetAddConnection2(NetRes,nil,pchar(StdUser),0);
+          if (ec=ERROR_ALREADY_ASSIGNED) or (ec=ERROR_DEVICE_ALREADY_REMEMBERED)
+            or (ec=ERROR_SESSION_CREDENTIAL_CONFLICT) then ec:=NO_ERROR;
+          inc(nl);
+          until (ec<>ERROR_NETNAME_DELETED) or (nl=3);  // try 3 times
+        end
+      else ec:=ERROR_LOGON_FAILURE;
+      end;
+    // prüfe, ob geschrieben werden kann, falls nicht "ReadOnly"
+    if not ReadOnly and (ec=NO_ERROR) and not CheckForWritablePath(NetRes.lpRemoteName) then
+        ec:=ERROR_SESSION_CREDENTIAL_CONFLICT;
+    if ec=NO_ERROR then RemoteName:=NetRes.lpRemoteName
+    else if ec<>ERROR_BAD_NETPATH then begin
+      // falls nicht möglich und Dialog erlaubt, interaktiv versuchen
+      if (ec<>NO_ERROR) and Prompt then begin
+        repeat
+          ec:=WNetCancelConnection2(NetRes.lpRemoteName,0,false);
+          if (ec=NO_ERROR) or (ec=ERROR_NOT_CONNECTED) then begin
+            ec:=WNetAddConnection2(NetRes,nil,nil,CONNECT_INTERACTIVE or CONNECT_PROMPT);
+            end
+          else ec:=ERROR_CANCELLED;
+          until (ec=NO_ERROR) or (ec=ERROR_CANCELLED);
+        if ec=NO_ERROR then begin
+          RemoteName:=NetRes.lpRemoteName;
+          end;
+        end;
+      // prüfe, ob geschrieben werden kann, falls nicht "ReadOnly"
+      if not ReadOnly and (ec=NO_ERROR) and not CheckForWritablePath(NetRes.lpRemoteName) then
+          ec:=ERROR_SESSION_CREDENTIAL_CONFLICT;
+      end;
+    ReleaseNetRes(NetRes);
+    end
+  else begin
+    if ReadOnly or CheckForWritablePath(Path) then ec:=NO_ERROR else ec:=ERROR_ACCESS_DENIED;
+    end;
+  Result:=ec;
+  end;
+
+function CheckNetPath (const Path,StdUser : string; ReadOnly,Prompt : boolean) : integer; overload;
+begin
+  Result:=CheckNetPath (Path,StdUser,AltUserAccount,ReadOnly,Prompt);
+  end;
+
 function ReconnectPathEx (const Path : string) : cardinal;
 var
   nl       : dword;
@@ -214,6 +291,42 @@ begin
   Result:=ReconnectPathEx(Path)=NO_ERROR;
   end;
 
+{ ------------------------------------------------------------------- }
+// Prüfen, ob ein Pfad verfügbar ist
+function PathIsAvailable (const Path : string) : boolean;
+var
+  n,m : int64;
+begin
+  Result:=GetDiskFreeSpaceEx(pchar(IncludeTrailingPathDelimiter(Path)),n,m,nil);
+  end;
+
+// Prüfen, ob in einen Pfad geschrieben werden kann
+function CheckForWritablePath (const Path : string) : boolean;
+var
+  fsT      : TextFile;
+  s        : string;
+  nd       : boolean;
+const
+  TestName = 'test-%.3u.tmp';
+begin
+  Result:=DirectoryExists(Path);
+  nd:=not Result;
+  if nd then Result:=ForceDirectories(Path);  // versuche Pfad zu erstellen
+  if Result then begin
+    Randomize;
+    s:=IncludeTrailingPathDelimiter(Path)+Format(TestName,[Random(1000)]);
+    AssignFile (fsT,s);
+    {$I-} Rewrite(fsT); {$I+}
+    Result:=IoResult=0;
+    if Result then begin
+      CloseFile(fsT);
+      DeleteFile(s);
+      end;
+    if nd then RemoveDir(Path);
+    end;
+  end;
+
+{ ------------------------------------------------------------------- }
 function CheckForDirectory (const Path : string) : boolean;
 var
   pt   : TPathType;

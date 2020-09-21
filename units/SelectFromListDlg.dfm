@@ -2,7 +2,7 @@ object SelectFromListDialog: TSelectFromListDialog
   Left = 641
   Top = 247
   Caption = 'Select item from list'
-  ClientHeight = 343
+  ClientHeight = 381
   ClientWidth = 336
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,13 +18,13 @@ object SelectFromListDialog: TSelectFromListDialog
     Left = 223
     Top = 0
     Width = 113
-    Height = 343
+    Height = 381
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 0
     DesignSize = (
       113
-      343)
+      381)
     object lbHint: TLabel
       Left = 7
       Top = 245
@@ -35,7 +35,7 @@ object SelectFromListDialog: TSelectFromListDialog
     end
     object CancelBtn: TBitBtn
       Left = 5
-      Top = 312
+      Top = 350
       Width = 101
       Height = 26
       Anchors = [akLeft, akBottom]
@@ -258,7 +258,7 @@ object SelectFromListDialog: TSelectFromListDialog
     end
     object OKBtn: TBitBtn
       Left = 5
-      Top = 282
+      Top = 320
       Width = 101
       Height = 26
       Anchors = [akLeft, akBottom]
@@ -324,17 +324,42 @@ object SelectFromListDialog: TSelectFromListDialog
       NumGlyphs = 2
       TabOrder = 3
     end
+    object btnPrompt: TBitBtn
+      Left = 5
+      Top = 280
+      Width = 101
+      Height = 31
+      Anchors = [akLeft, akBottom]
+      Caption = 'Prompt'
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333000000
+        000033333377777777773333330FFFFFFFF03FF3FF7FF33F3FF700300000FF0F
+        00F077F777773F737737E00BFBFB0FFFFFF07773333F7F3333F7E0BFBF000FFF
+        F0F077F3337773F3F737E0FBFBFBF0F00FF077F3333FF7F77F37E0BFBF00000B
+        0FF077F3337777737337E0FBFBFBFBF0FFF077F33FFFFFF73337E0BF0000000F
+        FFF077FF777777733FF7000BFB00B0FF00F07773FF77373377373330000B0FFF
+        FFF03337777373333FF7333330B0FFFF00003333373733FF777733330B0FF00F
+        0FF03333737F37737F373330B00FFFFF0F033337F77F33337F733309030FFFFF
+        00333377737FFFFF773333303300000003333337337777777333}
+      NumGlyphs = 2
+      TabOrder = 4
+      OnClick = btnPromptClick
+    end
   end
   object Panel2: TPanel
     Left = 0
     Top = 0
     Width = 223
-    Height = 343
+    Height = 381
     Align = alClient
+    BevelOuter = bvNone
     TabOrder = 1
     DesignSize = (
       223
-      343)
+      381)
     object lbDesc: TLabel
       Left = 5
       Top = 5
@@ -345,7 +370,7 @@ object SelectFromListDialog: TSelectFromListDialog
       Left = 5
       Top = 25
       Width = 211
-      Height = 314
+      Height = 352
       Anchors = [akLeft, akTop, akRight, akBottom]
       ItemHeight = 13
       TabOrder = 0

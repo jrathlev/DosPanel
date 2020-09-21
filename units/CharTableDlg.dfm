@@ -1,10 +1,9 @@
 object CharTableDialog: TCharTableDialog
   Left = 382
   Top = 206
-  BorderStyle = bsDialog
   Caption = 'Character table'
-  ClientHeight = 245
-  ClientWidth = 397
+  ClientHeight = 255
+  ClientWidth = 401
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,13 +13,17 @@ object CharTableDialog: TCharTableDialog
   OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
+  DesignSize = (
+    401
+    255)
   PixelsPerInch = 96
   TextHeight = 13
   object OKBtn: TBitBtn
-    Left = 175
-    Top = 210
+    Left = 179
+    Top = 219
     Width = 101
     Height = 26
+    Anchors = [akRight, akBottom]
     Caption = 'Select'
     Default = True
     Glyph.Data = {
@@ -82,12 +85,15 @@ object CharTableDialog: TCharTableDialog
     ModalResult = 1
     NumGlyphs = 2
     TabOrder = 0
+    ExplicitLeft = 175
+    ExplicitTop = 215
   end
   object CancelBtn: TBitBtn
-    Left = 290
-    Top = 210
+    Left = 294
+    Top = 219
     Width = 101
     Height = 26
+    Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
     Glyph.Data = {
@@ -149,12 +155,15 @@ object CharTableDialog: TCharTableDialog
     ModalResult = 2
     NumGlyphs = 2
     TabOrder = 1
+    ExplicitLeft = 290
+    ExplicitTop = 215
   end
   object CharGrid: TDrawGrid
     Left = 10
     Top = 10
-    Width = 378
-    Height = 191
+    Width = 382
+    Height = 195
+    Anchors = [akLeft, akTop, akRight, akBottom]
     ColCount = 17
     DefaultColWidth = 20
     DefaultRowHeight = 20
@@ -168,5 +177,20 @@ object CharTableDialog: TCharTableDialog
     TabOrder = 2
     OnDblClick = CharGridDblClick
     OnDrawCell = CharGridDrawCell
+    ExplicitWidth = 378
+    ExplicitHeight = 191
+  end
+  object leValue: TLabeledEdit
+    Left = 10
+    Top = 224
+    Width = 61
+    Height = 21
+    Anchors = [akLeft, akBottom]
+    EditLabel.Width = 52
+    EditLabel.Height = 13
+    EditLabel.Caption = 'Hex value:'
+    TabOrder = 3
+    OnChange = leValueChange
+    ExplicitTop = 220
   end
 end

@@ -2,7 +2,7 @@
     Zeichentabelle (Character table)
     ================================
     
-   © Dr. J. Rathlev, D-24222 Schwentinental (info(a)rathlev-home.de)
+   © Dr. J. Rathlev, D-24222 Schwentinental (kontakt(a)rathlev-home.de)
 
    The contents of this file may be used under the terms of the
    Mozilla Public License ("MPL") or
@@ -28,10 +28,12 @@ type
     OKBtn: TBitBtn;
     CancelBtn: TBitBtn;
     CharGrid: TDrawGrid;
+    leValue: TLabeledEdit;
     procedure FormCreate(Sender: TObject);
     procedure CharGridDblClick(Sender: TObject);
     procedure CharGridDrawCell(Sender: TObject; ACol, ARow: Integer;
       Rect: TRect; State: TGridDrawState);
+    procedure leValueChange(Sender: TObject);
   private
     { Private declarations }
     DefFontName,GridFontName : TFontName;
@@ -39,7 +41,7 @@ type
     { Public declarations }
   end;
 
-function CharFromtable (APos : TPoint; AFontName : TFontName) : char;
+function CharFromTable (APos : TPoint; const AFontName : TFontName) : char;
 
 var
   CharTableDialog: TCharTableDialog;
@@ -55,6 +57,15 @@ procedure TCharTableDialog.FormCreate(Sender: TObject);
 begin
   TranslateComponent (self,'dialogs');
   DefFontName:=CharGrid.Font.Name;
+  end;
+
+procedure TCharTableDialog.leValueChange(Sender: TObject);
+var
+  n : integer;
+begin
+  if TryStrToInt('$'+leValue.Text,n) then with CharGrid do begin
+    Row:=(n div 16)+1; Col:=(n mod 16)+1;
+    end;
   end;
 
 procedure TCharTableDialog.CharGridDrawCell(Sender: TObject; ACol,
@@ -81,7 +92,7 @@ begin
   end;
 
 {------------------------------------------------------------------- }
-function CharFromTable (APos : TPoint; AFontName : TFontName) : char;
+function CharFromTable (APos : TPoint; const AFontName : TFontName) : char;
 begin
   if not assigned(CharTableDialog) then CharTableDialog:=TCharTableDialog.Create(Application);
   with CharTableDialog do begin

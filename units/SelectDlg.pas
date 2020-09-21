@@ -118,13 +118,16 @@ begin
   with Pos do begin
     if (Y < 0) and (X < 0) then Position:=poScreenCenter
     else begin
+      Position:=poDesigned;
       CheckScreenBounds(Screen,x,y,Width,Height);
       Left:=x; Top:=y;
       end;
     end;
   Caption:=ATitle;
   if ButtonWidth=0 then bw:=105 else bw:=ButtonWidth;
-  w:=3*bw+70; l:=50;
+  bw:=MulDiv(bw,Screen.PixelsPerInch,PixelsPerInchOnDesign);
+  w:=3*bw+MulDiv(70,Screen.PixelsPerInch,PixelsPerInchOnDesign);
+  l:=MulDiv(50,Screen.PixelsPerInch,PixelsPerInchOnDesign);
   with lbCaption do begin
     Font.Style:=ACaptionFormat;
     Left:=l;  Width:=w-l-10;
@@ -134,13 +137,16 @@ begin
     if Width+l+10>w then w:=Width+l+10;
     end;
   ClientWidth:=w;
-  with cbOption do if length(AOption)>0 then begin
-    Left:=l; Width:=w-l-10; Top:=h-5; inc(h,Height);
-    Caption:=AOption;
-    if PreSelection>0 then Checked:=PreSelection and OptionChecked <>0;
-    Visible:=true;
-    end
-  else Visible:=false;
+  with cbOption do begin
+    Checked:=false;
+    if length(AOption)>0 then begin
+      Left:=l; Width:=w-l-10; Top:=h-5; inc(h,Height);
+      Caption:=AOption;
+      if PreSelection>0 then Checked:=PreSelection and OptionChecked <>0;
+      Visible:=true;
+      end
+    else Visible:=false;
+    end;
   with imgIcon do if DlgType=mtCustom then Hide
   else begin
     Picture:=nil;

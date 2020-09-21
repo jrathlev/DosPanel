@@ -13,7 +13,7 @@
   the specific language governing rights and limitations under the License.
 
   Version 2.0 - Nov. 2011
-          last changed: July 2017
+          last changed: Jan. 2020
 
   Hinweise zur Verwendung:
   ========================
@@ -28,10 +28,10 @@
       TP_GlobalIgnoreClass(TFont);
       TP_GlobalIgnoreClassProperty(TMdiForm,'Caption');
       // Subdirectory in AppData for user configuration files and supported languages
-      InitTranslation('Subdir','CfgName',['Delphi10','Indy10','more domains..']);
+      InitTranslation('CfgDir','CfgName',['Delphi10','Indy10','more domains..']);
       ...
-    dabei sind:  SubDir  - Unterverzeichnis für die Konfigurations-Dateien (ini,cfg)
-                           in "Anwendungsdaten
+    dabei sind:  CfgDir  - Unterverzeichnis für die Konfigurations-Dateien (ini,cfg)
+                           in "Anwendungsdaten  oder abdolutes Verzeichnis
                  CfgName - Name der Cfg-Datei zum Speichern der Spracheinstellung
                            (leer: Name der Anwendung)
   2. im Haupt-Formular:
@@ -129,12 +129,14 @@ type
     end;
 
 // InitTranslation muss in der Projekt-Datei vor "Application.Initialize" stehen
-// und definiert den zu benutzenden Unterordner (SubDir) in "AppData", den Dateinamen für
-// die Spracheinstellungen (ConfigName) sowie die vom Progamm benötigten Bibliotheks-Übersetzungen
-// Aufruf z.B.: InitTranslation('MySoftware','Language.cfg',['delphi2009','indy10']);
+// und definiert das zu verwendende Anwendungsdaten-Verzeichnis
+// AppDir ist entweder ein relativer Pfad zu "AppData" oder ein beliebiger absoluter Pfad
+// ConfigName gibt den Dateinamen für die Spracheinstellungen
+// Domains ist eine Liste der vom Progamm benötigten Bibliotheks-Übersetzungen
+// Aufruf z.B.: InitTranslation('MySoftware','Language.cfg',['delphi10','indy10']);
 procedure InitTranslation (const Domains : array of string); overload;
-procedure InitTranslation (const SubDir : string; const Domains : array of string); overload;
-procedure InitTranslation (const SubDir,ConfigName : string; const Domains : array of string); overload;
+procedure InitTranslation (const CfgDir : string; const Domains : array of string); overload;
+procedure InitTranslation (const CfgDir,ConfigName : string; const Domains : array of string); overload;
 procedure SaveLanguage (NewLangCode : TLangCodeString);
 procedure ChangeLanguage (NewLangCode : TLangCodeString);
 function GetLanguageHint : string;
@@ -388,18 +390,15 @@ begin
       else if CompareOption(s,siPortable) then si:=ExtractFilePath(Application.ExeName) // portable environment
       end;
     end;
-  if ContainsFullPath(si) then begin
-//    si:=ExpandFileName(si);
-    if (ExtractFileExt(si)<>'') then si:=ExtractFilePath(si);
-    end
-  else if Pos(PathDelim,si)>0 then si:=ExtractFilePath(ExpandFileName(si))
-  else begin
-    si:=GetDesktopFolder(CSIDL_APPDATA);
-    if length(si)>0 then si:=IncludeTrailingPathDelimiter(si)+AppSubDir  // Pfad zu Anwendungsdaten
-    else si:=ExtractFilePath(Application.ExeName);
+  if length(si)>0 then begin
+    if ContainsFullPath(si) then begin
+  //    si:=ExpandFileName(si);
+      if (ExtractFileExt(si)<>'') then si:=ExtractFilePath(si);
+      end
+    else if Pos(PathDelim,si)>0 then si:=ExtractFilePath(ExpandFileName(si))
+    else si:='';  // nur alternative Ini-Datei ohne Pfad
+    if length(si)>0 then CfgName:=IncludeTrailingPathDelimiter(si)+ExtractFilename(CfgName);
     end;
-  if length(CfgName)=0 then CfgName:=ChangeFileExt(ExtractFileName(Application.ExeName),'.'+CfgExt);
-  CfgName:=IncludeTrailingPathDelimiter(si)+CfgName;
   LangFromCfg:=length(Result)=0;
   if LangFromCfg then begin    //aus Konfigurations-Datei
     with TIniFile.Create(CfgName) do begin
@@ -448,12 +447,19 @@ begin
 
 { ------------------------------------------------------------------- }
 // InitTranslation muss in der Projekt-Datei vor "Application.Initialize" stehen
-procedure InitTranslation (const SubDir,ConfigName : string; const Domains : array of string);
+procedure InitTranslation (const CfgDir,ConfigName : string; const Domains : array of string);
 var
   i  : integer;
+  sc : string;
 begin
-  AppSubDir:=SubDir;
-  if length(ConfigName)>0 then CfgName:=ConfigName;
+  if length(ConfigName)>0 then CfgName:=ConfigName
+  else CfgName:=ChangeFileExt(PrgName,'.'+CfgExt);
+  if IsRelativePath(CfgDir) then begin
+    sc:=IncludeTrailingPathDelimiter(GetAppPath)+CfgDir;
+    AppSubDir:=CfgDir;
+    end
+  else sc:=CfgDir;
+  CfgName:=IncludeTrailingPathDelimiter(sc)+CfgName;
   for i:=0 to High(Domains) do AddDomainForResourceString(Domains[i]);
   UseLanguage(GetLanguage);
   end;
@@ -463,9 +469,9 @@ begin
   InitTranslation ('','',Domains);
   end;
 
-procedure InitTranslation (const SubDir : string; const Domains : array of string);
+procedure InitTranslation (const CfgDir : string; const Domains : array of string);
 begin
-  InitTranslation (SubDir,'',Domains);
+  InitTranslation (CfgDir,'',Domains);
   end;
 
 initialization

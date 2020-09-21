@@ -6,7 +6,7 @@
    search function for to spec. text parts
    printing of whole file or selected text
 
-   © 2004-2017, Dr. J. Rathlev, D-24222 Schwentinental (kontakt(a)rathlev-home.de)
+   © Dr. J. Rathlev, D-24222 Schwentinental (kontakt(a)rathlev-home.de)
 
    The contents of this file may be used under the terms of the
    Mozilla Public License ("MPL") or
@@ -17,7 +17,7 @@
    the specific language governing rights and limitations under the License.
     
    Vers. 1 - Sep. 2004
-   last changed: July 2017
+   last modified: January 2020
    *)
 
 
@@ -67,7 +67,6 @@ type
     PrevSectBtn: TBitBtn;
     NextErrBtn: TBitBtn;
     StatusBar: TStatusBar;
-    Panel1: TPanel;
     Memo: TMemo;
     OpenBtn: TBitBtn;
     OpenDialog: TOpenDialog;
@@ -128,7 +127,7 @@ type
                        Line      : integer;
                        DlgType   : TShowDlgType;
                        Buttons   : TShowDlgButtons;
-                       CodePage  : cardinal = 0); overload;
+                       CodePage  : integer = 0); overload;
     procedure Execute (const Title,TextDatei,
                        PrevCap1,NextCap1,SrchText1,
                        PrevCap2,NextCap2,SrchText2,
@@ -138,13 +137,13 @@ type
                        DlgType   : TShowDlgType;
                        Buttons   : TShowDlgButtons;
                        PrtSettings : TPrinterSettings;
-                       CodePage  : cardinal = 0); overload;
+                       CodePage  : integer = 0); overload;
     end;
 
 function LoadPrinterSettings(const AIniName,ASection : string) : TPrinterSettings;
 procedure SavePrinterSettings(const AIniName,ASection : string; const ASettings : TPrinterSettings);
 
-procedure PrintTextFile (const TextDatei: string; PrtSettings : TPrinterSettings; CodePage : cardinal = 0);
+procedure PrintTextFile (const TextDatei: string; PrtSettings : TPrinterSettings; CodePage : integer = 0);
 
 procedure ShowTextFile (const Title,TextDatei,
                      PrevCap1,NextCap1,SrchText1,
@@ -154,7 +153,7 @@ procedure ShowTextFile (const Title,TextDatei,
                      Line      : integer;
                      DlgType   : TShowDlgType;
                      Buttons   : TShowDlgButtons;
-                     CodePage  : cardinal = 0); overload;
+                     CodePage  : integer = 0); overload;
 
 procedure ShowTextFile (const Title,TextDatei,
                      PrevCap1,NextCap1,SrchText1,
@@ -165,7 +164,7 @@ procedure ShowTextFile (const Title,TextDatei,
                      DlgType   : TShowDlgType;
                      Buttons   : TShowDlgButtons;
                      PrtSettings : TPrinterSettings;
-                     CodePage  : cardinal = 0); overload;
+                     CodePage  : integer = 0); overload;
 
 var
   ShowTextDialog : TShowTextDialog;
@@ -174,13 +173,19 @@ implementation
 
 {$R *.DFM}
 
-uses GnuGetText, FileUtils, System.IniFiles, WinUtils, System.StrUtils;
+uses GnuGetText, FileUtils, System.IniFiles, WinUtils, ExtSysUtils, System.StrUtils;
 
 var
   IniFileName  : string;
 
 {------------------------------------------------------------------- }
 const
+  ViewSect = 'View';
+  iniTop = 'Top';
+  iniLeft = 'Left';
+  iniHeight = 'Height';
+  iniWidth = 'Width';
+
   IniPrtName = 'Printer';
   IniLeftMarg = 'LeftMargin';
   IniRightMarg = 'RightMargin';
@@ -204,13 +209,6 @@ begin
     end;
   end;
 
-const
-  ViewSect = 'View';
-  iniTop = 'Top';
-  iniLeft = 'Left';
-  iniHeight = 'Height';
-  iniWidth = 'Width';
-
 { ------------------------------------------------------------------- }
 function FindOptionsToSearchOptions (FOptions : TFindOptions) : TStringSearchOptions;
 begin
@@ -225,7 +223,7 @@ function SearchMemo(Memo: TMemo; SearchDown : boolean;
                     Options: TFindOptions): Boolean;
 var
   Buffer, P : PChar;
-  Size      : cardinal;
+  Size      : integer;
 begin
   Result := False;
   if (Length(SearchString) = 0) then Exit;
@@ -314,7 +312,7 @@ var
   pt : TPoint;
 begin
   pt:=GetCaretPos(Memo);
-  StatusBar.Panels[0].Text:=Format(dgettext('dialogs',' Line: %u of %u'),[pt.y+1,Memo.Lines.Count+1]);
+  StatusBar.Panels[0].Text:=TryFormat(dgettext('dialogs',' Line: %u of %u'),[pt.y+1,Memo.Lines.Count+1]);
   end;
 
 procedure TShowTextDialog.InitView (const FName : string);
@@ -334,7 +332,7 @@ begin
     SelStart:=Perform(EM_LINEINDEX,LineNr,0);
     SelLength:=0;
 //    if LineNr=Lines.Count then SelLength:=0 else SelLength:=Perform(EM_LINEINDEX,LineNr+1,0)-SelStart;
-    StatusBar.Panels[0].Text:=Format(dgettext('dialogs',' Line: %u of %u'),[LineNr+1,Lines.Count+1]);
+    StatusBar.Panels[0].Text:=TryFormat(dgettext('dialogs',' Line: %u of %u'),[LineNr+1,Lines.Count+1]);
     end;
   with FindDialog do Options:=Options -[frDown];
   end;
@@ -342,6 +340,7 @@ begin
 procedure TShowTextDialog.FormShow(Sender: TObject);
 begin
   Width:=LWidth;
+  FitToScreen(Screen,self);
   InitView(TextName);
   BringToFront;
   end;
@@ -363,8 +362,8 @@ begin
   if (Shift=[ssCtrl]) and (Key=ord('F')) then SearchBtnClick(Sender);
   if (Shift=[]) and (Key=VK_F3) then FindDialogFind(Sender);
   if (Key=VK_DELETE)  and (Memo.SelLength>0) then begin
-    if ConfirmDialog (Caption,dgettext('dialogs','Delete selected text?'),
-          Point(Left+200,Top+100)) then begin
+    if ConfirmDialog (Point(Left+200,Top+100),Caption,
+                      dgettext('dialogs','Delete selected text?'),mbYes) then begin
       with Memo do begin
         ReadOnly:=false;
         ClearSelection;
@@ -413,7 +412,7 @@ const
         end;
       if y=PrinterSettings.Margins.Top then begin   // Kopfzeile erzeugen
         font.style := [fsbold];
-        txt:=Format(dgettext('dialogs','Page: %u'),[pagenumber]);
+        txt:=TryFormat(dgettext('dialogs','Page: %u'),[pagenumber]);
 //        textout(PrinterSettings.Margins.Left,y,StripPath(Caption,72));
         textout(PrinterSettings.Margins.Left,y,FTitle);
         textout(hp-TextWidth(txt),y,txt);
@@ -547,8 +546,7 @@ begin
 procedure TShowTextDialog.DeleteBtnClick(Sender: TObject);
 begin
   if Memo.SelLength>0 then begin
-    if ConfirmDialog (Caption,dgettext('dialogs','Delete selected text?'),
-          Point(Left+200,Top+100)) then begin
+    if ConfirmDialog (Point(Left+200,Top+100),Caption,dgettext('dialogs','Delete selected text?'),mbYes) then begin
       with Memo do begin
         ReadOnly:=false;
         ClearSelection;
@@ -558,8 +556,8 @@ begin
       end;
     end
   else begin
-    if ConfirmDialog (Caption,Format(dgettext('dialogs','Delete file "%s"?'),[TextName]),
-          Point(Left+200,Top+100)) then begin
+    if ConfirmDialog (Point(Left+200,Top+100),Caption,
+                      TryFormat(dgettext('dialogs','Delete file "%s"?'),[TextName]),mbYes) then begin
       DeleteFile(TextName);
       Memo.Clear;
       end;
@@ -577,7 +575,7 @@ procedure TShowTextDialog.FindDialogFind(Sender: TObject);
 begin
   with FindDialog do
     if not SearchMemo(Memo,false,FindText,Options) then
-      ShowMessage(Format(dgettext('dialogs','"%s" not found!'),[FindText]))
+      ShowMessage(TryFormat(dgettext('dialogs','"%s" not found!'),[FindText]))
     else MemoChange(Sender);
   end;
 
@@ -594,8 +592,9 @@ begin
 procedure TShowTextDialog.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (ssCtrl in Shift) and (Key=ord('F')) then FindDialog.Execute;
-  if (Shift=[]) and (Key=VK_F3) then FindDialogFind(Sender);
+  if (ssCtrl in Shift) and (Key=ord('F')) then FindDialog.Execute
+  else if (Shift=[]) and (Key=VK_F3) then FindDialogFind(Sender)
+  else if (Key=VK_ESCAPE) and (FDlgType=stShow) then Close;
   end;
 
 procedure TShowTextDialog.PrevSectBtnClick(Sender: TObject);
@@ -748,6 +747,7 @@ begin
         fc.Value:=ReadInteger(ViewSect,IniFontStyle,0);
         Style:=fc.Style;
         end;
+      Free;
       end;
     end;
   end;
@@ -765,7 +765,7 @@ procedure TShowTextDialog.Execute (const Title,TextDatei,
                                    Line      : integer;
                                    DlgType   : TShowDlgType;
                                    Buttons   : TShowDlgButtons;
-                                   CodePage  : cardinal = 0);
+                                   CodePage  : integer = 0);
 var
   x  : integer;
 begin
@@ -844,7 +844,7 @@ begin
       TextName:=TextDatei;
       if DlgType=stModal then ShowModal else Show;
       end
-    else ErrorDialog ('',dgettext('dialogs','File: ')+Format(dgettext('dialogs','"%s" not found!'),[TextDatei]));
+    else ErrorDialog ('',dgettext('dialogs','File: ')+TryFormat(dgettext('dialogs','"%s" not found!'),[TextDatei]));
     end;
   end;
 
@@ -857,7 +857,7 @@ procedure TShowTextDialog.Execute (const Title,TextDatei,
                                    DlgType   : TShowDlgType;
                                    Buttons   : TShowDlgButtons;
                                    PrtSettings : TPrinterSettings;
-                                   CodePage  : cardinal = 0);
+                                   CodePage  : integer = 0);
 begin
   PrinterSettings:=PrtSettings;
   Execute(Title,TextDatei,PrevCap1,NextCap1,SrchText1,PrevCap2,
@@ -922,7 +922,7 @@ procedure ShowTextFile (const Title,TextDatei,PrevCap1,NextCap1,SrchText1,PrevCa
                     Position : TPoint; Line : integer;
                     DlgType : TShowDlgType; Buttons : TShowDlgButtons;
                     PrtSettings : TPrinterSettings;
-                    CodePage : cardinal = 0);
+                    CodePage : integer = 0);
 begin
   if not assigned(ShowTextDialog) then begin
     ShowtextDialog:=TShowtextDialog.Create(Application);
@@ -937,7 +937,7 @@ procedure ShowTextFile (const Title,TextDatei,PrevCap1,NextCap1,SrchText1,PrevCa
                     NextCap2,SrchText2,Filter : string;
                     Position : TPoint; Line : integer;
                     DlgType : TShowDlgType; Buttons : TShowDlgButtons;
-                    CodePage : cardinal = 0);
+                    CodePage : integer = 0);
 begin
   if not assigned(ShowTextDialog) then begin
     ShowtextDialog:=TShowtextDialog.Create(Application);
@@ -948,7 +948,7 @@ begin
   if DlgType=stModal then FreeAndNil(ShowTextDialog);
   end;
 
-procedure PrintTextFile (const TextDatei : string; PrtSettings : TPrinterSettings; CodePage : cardinal = 0);
+procedure PrintTextFile (const TextDatei : string; PrtSettings : TPrinterSettings; CodePage : integer = 0);
 begin
   if FileExists (TextDatei) then begin
     if not assigned(ShowTextDialog) then ShowtextDialog:=TShowtextDialog.Create(Application);

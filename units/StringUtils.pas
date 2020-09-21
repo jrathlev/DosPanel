@@ -20,7 +20,7 @@
    the specific language governing rights and limitations under the License.
 
    New compilation - May 2007
-   last modified:  July 2018
+   last modified:  Sept. 2019
    *)
 
 unit StringUtils;
@@ -54,6 +54,7 @@ const
   Space = #32;
   Semicolon = ';';
   Comma = ',';
+  Slash = '/';
   Tab = #9;
   CrLf = #13#10;
   Cr = #13;
@@ -177,14 +178,18 @@ function CrLfToChar (s : string; c : char) : string;
 function CharToCr (s : string; c : char) : string;
 
 // erstes nichtleeres Zeichen suchen
-function SeekNoSp (const s : string) : integer;
+function SeekNoSp (const s : string; Offset : cardinal = 1) : integer;
 
 // nächstes Leerzeichen oder Tab suchen
-function SeekSpace (const s : string) : integer;
+function SeekSpace (const s : string; Offset : cardinal = 1) : integer;
 
 // String mit Zeichen erzeugen
 function FillStr (c   : char;
                   len : integer) : string;
+
+// prüfen, ob leerer String
+function IsEmptyStr (const s : string) : boolean;
+function NotEmptyStr (const s : string) : boolean;
 
 // führende Zeichen ergänzen
 function AddChar (const S : string;
@@ -304,12 +309,13 @@ function ReadNxtQuotedStr (var s : string;
                            ADelim,AQuote : char) : string;
 
 function MakeQuotedStr (const s : string; CheckChars : array of char) : string;
-
 function ExtractEnclosedString(const AString : string; EncChar : Char; var Pos : integer) : string;
+
 function ReplaceEnvString(const AString,AEnv : string) : string;
 function ReplaceEnvVariables (const ALine : string) : string;
 
 function MergeStringList (const ACommaText : string) : string;
+function DelimitedTextToLines (DelimitedText : string; Delimiter,QuoteChar : char; var ACount : integer) : string;
 function CommaTextToLines (Commatext : string; var ACount : integer) : string; overload
 function CommaTextToLines (Commatext : string) : string; overload
 function CountLines (const Text : string) : integer;
@@ -322,6 +328,7 @@ function PosChar (const s: string; AChar,AQuote : char; Offset: Cardinal): Integ
 
 function GetPluralString (const sNo,sOne,sMany : string; n : integer) : string; overload;
 function GetPluralString (const sNo,sOne,sMany : string; n : integer; const s : string) : string; overload;
+function GetPluralString (const sOne,sMany : string; n : integer) : string; overload;
 
 { ---------------------------------------------------------------- }
 // Check if AText matches filters: AFilter="<filter1><sep><filter2><sep>.."
@@ -340,9 +347,7 @@ function ReadOptionFile (FName : string) : string;
 
 { ---------------------------------------------------------------- }
 // schnelles Sortieren einer Liste
-procedure QuickSort (var SList;
-                     Count,RSize : Integer;
-                     Compare     : TCompFunction);
+procedure QuickSort (var SList; Count,RSize : Integer; Compare : TCompFunction);
 
 implementation
 
@@ -563,12 +568,12 @@ begin
 (* Substring-Pos. ohne Unterschreidung groß/klein *)
 function TextPos (const Substr, S: string): Integer;
 begin
-  Result:=Pos (AnsiLowerCase(Substr),AnsiLowerCase(s));
+  Result:=Pos(AnsiUppercase(Substr),AnsiUppercase(s));
   end;
 
 function TextPosEx (const Substr, S: string; Offset : cardinal): Integer;
 begin
-  Result:=PosEx (AnsiLowerCase(Substr),AnsiLowerCase(s),Offset);
+  Result:=PosEx(AnsiUppercase(Substr),AnsiUppercase(s),Offset);
   end;
 
 (* Substring-Pos. von rechts ohne Unterscheidung groß/klein *)
@@ -641,7 +646,7 @@ begin
 (* String mit Leerstellen erzeugen *)
 function FillSpace (len : integer) : string;
 var
-  i : byte;
+  i : integer;
   s : string;
 begin
   s:='';
@@ -755,25 +760,28 @@ begin
 
 { --------------------------------------------------------------- }
 (* erstes nichtleeres Zeichen suchen *)
-function SeekNoSp (const s : string) : integer;
-var
-  i  : integer;
-begin
-  i:=1;
-  while (i<=length(s)) and ((s[i]=' ') or (s[i]=Tab)) do inc(i);
-  if i<=length(s) then SeekNoSp:=i else SeekNoSp:=0;
-  end;
-
-{ --------------------------------------------------------------- }
-(* Position für nächstes Leerzeichen oder Tab suchen,
-   bei Stringende = Länge+1 *)
-function SeekSpace (const s : string) : integer;
+function SeekNoSp (const s : string; Offset : cardinal) : integer;
 var
   i  : integer;
 begin
   if length(s)=0 then Result:=0
   else begin
-    i:=1;
+    i:=Offset;
+    while (i<=length(s)) and ((s[i]=' ') or (s[i]=Tab)) do inc(i);
+    if i<=length(s) then Result:=i else Result:=0;
+    end;
+  end;
+
+{ --------------------------------------------------------------- }
+(* Position für nächstes Leerzeichen oder Tab suchen,
+   bei Stringende = Länge+1 *)
+function SeekSpace (const s : string; Offset : cardinal) : integer;
+var
+  i  : integer;
+begin
+  if length(s)=0 then Result:=0
+  else begin
+    i:=Offset;
     while (i<=length(s)) and (s[i]<>' ') and (s[i]<>Tab) do inc(i);
     Result:=i;
     end;
@@ -790,6 +798,18 @@ begin
   s:='';
   for i:=1 to len do s:=s+c;
   Result:=s;
+  end;
+
+{ --------------------------------------------------------------- }
+// prüfen, ob leerer String
+function IsEmptyStr (const s : string) : boolean;
+begin
+  Result:=length(s)=0;
+  end;
+
+function NotEmptyStr (const s : string) : boolean;
+begin
+  Result:=length(s)>0;
   end;
 
 { --------------------------------------------------------------- }
@@ -1306,6 +1326,7 @@ begin
     end
   end;
 
+{ ------------------------------------------------------------------- }
 // replace environment variable
 function ReplaceEnvString(const AString,AEnv : string) : string;
 var
@@ -1343,15 +1364,20 @@ begin
     end;
   end;
 
-function CommaTextToLines (Commatext : string; var ACount : integer) : string;
+function DelimitedTextToLines (DelimitedText : string; Delimiter,QuoteChar : char; var ACount : integer) : string;
 begin
   ACount:=0;
-  Result:=ReadNxtQuotedStr(Commatext,',',Quote);
+  Result:=ReadNxtQuotedStr(DelimitedText,Delimiter,QuoteChar);
   if length(Result)>0 then inc(ACount);
-  while length(Commatext)>0 do begin
-    Result:=Result+sLineBreak+ReadNxtQuotedStr(Commatext,',',Quote);
+  while length(DelimitedText)>0 do begin
+    Result:=Result+sLineBreak+ReadNxtQuotedStr(DelimitedText,Delimiter,QuoteChar);
     inc(ACount);
     end;
+  end;
+
+function CommaTextToLines (Commatext : string; var ACount : integer) : string;
+begin
+  Result:=DelimitedTextToLines(Commatext,Comma,Quote,ACount);
   end;
 
 function CommaTextToLines (Commatext : string) : string;
@@ -1415,6 +1441,11 @@ begin
   if n=1 then Result:=TryFormat(sOne,[s])
   else if (n=0) and (length(sNo)>0) then Result:=sNo
   else Result:=TryFormat(sMany,[n,s]);
+  end;
+
+function GetPluralString (const sOne,sMany : string; n : integer) : string;
+begin
+  if n=1 then Result:='1 '+sOne else Result:=IntToStr(n)+Space+sMany;
   end;
 
 { --------------------------------------------------------------- }
@@ -1485,8 +1516,7 @@ begin
 type
   TByteDynArray = array of byte;
 
-procedure QuickSort (var SList;
-                     Count,RSize : Integer;                     Compare     : TCompFunction);
+procedure QuickSort (var SList; Count,RSize : Integer; Compare : TCompFunction);
 var
   {the  following variables are global to "Sort" to save memory in recursive calls }
   tmp,ns  : TByteDynArray;

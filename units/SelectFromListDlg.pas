@@ -13,7 +13,7 @@
    the specific language governing rights and limitations under the License.
     
    Vers. 1 - Apr. 2005
-   letzte Änderung: Juli 2018
+   letzte Änderung: Jan. 2020
     *)
     
 unit SelectFromListDlg;
@@ -25,6 +25,9 @@ uses Winapi.Windows, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Forms,
 
 type
   TCheckEntry = function (const AText : string) : boolean of object;
+
+  TSelectOption = (soPrompt,soEdit,soOrder,soMulti);
+  TSelectOptions = set of TSelectOption;
 
   TSelectFromListDialog = class(TForm)
     OKBtn: TBitBtn;
@@ -42,6 +45,7 @@ type
     Panel1: TPanel;
     Panel2: TPanel;
     lbHint: TLabel;
+    btnPrompt: TBitBtn;
     procedure btnInsertClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
     procedure btnEditClick(Sender: TObject);
@@ -50,35 +54,39 @@ type
     procedure UpBtnClick(Sender: TObject);
     procedure DownBtnClick(Sender: TObject);
     procedure btnDefaultClick(Sender: TObject);
+    procedure btnPromptClick(Sender: TObject);
   private
     { Private declarations }
     FEdit : boolean;
     hp : integer;
+    FText,
     DefDelimitedText : string;
     FCheckEntry : TCheckEntry;
     function DialogPos(Sender: TObject) : TPoint;
   public
     { Public declarations }
   function Execute (APos : TPoint; Titel,Desc,Hint : string;
-                    Edit,Order,Multi : boolean; ACols : integer;
+                    Options : TSelectOptions; ACols : integer;
                     Convert : TTextChange; const Default : string;
                     SList : TStrings; var AText : string;
                     ShowCancel : boolean = true; CheckEntry : TCheckEntry = nil) : boolean;  overload;
   function Execute (APos : TPoint; Titel,Desc,Hint : string;
-                    Edit,Order,Multi : boolean; ACols : integer;
+                    ACols : integer;
                     Convert : TTextChange; const Default : string;
                     var ListText : string;
                     ADel : Char = ','; AQuote : Char ='"') : boolean; overload;
+  function Select (APos : TPoint; Titel,Desc,Hint : string; Prompt : boolean;
+                   SList : TStrings; var AText  : string) : boolean;
   procedure Show (APos : TPoint; Titel,Desc,Hint : string;
                   ACols : integer; SList : TStrings);
   end;
 
 function EditList (APos : TPoint; Titel,Desc,Hint : string;
-                   Edit,Order,Multi : boolean; ACols : integer;
+                   Options : TSelectOptions; ACols : integer;
                    Convert : TTextChange; const Default : string;
                    SList : TStrings; var AText  : string) : boolean;
 
-function SelectFromList (APos : TPoint; Titel,Desc,Hint : string;
+function SelectFromList (APos : TPoint; Titel,Desc,Hint : string; Prompt : boolean;
                     SList : TStrings; var AText  : string) : boolean;
 
 var
@@ -88,7 +96,7 @@ implementation
 
 {$R *.DFM}
 
-uses InpText, GnuGetText, ExtSysUtils, WinUtils;
+uses Vcl.Dialogs, InpText, GnuGetText, ExtSysUtils, WinUtils;
 
 {------------------------------------------------------------------- }
 procedure TSelectFromListDialog.FormCreate(Sender: TObject);
@@ -108,7 +116,7 @@ var
   ok : boolean;
 begin
   s:='';
-  if InputText(DialogPos(Sender),dgettext('dialogs','Add item'),lbDesc.Caption,false,'',nil,false,0,s) then begin
+  if InputText(DialogPos(Sender),dgettext('dialogs','Add item'),lbDesc.Caption,false,'',nil,false,s) then begin
     if assigned(FCheckEntry) then ok:=FCheckEntry(s) else ok:=true;
     if ok then with lbxStringList do ItemIndex:=Items.Add(s)
     else ErrorDialog(CursorPos,TryFormat(dgettext('dialogs','Invalid entry: "%s"'),[s]));
@@ -121,18 +129,18 @@ var
   n : integer;
 begin
   with lbxStringList do if Multiselect then begin
-    if ConfirmDialog (Caption,dgettext('dialogs','Remove all selected items?'),DialogPos(Sender)) then begin
+    if ConfirmDialog (DialogPos(Sender),Caption,dgettext('dialogs','Remove all selected items?'),mbYes) then begin
       for n:=Items.Count-1 downto 0 do if Selected[n] then Items.Delete(n);
       end
-    else if ItemIndex>=0 then begin
-      s:=Items[ItemIndex];
-      if ConfirmDialog (Caption,TryFormat(dgettext('dialogs','Remove item: "%s"?'),[s]),DialogPos(Sender)) then begin
-        n:=ItemIndex;
-        Items.Delete(ItemIndex);
-        if n>Items.Count then ItemIndex:=Items.Count-1 else ItemIndex:=n;
-        end;
-      end;
     end
+  else if ItemIndex>=0 then begin
+    s:=Items[ItemIndex];
+    if ConfirmDialog (DialogPos(Sender),Caption,TryFormat(dgettext('dialogs','Remove item: "%s"?'),[s]),mbYes) then begin
+      n:=ItemIndex;
+      Items.Delete(ItemIndex);
+      if n>Items.Count then ItemIndex:=Items.Count-1 else ItemIndex:=n;
+      end;
+    end;
   end;
 
 procedure TSelectFromListDialog.btnEditClick(Sender: TObject);
@@ -142,7 +150,7 @@ var
 begin
   with lbxStringList do if ItemIndex>=0 then begin
     s:=Items[ItemIndex];
-    if InputText(DialogPos(Sender),dgettext('dialogs','Edit item'),lbDesc.Caption,false,'',nil,false,0,s) then begin
+    if InputText(DialogPos(Sender),dgettext('dialogs','Edit item'),lbDesc.Caption,false,'',nil,false,s) then begin
       if assigned(FCheckEntry) then ok:=FCheckEntry(s) else ok:=true;
       if ok then Items[ItemIndex]:=s
       else ErrorDialog(CursorPos,TryFormat(dgettext('dialogs','Invalid entry: "%s"'),[s]));
@@ -152,7 +160,7 @@ begin
 
 procedure TSelectFromListDialog.btnDefaultClick(Sender: TObject);
 begin
-  if ConfirmDialog(Caption,dgettext('dialogs','Reset to default values?'),DialogPos(Sender)) then with lbxStringList do begin
+  if ConfirmDialog(DialogPos(Sender),Caption,dgettext('dialogs','Reset to default values?'),mbYes) then with lbxStringList do begin
     Clear;
     Items.DelimitedText:=DefDelimitedText;
     end;
@@ -165,10 +173,21 @@ begin
   if FEdit then begin
     with lbxStringList do if ItemIndex>=0 then begin
       s:=Items[ItemIndex];
-      if InputText(CursorPos(Point(-20,20)),dgettext('dialogs','Edit item'),lbDesc.Caption,false,'',nil,false,0,s) then Items[ItemIndex]:=s;
+      if InputText(CursorPos(Point(-20,20)),dgettext('dialogs','Edit item'),lbDesc.Caption,false,'',nil,false,s) then Items[ItemIndex]:=s;
       end
     end
   else ModalResult:=mrOK;
+  end;
+
+procedure TSelectFromListDialog.btnPromptClick(Sender: TObject);
+var
+  ok : boolean;
+begin
+  if InputText(DialogPos(Sender),dgettext('dialogs','Edit item'),lbDesc.Caption,false,'',nil,false,FText) then begin
+    if assigned(FCheckEntry) then ok:=FCheckEntry(FText) else ok:=true;
+    if ok then ModalResult:=mrYes
+    else ErrorDialog(CursorPos,TryFormat(dgettext('dialogs','Invalid entry: "%s"'),[FText]));
+    end;
   end;
 
 {------------------------------------------------------------------- }
@@ -196,19 +215,18 @@ begin
 
 {------------------------------------------------------------------- }
 function TSelectFromListDialog.Execute (APos : TPoint; Titel,Desc,Hint : string;
-                    Edit,Order,Multi : boolean; ACols : integer;
+                    Options : TSelectOptions; ACols : integer;
                     Convert : TTextChange; const Default : string;
                     SList : TStrings; var AText : string;
                     ShowCancel : boolean = true; CheckEntry : TCheckEntry = nil) : boolean;
 var
   i : integer;
+  mr : TModalResult;
 begin
   with APos do begin
     if (Y < 0) or (X < 0) then Position:=poScreenCenter
     else begin
       Position:=poDesigned;
-      if X<0 then X:=Left;
-      if Y<0 then Y:=Top;
       CheckScreenBounds(Screen,x,y,Width,Height);
       Left:=x; Top:=y;
       end;
@@ -216,11 +234,14 @@ begin
   Caption:=Titel;
   CancelBtn.Visible:=ShowCancel;
   FCheckEntry:=CheckEntry;
+  FText:='';
   lbDesc.Caption:=Desc;
   lbHint.Caption:=Hint;
-  gbxEdit.Visible:=Edit;
-  gbxMove.Visible:=Order;
-  if not Order then with lbHint do begin
+  FEdit:=soEdit in Options;
+  btnPrompt.Visible:=soPrompt in Options;
+  gbxEdit.Visible:=FEdit;
+  gbxMove.Visible:=soOrder in Options;
+  if not gbxMove.Visible then with lbHint do begin
     Top:=hp-27; Height:=54;
     end;
   if length(Default)>0 then begin
@@ -232,38 +253,40 @@ begin
     with btnEdit do gbxEdit.Height:=Top+Height+10;
     end;
   DefDelimitedText:=Default;
-  FEdit:=Edit;
   with lbxStringList do begin
     Items.Delimiter:=SList.Delimiter;
     Items.QuoteChar:=SList.QuoteChar;
     Items:=SList;
     Columns:=ACols;
-    ExtendedSelect:=Multi;
-    MultiSelect:=Multi;
+    ExtendedSelect:=soMulti in Options;
+    MultiSelect:=ExtendedSelect;
     ItemIndex:=Items.IndexOf(AText);
     end;
-  if ShowModal=mrOK then with lbxStringList do begin
+  mr:=ShowModal;
+  if mr<>mrCancel then with lbxStringList do begin
     if Convert<>tcNone then with Items do begin
       for i:=0 to Count-1 do Strings[i]:=TextChangeCase(Strings[i],Convert);
       end;
-    if Edit then SList.DelimitedText:=Items.DelimitedText;
-    if ItemIndex>=0 then begin
-      if Multi then begin
-        AText:='';
-        for i:=0 to Items.Count-1 do if Selected[i] then AText:=AText+Items[i]+'|';
-        delete(AText,length(Atext),1);
+    if mr=mrYes then AText:=FText
+    else begin
+      if FEdit then SList.DelimitedText:=Items.DelimitedText;
+      if ItemIndex>=0 then begin
+        if soMulti in Options then begin
+          AText:='';
+          for i:=0 to Items.Count-1 do if Selected[i] then AText:=AText+Items[i]+'|';
+          delete(AText,length(Atext),1);
+          end
+        else AText:=Items[ItemIndex]
         end
-      else AText:=Items[ItemIndex]
-      end
-    else AText:='';
+      else AText:='';
+      end;
     Result:=true;
     end
   else Result:=false;
   end;
 
 function TSelectFromListDialog.Execute (APos : TPoint; Titel,Desc,Hint : string;
-                    Edit,Order,Multi : boolean; ACols : integer;
-                    Convert : TTextChange; const Default : string;
+                    ACols : integer; Convert : TTextChange; const Default : string;
                     var ListText : string;
                     ADel : Char = ','; AQuote : Char ='"') : boolean;
 var
@@ -275,9 +298,19 @@ begin
     Sorted:=true; Delimiter:=ADel; QuoteChar:=AQuote;
     DelimitedText:=ListText;
     end;
-  Result:=Execute(APos,Titel,Desc,Hint,false,false,false,ACols,tcNone,'',sl,s,true);
+  Result:=Execute(APos,Titel,Desc,Hint,[],ACols,tcNone,'',sl,s,true);
   ListText:=sl.DelimitedText;
   sl.Free;
+  end;
+
+function TSelectFromListDialog.Select (APos : TPoint; Titel,Desc,Hint : string; Prompt : boolean;
+                    SList : TStrings; var AText  : string) : boolean;
+var
+  so : TSelectOptions;
+begin
+  if Prompt then so:=[soPrompt] else so:=[];
+  Result:=SelectFromListDialog.Execute(APos,Titel,Desc,Hint,so,0,
+                                       tcNone,'',SList,AText);
   end;
 
 procedure TSelectFromListDialog.Show (APos : TPoint; Titel,Desc,Hint : string;
@@ -285,28 +318,31 @@ procedure TSelectFromListDialog.Show (APos : TPoint; Titel,Desc,Hint : string;
 var
   s : string;
 begin
-  Execute(APos,Titel,Desc,Hint,false,false,false,ACols,tcNone,'',SList,s,false);
+  Execute(APos,Titel,Desc,Hint,[],ACols,tcNone,'',SList,s,false);
   end;
 
 {------------------------------------------------------------------- }
 function EditList (APos : TPoint; Titel,Desc,Hint : string;
-                   Edit,Order,Multi : boolean; ACols : integer;
+                   Options : TSelectOptions; ACols : integer;
                    Convert : TTextChange; const Default : string;
                    SList : TStrings; var AText  : string) : boolean;
 begin
   if not assigned(SelectFromListDialog) then
     SelectFromListDialog:=TSelectFromListDialog.Create(Application);
-  Result:=SelectFromListDialog.Execute(APos,Titel,Desc,Hint,Edit,Order,Multi,ACols,
+  Result:=SelectFromListDialog.Execute(APos,Titel,Desc,Hint,Options,ACols,
                                        Convert,Default,SList,AText);
   FreeAndNil(SelectFromListDialog)
   end;
 
-function SelectFromList (APos : TPoint; Titel,Desc,Hint : string;
+function SelectFromList (APos : TPoint; Titel,Desc,Hint : string; Prompt : boolean;
                     SList : TStrings; var AText  : string) : boolean;
+var
+  so : TSelectOptions;
 begin
   if not assigned(SelectFromListDialog) then
     SelectFromListDialog:=TSelectFromListDialog.Create(Application);
-  Result:=SelectFromListDialog.Execute(APos,Titel,Desc,Hint,false,false,false,0,
+  if Prompt then so:=[soPrompt] else so:=[];
+  Result:=SelectFromListDialog.Execute(APos,Titel,Desc,Hint,so,0,
                                        tcNone,'',SList,AText);
   FreeAndNil(SelectFromListDialog)
   end;

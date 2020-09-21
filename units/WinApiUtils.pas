@@ -23,7 +23,7 @@
    Vers. 6 - July 2013 : more environment folders
    Vers. 7 - Dec. 2015 : Modifications for Delphi 10 (all functions and constants
                          removed that are now handled in Winapi.Windows)
-   last modified:  May 2017
+   last modified:  June 2020
    *)
 
 unit WinApiUtils;
@@ -321,6 +321,11 @@ type
   TFindNextStream = function (hFindStream : THandle;
     var lpFindStreamData : TWin32FindStreamData) : BOOL; stdcall;
 
+  TGetTickCount64 = function : ULONGLONG; stdcall;
+
+  TQueryFullProcessImageName = function (hProcess : THandle; dwFlags : DWORD;
+    lpExeName : LPWSTR; var lpdwSize : DWORD) : boolean; stdcall;
+
   TSetSuspendState = function (Hibernate, ForceCritical, DisableWakeEvent: BOOL) : BOOL; stdcall;
 
   TCreateProcessWithLogonW = function(lpUsername: PWideChar;
@@ -349,27 +354,6 @@ type
     Company,Description,Version,InternalName,Copyright,Comments : string;
     end;
 
-  TFileSystemFlag =
-   (
-    fsCaseSensitive,            // The file system supports case-sensitive file names.
-    fsCasePreservedNames,       // The file system preserves the case of file names when it places a name on disk.
-    fsSupportsUnicodeOnDisk,    // The file system supports Unicode in file names as they appear on disk.
-    fsPersistentACLs,           // The file system preserves and enforces ACLs. For example, NTFS preserves and enforces ACLs, and FAT does not.
-    fsSupportsFileCompression,  // The file system supports file-based compression.
-    fsSupportsVolumeQuotas,     // The file system supports disk quotas.
-    fsSupportsSparseFiles,      // The file system supports sparse files.
-    fsSupportsReparsePoints,    // The file system supports reparse points.
-    fsSupportsRemoteStorage,    // ?
-    fsVolumeIsCompressed,       // The specified volume is a compressed volume; for example, a DoubleSpace volume.
-    fsSupportsObjectIds,        // The file system supports object identifiers.
-    fsSupportsEncryption,       // The file system supports the Encrypted File System (EFS).
-    fsSupportsNamedStreams,     // The file system supports named streams.
-    fsVolumeIsReadOnly          // The specified volume is read-only.
-                                //   Windows 2000/NT and Windows Me/98/95:  This value is not supported.
-   );
-
-  TFileSystemFlags = set of TFileSystemFlag;
-
   TSessionData = record
     UserLuid  : TLUID;
     UserName,
@@ -379,9 +363,20 @@ type
     end;
   TSessionList = array of TSessionData;
 
+  TDependencies = record
+    Groups,Services : string;
+    end;
 
-{$EXTERNALSYM GetTickCount64}
-function GetTickCount64: ULONGLONG; stdcall;
+  TServiceConfig = record
+    ServiceType,StartType,ErrorControl,TagId : cardinal;
+    BinaryPathName,LoadOrderGroup,
+    ServiceStartName,DisplayName : string;
+    Dependencies : TDependencies;
+    end;
+
+
+//{$EXTERNALSYM GetTickCount64}
+//function GetTickCount64: ULONGLONG; stdcall;
 
 { ---------------------------------------------------------------- }
 {$EXTERNALSYM GetFileSizeEx}
@@ -411,36 +406,6 @@ function InitiateSystemShutdownExW(lpMachineName, lpMessage: LPWSTR;
 function LsaNtStatusToWinError(Status: cardinal): ULONG; stdcall;
 
 { ---------------------------------------------------------------- }
-// The following definitions are erroneous in Winapi.Windows (Delphi 10):
-// LPCWSTR/LPWSTR should be used instead of LPCSTR/LPSTR
-{$EXTERNALSYM GetVolumePathName}
-function GetVolumePathName(lpszFileName: LPCWSTR; lpszVolumePathName: LPWSTR;
-         cchBufferLength: DWORD): BOOL; stdcall;
-
-{$EXTERNALSYM GetVolumePathNamesForVolumeName}
-function GetVolumePathNamesForVolumeName(lpszVolumeName: LPCWSTR; lpszVolumePathNames: LPWSTR;
-         cchBufferLength: DWORD; var lpcchReturnLength: DWORD): BOOL; stdcall;
-
-{$EXTERNALSYM GetVolumeNameForVolumeMountPoint}
-function GetVolumeNameForVolumeMountPoint (lpszVolumeMountPoint : LPCWSTR;
-  lpszVolumeName : LPWSTR; cchBufferLength : DWORD) : BOOL; stdcall;
-
-{$EXTERNALSYM FindFirstVolume}
-function FindFirstVolume(lpszVolumeName: LPWSTR; cchBufferLength: DWORD): THandle; stdcall;
-
-{$EXTERNALSYM FindNextVolume}
-function FindNextVolume(hFindVolume: THandle; lpszVolumeName: LPWSTR;
-  cchBufferLength: DWORD): BOOL; stdcall;
-
-{$EXTERNALSYM FindFirstVolumeMountPoint}
-function FindFirstVolumeMountPoint(lpszRootPathName: LPCWSTR;
-  lpszVolumeMountPoint: LPWSTR; cchBufferLength: DWORD): THandle; stdcall;
-
-{$EXTERNALSYM FindNextVolumeMountPoint}
-function FindNextVolumeMountPoint(hFindVolumeMountPoint: THandle;
-  lpszVolumeMountPoint: LPWSTR; cchBufferLength: DWORD): BOOL; stdcall;
-
-{ ---------------------------------------------------------------- }
 // available since Win 2000
 function CreateProcessWithLogonW(lpUsername: PWideChar;
   lpDomain: PWideChar; lpPassword: PWideChar; dwLogonFlags: DWORD;
@@ -461,34 +426,27 @@ function FileFindFirstStream (const FileName : string;
 function FileFindNextStream (var FindStream : TWin32FindStream) : cardinal;
 
 { ---------------------------------------------------------------- }
+// availble since Vista
+function GetTickCount64 : ULONGLONG;
+
+{ ---------------------------------------------------------------- }
 // Ermitteln des sprachabhängigen Namens eines Kontos
 function GetAccountName(sSID : string) : string;
+
+{ ---------------------------------------------------------------- }
+(* Disk size and free space *)
+function GetDiskFree (const Path : string) : int64;
+function GetDiskTotal (const Path : string) : int64;
 
 { ---------------------------------------------------------------- }
 (* Windows-System-Info (Plattform, Version, Build) *)
 function IsWinNT : boolean;
 function IsWin2000 : boolean;
 function IsVista : boolean;
+function IsWindows8 : boolean;
+function IsWindows10 : boolean;
 function IsWindows64 : boolean;
 function Is64BitApp : boolean;
-
-function GetVolumeName(const Drive: string): string;
-function GetVolumeSerialNumber(const Drive: string): string;
-function GetVolumeFileSystem(const Drive: string): string;
-function GetVolumeComponentLength(const Drive: string): string;
-function IsNtfs (const Drive : string) : boolean;
-function IsExFat (const Drive : string) : boolean;
-function IsLtfs (const Drive : string) : boolean;
-function IsExtFs (const Drive : string) : boolean; // file systems capable to keep files > 4GB
-
-function GetVolumeFileSystemFlags(const Volume: string): TFileSystemFlags;
-function GetVolumeUniqueName(const Drive : string) : string;
-
-{ ---------------------------------------------------------------- }
-(* Disk size and free space *)
-
-function GetDiskFree (const Path : string) : int64;
-function GetDiskTotal (const Path : string) : int64;
 
 { ---------------------------------------------------------------- }
 (* Windows-Verzeichnisse *)
@@ -496,6 +454,7 @@ function WindowsDirectory : string;
 function SystemDirectory : string;
 function TempDirectory : string;
 function PublicFolder : string;
+
 (* Systeminformationen *)
 function UserName : string;
 function UserFullName : string;
@@ -506,7 +465,7 @@ function ComputerName : string;
 { ---------------------------------------------------------------- }
 // nachfolgende Funktionen sind nur ab Vista verfügbar
 // dort erforderlich, um bei WM_QUERYENDSESSION das Abmelden/Herunterfahren zu unterbrechen
-function SetShutDownReason (fHandle: hWnd; Reason : string) : boolean;
+function SetShutDownReason (fHandle: hWnd; const Reason : string) : boolean;
 function ClearShutDownReason (fHandle: hWnd) : boolean;
 function QueryShutDownReason (fHandle: hWnd; var Reason : string) : boolean;
 
@@ -536,7 +495,7 @@ function IsPowerUserLoggedOn : boolean;
 
 { ---------------------------------------------------------------- }
 // prüfe, ob eine Exe-Datei gerade läuft
-function IsExeRunning(const AExeName: string): boolean;
+function IsExeRunning(const AExeName: string; FullPath : boolean = false): boolean;
 
 // Liste aller laufenden und sichtbaren Programme
 function GetProgramList(const List: TStrings): Boolean;
@@ -565,6 +524,11 @@ function GetInteractiveUserSessions (var UserSessions : TSessionList) : boolean;
 function GetInteractiveUserSessionCount : integer;
 
 { ---------------------------------------------------------------- }
+//  Get service configuration
+function GetServiceConfiguration (const AMachine,AServicename : string;
+                                  var ServiceConfig : TServiceConfig) : integer;
+
+{ ---------------------------------------------------------------- }
 // Modify privilege of calling process
 function ModifyPrivilege (const PrivilegeName : string; Enable : boolean) : boolean;
 
@@ -574,7 +538,7 @@ function KillProcessByWinHandle(WinHandle : Hwnd) : boolean;
 
 implementation
 
-uses System.StrUtils, System.DateUtils, WinApi.TlHelp32, WinApi.PsAPI;
+uses System.StrUtils, System.DateUtils, WinApi.TlHelp32, WinApi.PsAPI, WinApi.WinSvc;
 
 const
   InfoNum = 12;
@@ -588,18 +552,12 @@ var
   FSetSuspendState : TSetSuspendState;                 // erst ab Win 2000
   FFindFirstStream : TFindFirstStream;                 // erst ab Vista
   FFindNextStream : TFindNextStream;                   // erst ab Vista
+  FGetTickCount64 : TGetTickCount64;
+  FQueryFullProcessImageName : TQueryFullProcessImageName;
 
 { ---------------------------------------------------------------- }
 function GetFileSizeEx; external kernel32 name 'GetFileSizeEx';
-function GetTickCount64; external kernel32 name 'GetTickCount64';
-
-function GetVolumePathName; external kernel32 name 'GetVolumePathNameW';
-function GetVolumePathNamesForVolumeName; external kernel32 name 'GetVolumePathNamesForVolumeNameW';
-function GetVolumeNameForVolumeMountPoint; external kernel32 name 'GetVolumeNameForVolumeMountPointW';
-function FindFirstVolume; external kernel32 name 'FindFirstVolumeW';
-function FindNextVolume; external kernel32 name 'FindNextVolumeW';
-function FindFirstVolumeMountPoint; external kernel32 name 'FindFirstVolumeMountPointW';
-function FindNextVolumeMountPoint; external kernel32 name 'FindNextVolumeMountPointW';
+// function GetTickCount64; external kernel32 name 'GetTickCount64';
 
 function ConvertStringSidToSid; external advapi32 name 'ConvertStringSidToSidA';
 function ConvertSidToStringSid; external advapi32 name 'ConvertSidToStringSidA';
@@ -652,6 +610,14 @@ begin
   end;
 
 { ---------------------------------------------------------------- }
+// availble since Vista
+function GetTickCount64 : ULONGLONG;
+begin
+  if assigned(@FGetTickCount64) then Result:=FGetTickCount64
+  else Result:=GetTickCount;
+  end;
+
+{ ---------------------------------------------------------------- }
 function SetSuspendState(Hibernate, ForceCritical, DisableWakeEvent: Boolean): Boolean;
 begin
   if assigned(@FSetSuspendState) then Result:=FSetSuspendState(Hibernate,ForceCritical,DisableWakeEvent)
@@ -681,7 +647,7 @@ type
 
 // nachfolgende Funktionen sind nur ab Vista verfügbar
 // dort erforderlich, um bei WM_QUERYENDSESSION das Abmelden/Herunterfahren zu unterbrechen
-function SetShutDownReason (fHandle: hWnd; Reason : string) : boolean;
+function SetShutDownReason (fHandle: hWnd; const Reason : string) : boolean;
 var
   dh  : THandle;
   sdc : TSDBlockReasonCreate;
@@ -765,144 +731,7 @@ begin
   end;
 
 { ---------------------------------------------------------------- }
-{ ------------------------------------------------------------------- }
-// following part from JclSysInfo (Project JEDI Code Library)
-type
-  TVolumeInfoKind = (vikName, vikSerial, vikFileSystem, vikComponentLength);
-
-function GetVolumeInfoHelper(const Drive: string; InfoKind: TVolumeInfoKind): string;
-var
-  VolumeSerialNumber: DWORD;
-  MaximumComponentLength: DWORD;
-  Flags: DWORD;
-  Name: array [0..MAX_PATH] of Char;
-  FileSystem: array [0..15] of Char;
-  ErrorMode: Cardinal;
-  DriveStr: string;
-begin
-  { TODO : Change to RootPath }
-  { TODO : Perform better checking of Drive param or document that no checking
-    is performed. RM Suggested:
-    DriveStr := Drive;
-    if (Length(Drive) < 2) or (Drive[2] <> ':') then
-      DriveStr := GetCurrentFolder;
-    DriveStr  := DriveStr[1] + ':\'; }
-  Result:='';
-  if length(Drive)=0 then Exit;
-  if pos(':',Drive)=0 then DriveStr:=Drive + ':'
-  else DriveStr:=Drive;
-  DriveStr:=IncludeTrailingPathDelimiter(DriveStr);
-  ErrorMode:=SetErrorMode(SEM_FAILCRITICALERRORS);
-  try
-    if GetVolumeInformation(PChar(DriveStr), Name, SizeOf(Name), @VolumeSerialNumber,
-      MaximumComponentLength, Flags, FileSystem, SizeOf(FileSystem)) then
-    case InfoKind of
-      vikName:
-        Result:=StrPas(Name);
-      vikSerial:
-        begin
-          Result:=IntToHex(HiWord(VolumeSerialNumber), 4) + '-' +
-          IntToHex(LoWord(VolumeSerialNumber), 4);
-        end;
-      vikFileSystem:
-        Result:=StrPas(FileSystem);
-      vikComponentLength:
-        Result:=IntToStr(MaximumComponentLength);
-    end;
-  finally
-    SetErrorMode(ErrorMode);
-  end;
-end;
-
-function GetVolumeName(const Drive: string): string;
-begin
-  Result:=GetVolumeInfoHelper(Drive, vikName);
-end;
-
-function GetVolumeSerialNumber(const Drive: string): string;
-begin
-  Result:=GetVolumeInfoHelper(Drive, vikSerial);
-end;
-
-function GetVolumeFileSystem(const Drive: string): string;
-begin
-  Result:=GetVolumeInfoHelper(Drive, vikFileSystem);
-end;
-
-function GetVolumeComponentLength(const Drive: string): string;
-begin
-  Result:=GetVolumeInfoHelper(Drive, vikComponentLength);
-end;
-
-function IsNtfs (const Drive : string) : boolean;
-begin
-  Result:=AnsiSameText('NTFS',GetVolumeFileSystem(Drive));
-  end;
-
-function IsExFat (const Drive : string) : boolean;
-begin
-  Result:=AnsiSameText('exFAT',GetVolumeFileSystem(Drive));
-  end;
-
-function IsLtfs (const Drive : string) : boolean;
-begin
-  Result:=AnsiSameText('LTFS',GetVolumeFileSystem(Drive));
-  end;
-
-// file systems capable to keep files > 4GB
-function IsExtFs (const Drive : string) : boolean;
-var
-  s : string;
-begin
-  s:=GetVolumeFileSystem(Drive);
-  Result:=AnsiSameText('NTFS',s) or AnsiSameText('exFAT',s) or AnsiSameText('LTFS',s);
-  end;
-
-{ TODO -cHelp : Donator (incl. TFileSystemFlag[s]): Robert Rossmair }
-
-function GetVolumeFileSystemFlags(const Volume: string): TFileSystemFlags;
-const
-  FileSystemFlags: array [TFileSystemFlag] of DWORD =
-    ( FILE_CASE_SENSITIVE_SEARCH,   // fsCaseSensitive
-      FILE_CASE_PRESERVED_NAMES,    // fsCasePreservedNames
-      FILE_UNICODE_ON_DISK,         // fsSupportsUnicodeOnDisk
-      FILE_PERSISTENT_ACLS,         // fsPersistentACLs
-      FILE_FILE_COMPRESSION,        // fsSupportsFileCompression
-      FILE_VOLUME_QUOTAS,           // fsSupportsVolumeQuotas
-      FILE_SUPPORTS_SPARSE_FILES,   // fsSupportsSparseFiles
-      FILE_SUPPORTS_REPARSE_POINTS, // fsSupportsReparsePoints
-      FILE_SUPPORTS_REMOTE_STORAGE, // fsSupportsRemoteStorage
-      FILE_VOLUME_IS_COMPRESSED,    // fsVolumeIsCompressed
-      FILE_SUPPORTS_OBJECT_IDS,     // fsSupportsObjectIds
-      FILE_SUPPORTS_ENCRYPTION,     // fsSupportsEncryption
-      FILE_NAMED_STREAMS,           // fsSupportsNamedStreams
-      FILE_READ_ONLY_VOLUME         // fsVolumeIsReadOnly
-    );
-var
-  MaximumComponentLength, Flags: Cardinal;
-  Flag: TFileSystemFlag;
-begin
-  if not GetVolumeInformation(PChar(IncludeTrailingPathDelimiter(Volume)), nil, 0, nil,
-    MaximumComponentLength, Flags, nil, 0) then
-    RaiseLastOSError;
-  Result:=[];
-  for Flag:=Low(TFileSystemFlag) to High(TFileSystemFlag) do
-    if (Flags and FileSystemFlags[Flag]) <> 0 then
-      Include(Result, Flag);
-end;
-
-function GetVolumeUniqueName(const Drive : string) : string;
-var
-  uname : array [0..MAX_PATH] of Char;
-begin
-  if (length(Drive)>0) and GetVolumeNameForVolumeMountPoint(PChar(Drive),uname,MAX_PATH+1) then
-    Result:=uname
-  else Result:='';
-  end;
-
-{ ---------------------------------------------------------------- }
 (* Disk size and free space *)
-
 function GetDiskFree (const Path : string) : int64 ;
 var
   n : Int64;
@@ -1035,7 +864,7 @@ var
   p    : pchar;
   size : dword;
 begin
-size:=1024;
+  size:=1024;
   p:=StrAlloc(size);
   if ExpandEnvironmentStrings('%ALLUSERSPROFILE%',p,size)=0 then Result:=WindowsDirectory
   else Result:=p;
@@ -1072,6 +901,16 @@ begin
 function IsVista : boolean;
 begin
   Result:=(Win32Platform=VER_PLATFORM_WIN32_NT) and (Win32MajorVersion>=6);
+  end;
+
+function IsWindows8 : boolean;
+begin
+  Result:=(Win32Platform=VER_PLATFORM_WIN32_NT) and (Win32MajorVersion>=6) and (Win32MinorVersion>=2);
+  end;
+
+function IsWindows10 : boolean;
+begin
+  Result:=(Win32Platform=VER_PLATFORM_WIN32_NT) and (Win32MajorVersion>=10);
   end;
 
 function IsWindows64 : boolean;
@@ -1342,19 +1181,62 @@ begin
   end;
 
 { ---------------------------------------------------------------- }
-// prüfe, ob eine Exe-Datei gerade läuft
-function IsExeRunning(const AExeName: string) : boolean;
+// prüfe, ob eine Exe-Datei gerade läuft (optional mit vollst. Pfad)
+function IsExeRunning(const AExeName: string; FullPath : boolean) : boolean;
 var
   h: THandle;
   p: TProcessEntry32;
+  sp : string;
+
+//  function GetFullPath (Id : dword) : string;
+//  var
+//    h  : THandle;
+//    p: TModuleEntry32;
+//  begin
+//    Result:='';
+//    p.dwSize:=SizeOf(p);
+//    h:=CreateToolHelp32Snapshot(TH32CS_SnapModule,Id);
+//    try
+//      if Module32First(h,p) then Result:=p.szExePath;
+//    finally
+//      CloseHandle(h);
+//      end;
+//    if (length(Result)=0) and IsWindows64 and Is64BitApp then begin // check 32-bit modules
+//      end;
+//    end;
+
+  function GetFullPath (Id : dword) : string;
+  var
+    hp   : dword;
+    sBuf : PWideChar;
+    n    : dword;
+  begin
+    Result:='';
+    hp:=OpenProcess(PROCESS_QUERY_INFORMATION,false,Id);
+    if hp<>0 then begin
+      n:=1024; sBuf:=StrAlloc(n);
+      if assigned(@FQueryFullProcessImageName) then begin
+        if FQueryFullProcessImageName(hp,0,sBuf,n) then begin
+          Result:=sBuf;
+          StrDispose(sBuf);
+          end
+        end;
+      CloseHandle(hp);
+      end;
+    end;
+
 begin
   Result:=False;
   p.dwSize:=SizeOf(p);
   h:=CreateToolHelp32Snapshot(TH32CS_SnapProcess, 0);
   try
-    Process32First(h, p);
-    repeat
-      Result:=AnsiSameText(AExeName,p.szExeFile);
+    if Process32First(h, p) then repeat
+      if FullPath then begin
+        if p.th32ProcessID>0 then sp:=GetFullPath(p.th32ProcessID)
+        else sp:='';
+        end
+      else sp:=p.szExeFile;
+      if length(sp)>0 then Result:=AnsiSameText(AExeName,sp);
     until Result or (not Process32Next(h, p));
   finally
     CloseHandle(h);
@@ -1390,7 +1272,7 @@ function GetProgramList(const List: TStrings) : Boolean;
   end;
 
 begin
-List.BeginUpdate;
+  List.BeginUpdate;
   try
     Result:=EnumWindows(@EnumWindowsProc, Integer(List));
   finally
@@ -1435,7 +1317,6 @@ var
   LocalFileTime: TFileTime;
   Secur32Handle,Wtsapi32Handle : THandle;
   FWTSQuerySessionInformation : TWTSQuerySessionInformation; // ab Win XP
-  FWTSGetActiveConsoleSessionId : TWTSGetActiveConsoleSessionId; // ab Win XP
   FLsaEnumerateLogonSessions : TLsaEnumerateLogonSessions; // ab Win XP
   FLsaGetLogonSessionData : TLsaGetLogonSessionData;      // ab Win 2000
   FLsaFreeReturnBuffer : TLsaFreeReturnBuffer;            // ab Win 2000
@@ -1454,10 +1335,6 @@ begin
     if Wtsapi32Handle=0 then Exit;
     FWTSQuerySessionInformation:=GetProcAddress(Wtsapi32Handle,'WTSQuerySessionInformationW');
     if not assigned(FWTSQuerySessionInformation) then Exit;
-    DllHandle:=GetModuleHandle(kernel32);
-    if DllHandle=0 then Exit;
-    FWTSGetActiveConsoleSessionId:=GetProcAddress(DllHandle,'WTSGetActiveConsoleSessionId');
-    if not assigned(FWTSGetActiveConsoleSessionId) then Exit;
     //Auflisten der LogOnSessions
     try
       if (LsaNtStatusToWinError(FLsaEnumerateLogonSessions(Count,SessionList))=0) then begin
@@ -1796,6 +1673,77 @@ begin
   end;
 
 { ---------------------------------------------------------------- }
+function GetServiceConfiguration (const AMachine,AServicename : string;
+                                  var ServiceConfig : TServiceConfig) : integer;
+var
+  ServiceHandle,SCMHandle : SC_Handle;
+  pServiceConfig : PQueryServiceConfig;
+  nSize, nBytesNeeded: DWord;
+
+  procedure GetDependencies (var ADeps : TDependencies);
+  var
+    pc : PChar;
+  begin
+    pc:=pServiceConfig^.lpDependencies;
+    with ADeps do begin
+      Groups:=''; Services:='';
+      if Assigned(pc) then begin
+        while pc^<>#0 do begin
+          if pc^=SC_GROUP_IDENTIFIER then begin
+            inc(pc);
+            if length(pc)>0 then begin
+              if length(Groups)>0 then Groups:=Groups+',';
+              Groups:=Groups+pc;
+              end;
+            end
+          else begin
+            if length(pc)>0 then begin
+              if length(Services)>0 then Services:=Services+',';
+              Services:=Services+pc;
+              end;
+            end;
+          Inc(pc,length(pc)+1);
+          end;
+        end;
+      end;
+    end;
+
+begin
+  Result:=NO_ERROR;
+  SCMHandle:=OpenSCManager(PChar(AMachine),nil,SC_MANAGER_CONNECT);
+  if SCMHandle<>0 then begin
+    try
+      ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),SERVICE_QUERY_CONFIG);
+      if ServiceHandle<>0 then begin
+        QueryServiceConfig(ServiceHandle,nil,0,nSize);
+        pServiceConfig := AllocMem(nSize);
+        try
+          if QueryServiceConfig(ServiceHandle,pServiceConfig,nSize,nBytesNeeded) then with ServiceConfig do begin
+            ServiceType:=pServiceConfig^.dwServiceType;
+            StartType:=pServiceConfig^.dwStartType;
+            ErrorControl:=pServiceConfig^.dwErrorControl;
+            TagId:=pServiceConfig^.dwTagId;
+            BinaryPathName:=pServiceConfig^.lpBinaryPathName;
+            LoadOrderGroup:=pServiceConfig^.lpLoadOrderGroup;
+            ServiceStartName:=pServiceConfig^.lpServiceStartName;
+            DisplayName:=pServiceConfig^.lpDisplayName;
+            GetDependencies(Dependencies);
+            end
+          else Result:=GetLastError;
+        finally
+          Dispose(pServiceConfig);
+          CloseServiceHandle(ServiceHandle);
+          end;
+        end
+      else Result:=GetLastError;
+    finally
+      CloseServiceHandle(SCMHandle);
+      end;
+    end
+  else Result:=GetLastError;
+  end;
+
+{ ---------------------------------------------------------------- }
 // Modify privilege of calling process
 function ModifyPrivilege (const PrivilegeName : string; Enable : boolean) : boolean;
 var
@@ -1850,9 +1798,12 @@ initialization
   if DllHandle<>0 then begin  // available in Vista and later
     @FFindFirstStream:=GetProcAddress(DllHandle,'FindFirstStreamW');
     @FFindNextStream:=GetProcAddress(DllHandle,'FindNextStreamW');
+    @FGetTickCount64:=GetProcAddress(DllHandle,'GetTickCount64');
+    @FQueryFullProcessImageName:=GetProcAddress(DllHandle,'QueryFullProcessImageNameW');
     end
   else begin
-    FFindFirstStream:=nil; FFindNextStream:=nil;
+    FFindFirstStream:=nil; FFindNextStream:=nil; FGetTickCount64:=nil;
+    FQueryFullProcessImageName:=nil;
     end;
 
   end.

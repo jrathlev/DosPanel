@@ -13,7 +13,7 @@
   the specific language governing rights and limitations under the License.
 
   Version 1.0 - Nov. 2011
-  last modified: Feb. 2017
+  last modified: Jan. 2020
   *)
   
 unit InitProg;
@@ -23,7 +23,11 @@ interface
 uses System.Classes, System.SysUtils, Vcl.ComCtrls, WinApiUtils;
 
 // Ermittelt die Standardpfade: Anwendungsdaten, Eigene Dateien, Programm
-function GetAppPath (CreateAppDir : boolean = true) : string;
+function GetAppPath : string;
+function GetAppSubPath (const SubDir : string; CreateAppDir : boolean = true) : string;
+function GetUserPath : string;
+function GetProgPath : string;
+
 procedure InitPaths (var AppPath,UserPath,ProgPath : string; CreateAppDir : boolean = true); overload;
 procedure InitPaths (var AppPath,UserPath : string); overload;
 procedure InitPaths (var AppPath : string); overload;
@@ -53,11 +57,16 @@ uses Vcl.Forms, WinShell, Winapi.ShlObj, UnitConsts;
 
 { ------------------------------------------------------------------- }
 // Standardpfade
-function GetAppPath (CreateAppDir : boolean) : string;
+function GetAppPath : string;
 begin
   Result:=GetDesktopFolder(CSIDL_APPDATA);
+  end;
+
+function GetAppSubPath (const SubDir : string; CreateAppDir : boolean) : string;
+begin
+  Result:=GetAppPath;
   if length(Result)>0 then begin
-    Result:=IncludeTrailingPathDelimiter(Result)+AppSubDir;  // Pfad zu Anwendungsdaten
+    Result:=IncludeTrailingPathDelimiter(Result)+SubDir;  // Pfad zu Anwendungsdaten
     if CreateAppDir then begin
       if not ForceDirectories(Result) then Result:=PrgPath;
       end;
@@ -65,12 +74,20 @@ begin
   else Result:=PrgPath;
   end;
 
+function GetUserPath : string;
+begin
+  Result:=GetDesktopFolder(CSIDL_PERSONAL);
+  end;
+
+function GetProgPath : string;
+begin
+  Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES);
+  end;
+
 procedure InitPaths (var AppPath,UserPath,ProgPath : string; CreateAppDir : boolean);
 begin
-  PrgPath:=ExtractFilePath(Application.ExeName);
-  PrgName:=ExtractFileName(ChangeFileExt(Application.ExeName,''));
-  AppPath:=GetAppPath(CreateAppDir);
-  UserPath:=IncludeTrailingPathDelimiter(GetDesktopFolder(CSIDL_PERSONAL));
+  AppPath:=GetAppSubPath(AppSubDir,CreateAppDir);
+  UserPath:=IncludeTrailingPathDelimiter(GetUserPath);
   ProgPath:=IncludeTrailingPathDelimiter(GetDesktopFolder(CSIDL_PROGRAM_FILES));
   end;
 
@@ -151,6 +168,8 @@ begin
   end;
 
 initialization
+  PrgPath:=ExtractFilePath(Application.ExeName);
+  PrgName:=ExtractFileName(ChangeFileExt(Application.ExeName,''));
   AppSubDir:='';
 end.
 
