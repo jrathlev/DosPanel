@@ -18,7 +18,8 @@
                New object type: otHiddenSystem (SHCONTF_ENABLE_INCLUDESUPERHIDDEN)
                Note: in Windows SDK the name is SHCONTF_INCLUDESUPERHIDDEN
   - Oct. 2017: Property to optionally include zip files to file view
-  - May  2018: function GetWidth toe get total width in number of characters
+  - May  2018: function GetWidth to get total width in number of characters
+  - Aug. 2019: added OLE error code to error message for SErrorSettingPath
 }
 unit Vcl.Shell.ShellCtrls platform;
 
@@ -1187,7 +1188,7 @@ begin
   begin
     { TODO : Remove the next line? }
     // Result := RootFolder;
-    ErrorMsg := Format( SErrorSettingPath, [ NewRoot ] );
+    ErrorMsg := Format( SErrorSettingPath,[NewRoot])+sLineBreak+'('+SysErrorMessage(HR)+')';
     NewRoot := OldRoot;
     raise Exception.Create( ErrorMsg );
   end;
@@ -2324,8 +2325,8 @@ begin
     SetPathFromID(NewPIDL);
     DisposePIDL(NewPIDL);
   except
-    on EOleSysError do
-      raise EInvalidPath.CreateFmt(SErrorSettingPath, [Value]);
+    on E:EOleSysError do
+      raise EInvalidPath.Create(Format(SErrorSettingPath,[Value])+sLineBreak+'('+E.Message+')');
   end;
 //  StrDispose(P);
 end;
@@ -2861,8 +2862,8 @@ begin
         Flags)
      );
     SetPathFromID(NewPIDL);
-  except on EOleSysError do
-    raise EInvalidPath.CreateFmt(SErrorSettingPath, [Value]);
+  except on E:EOleSysError do
+    raise EInvalidPath.Create(Format(SErrorSettingPath,[Value])+sLineBreak+'('+E.Message+')');
   end;
   Change; //JR
 end;

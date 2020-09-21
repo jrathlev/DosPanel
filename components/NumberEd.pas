@@ -5,6 +5,7 @@
    - TRangeEdit      : Integer mit Bereichsüberprüfung
    - TFloatEdit      : Fließkomma
    - TFloatRangeEdit : Fließkomma mit Bereichsüberprüfung
+   - TDegreeEdit     : Eingabefeld für Winkelgrade
    - TNumUpDown      : wie TUpDown für o.g. Komponenten
    - TFloatComboBox  : Combobox für Fließkommazahlen
    - TDegreeComboBox : Combobox für Winkelgrade
@@ -34,11 +35,13 @@
 
    Vers. 1 - Sep. 1998
          1.1 - Okt. 2001
-         1.2 - Jun. 2005  : verbesserte Bereichsüberprüfung
-         1.3 - May  2006  : AddValue-Routines
+         1.2 - Juni 2005  : verbesserte Bereichsüberprüfung
+         1.3 - Mai  2006  : AddValue-Routinen
          1.4 - Apr. 2007  : Darstellung als Bin. Oktal, Dezimal und Hex
-         2 - Mai 2015     : neues TNumUpDown, ffPrefix und div. weitere Umstruktierungen
-   last changed: Feb. 2016
+         2.0 - Mai  2015  : neues TNumUpDown, ffPrefix und div. weitere Umstruktierungen
+         2.1 - Juli 2019  : TDegreeEdit hinzugefügt
+
+   last changed: Dez. 2019
    *)
 
 unit NumberEd;
@@ -205,7 +208,7 @@ type
     property Bytes : boolean read FBytes write SetBytes default false;
     property GroupDigits : word read FGroupDigits write SetGroupDigits default 0;
     property NumMode : TNumMode read FNumMode write SetNumMode default nmDecimal;
-    property Value : int64 read FValue write SetValue;
+    property Value : int64 read GetValueFromInput write SetValue;
   end;
 
   TRangeEdit = class (TNumberEdit)
@@ -216,18 +219,18 @@ type
     FRangeCheck : boolean;
     procedure SetValue(NewValue : int64); override;
     procedure SetMinValue(NewValue : int64);
-    function CheckValue (NewValue : int64): boolean;
     procedure SetMaxValue(NewValue : int64);
+    function CheckValue (NewValue : int64): boolean;
     procedure WMKeyUp(var Message: TWMKeyDown); message WM_KEYUP;
     procedure CMExit(var Message: TCMExit); message CM_EXIT;
   public
     constructor Create(AOwner: TComponent); override;
+    property RangeError : boolean read FRangeError;
   published
     { Published declarations }
-    property MinValue : int64 read FMinValue write SetMinValue default 0;
-    property MaxValue : int64 read FMaxValue write SetMaxValue default 100;
+    property MinValue : int64 read FMinValue write SetMinValue;
+    property MaxValue : int64 read FMaxValue write SetMaxValue;
     property RangeCheck : boolean read FRangeCheck write FRangeCheck default true;
-    property RangeError : boolean read FRangeError;
   end;
 
   TFloatEdit = class(TCustomNumEdit)
@@ -241,7 +244,7 @@ type
     procedure SetDecimal(Value: word);
     procedure SetThSep(Value: Char);
     procedure SetFloatFormat(Value: TNumFloatFormat);
-    function GetValueFromInput : extended;
+    function GetValueFromInput : extended; virtual;
     procedure SetValue(Value : extended); virtual;
     procedure WMKeyUp(var Message: TWMKeyDown); message WM_KEYUP;
     procedure CMExit(var Message: TCMGotFocus); message CM_EXIT;
@@ -296,7 +299,7 @@ type
     property FloatFormat : TNumFloatFormat read FFloatFormat write SetFloatFormat default ffFixed;
     property ThSeparator : char read FThSep write SetThSep default #0;
     property StepMultiplier : extended read FMult write FMult;
-    property Value : extended read FValue write SetValue;
+    property Value : extended read GetValueFromInput write SetValue;
   end;
 
   TFloatRangeEdit = class (TFloatEdit)
@@ -314,13 +317,29 @@ type
     procedure CMExit(var Message: TCMExit);   message CM_EXIT;
   public
     constructor Create(AOwner: TComponent); override;
+    property RangeError : boolean read FRangeError;
   published
     { Published declarations }
     property MinValue : extended read FMinValue write SetMinValue;
     property MaxValue : extended read FMaxValue write SetMaxValue;
     property RangeCheck : boolean read FRangeCheck write FRangeCheck default true;
-    property RangeError : boolean read FRangeError;
   end;
+
+  TDegreeEdit = class (TFloatEdit)
+  private
+    FFormat : TAngleFormat;
+    procedure SetFormat(Value: TAngleFormat);
+  protected
+    function IsValidChar(Key: Char): Boolean; override;
+  public
+    function GetValueFromInput : extended; override;
+    procedure SetValue(Value : extended); override;
+  published
+    property Digits;
+    property Decimal default 4;
+    property Format : TAngleFormat read FFormat write SetFormat default afDecDegree;
+    property Value;
+    end;
 
   TCustomFloatComboBox = class(TCustomComboBox)
   private
@@ -331,6 +350,7 @@ type
     procedure SetFloatFormat(Value: TNumFloatFormat);
     function GetValueFromInput : extended;
     procedure SetValue(NewValue : extended);
+    function GetValue(Index : integer) : extended;
     procedure WMUpdateText(var Message: TMessage); message WM_UpdateText;
     procedure WMKey(var Message: TWMKey); message WM_CHAR;
     procedure WMKeyUp(var Message: TWMKeyDown); message WM_KEYUP;
@@ -346,9 +366,11 @@ type
     property Value : extended read FValue write SetValue;
   public
     constructor Create(AOwner: TComponent); override;
-    function StrToVal ( const s : string) : extended; virtual;
-    function ValToStr(Value : extended) : string; virtual;
-    procedure AddValue (Value : extended);
+    function StrToVal (const s : string) : extended; virtual;
+    function ValToStr(AValue : extended) : string; virtual;
+    procedure AddValue (AValue : extended);
+    procedure AddCurrentValue;
+    property Values[Index : integer] : extended read GetValue;
   published
     property Anchors;
     property Color;
@@ -404,7 +426,7 @@ type
     function IsValidChar(Key: Char): Boolean; override;
   public
     function StrToVal (const s : string) : extended; override;
-    function ValToStr(Value : extended) : string; override;
+    function ValToStr(AValue : extended) : string; override;
   published
     property Digits;
     property Decimal default 4;
@@ -433,7 +455,7 @@ procedure Register;
 (* ----------------------------------------------------------------------- *)
 implementation
 
-uses System.SysConst, Vcl.ComStrs, StringUtils, MathUtils;
+uses System.SysConst, Vcl.ComStrs, System.Types, System.Math, StringUtils, MathUtils;
 
 {------------------------------------------------------------------}
 function FloatToStrF(Value: Extended; Format: TNumFloatFormat;
@@ -961,9 +983,8 @@ begin
 constructor TRangeEdit.Create (AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  MinValue:=0; MaxValue:=100;
+  FMinValue:=0; FMaxValue:=100;
   FRangeCheck:=true; FRangeError:=false;
-  SetValue(FValue);
   end;
 
 procedure TRangeEdit.SetMinValue(NewValue : int64);
@@ -978,16 +999,6 @@ begin
   SetValue(FValue);
   end;
 
-function TRangeEdit.CheckValue (NewValue: int64): boolean;
-begin
-  Result:=true;
-  if not (csDesigning in Componentstate) and (FMaxValue<>FMinValue) then begin
-    if NewValue<FMinValue then Result:=false
-    else if NewValue>FMaxValue then Result:=false;
-    end;
-  FRangeError:=not Result;
-  end;
-
 procedure TRangeEdit.SetValue(NewValue : int64);
 begin
   if not (csDesigning in Componentstate)  // not (csLoading in Componentstate) and
@@ -997,6 +1008,16 @@ begin
     end;
 //  FValue:=NewValue;
   inherited SetValue(NewValue);
+  end;
+
+function TRangeEdit.CheckValue (NewValue: int64): boolean;
+begin
+  Result:=true;
+  if not (csDesigning in Componentstate) and (FMaxValue<>FMinValue) then begin
+    if NewValue<FMinValue then Result:=false
+    else if NewValue>FMaxValue then Result:=false;
+    end;
+  FRangeError:=not Result;
   end;
 
 procedure TRangeEdit.WMKeyUp(var Message: TWMKeyDown);
@@ -1094,7 +1115,8 @@ begin
       if not PrefixStrToVal(Text,Result) then raise EConvertError.CreateResFmt(@SInvalidFloat,[Text]);
       end
     else begin
-      if not TryStrToFloat(RemoveSpaces(Text),Result) then  raise EConvertError.CreateResFmt(@SInvalidFloat,[Text]);
+      if not TryStrToFloat(RemoveSpaces(Text),Result) then
+        raise EConvertError.CreateResFmt(@SInvalidFloat,[Text]);
       end;
     end
   end;
@@ -1148,8 +1170,8 @@ procedure TFloatRangeEdit.SetValue(NewValue : extended);
 begin
   if not (csDesigning in Componentstate) // not (csLoading in Componentstate) and
       and (FMaxValue<>FMinValue) then begin
-    if NewValue<FMinValue then NewValue:=FMinValue
-    else if NewValue>FMaxValue then NewValue:=FMaxValue;
+    if CompareValue(NewValue,FMinValue)=LessThanValue then NewValue:=FMinValue
+    else if CompareValue(NewValue,FMaxValue)=GreaterThanValue then NewValue:=FMaxValue;
     end;
 //  FValue:=NewValue;
   inherited SetValue(NewValue);
@@ -1159,8 +1181,8 @@ function TFloatRangeEdit.CheckValue (NewValue: extended): boolean;
 begin
   Result:=true;
   if not (csDesigning in Componentstate) and (FMaxValue<>FMinValue) then begin
-    if NewValue<FMinValue then Result:=false
-    else if NewValue>FMaxValue then Result:=false;
+    if CompareValue(NewValue,FMinValue)=LessThanValue then Result:=false
+    else if CompareValue(NewValue,FMaxValue)=GreaterThanValue then Result:=false;
     end;
   FRangeError:=not Result;
   end;
@@ -1186,6 +1208,50 @@ begin
     inherited;
     end;
   end;
+
+(* ----------------------------------------------------------------------- *)
+// Gradzahl eingeben und anzeigen *)
+procedure TDegreeEdit.SetFormat(Value: TAngleFormat);
+begin
+  if FFormat<> Value then begin
+    FFormat:=Value;
+    SetValue(FValue);
+    RecreateWnd;
+    end;
+  end;
+
+function TDegreeEdit.GetValueFromInput : extended;
+begin
+  Result:=FValue;
+  if (length(Text)=1) and CharInset(Text[1],[#32,'-','+']) then Exit;
+  if (length(Text)>0) then begin
+    if StrToDeg (Trim(Text),Result) then begin
+      if not Focused then Text:=DegToStr(Result,FFormat,FDigits,FDecimal,FormatSettings.DecimalSeparator)
+      end
+    else raise EConvertError.CreateResFmt(@SInvalidFloat,[Text]);
+    end;
+  end;
+
+procedure TDegreeEdit.SetValue(Value : extended);
+var
+  s : string;
+  md : boolean;
+begin
+  if FValue<>Value then begin
+    FValue:=Value; md:=true;
+    end
+  else md:=false;
+  Text:=DegToStr(Value,FFormat,FDigits,FDecimal,FormatSettings.DecimalSeparator);
+  if md then Modified:=true;
+  end;
+
+function TDegreeEdit.IsValidChar(Key: Char): Boolean;
+begin
+  Result:=CharInSet(Key,[FormatSettings.DecimalSeparator,'+','-','0'..'9',':','/','°',#$27,'"']);
+  Result:= Result or (Key<=#32); // and (Key <> Chr(VK_RETURN)));
+  if not Result then MessageBeep(MB_ICONERROR);
+  end;
+
 
 (* ----------------------------------------------------------------------- *)
 (* Fließkommazahl in ComboBox eingeben und anzeigen *)
@@ -1217,7 +1283,7 @@ begin
 
 procedure TCustomFloatComboBox.SetFloatFormat(Value: TNumFloatFormat);
 begin
-  if FFloatFormat<> Value then begin
+  if FFloatFormat<>Value then begin
     FFloatFormat:=Value;
     SetValue(FValue);
     RecreateWnd;
@@ -1240,11 +1306,11 @@ begin
   else Result:=FValue;
   end;
 
-function TCustomFloatComboBox.ValToStr(Value : extended) : string;
+function TCustomFloatComboBox.ValToStr(AValue : extended) : string;
 begin
-  if FloatFormat=ffNormalized then Result:=FloatToStrE(Value,FDigits,FormatSettings.DecimalSeparator)
-  else if FloatFormat=ffPrefix then Result:=FloatToPrefixStr(Value,FDigits,' ',FormatSettings.DecimalSeparator)
-  else Result:=FloatToStrF(Value,TFloatFormat(FFloatFormat),FDigits,FDecimal);
+  if FloatFormat=ffNormalized then Result:=FloatToStrE(AValue,FDigits,FormatSettings.DecimalSeparator)
+  else if FloatFormat=ffPrefix then Result:=FloatToPrefixStr(AValue,FDigits,' ',FormatSettings.DecimalSeparator)
+  else Result:=FloatToStrF(AValue,TFloatFormat(FFloatFormat),FDigits,FDecimal);
   end;
 
 function TCustomFloatComboBox.GetValueFromInput : extended;
@@ -1259,9 +1325,22 @@ begin
   Text:=ValToStr(NewValue);
   end;
 
-procedure TCustomFloatComboBox.AddValue (Value : extended);
+procedure TCustomFloatComboBox.AddValue (AValue : extended);
+var
+  s : string;
 begin
-  Items.Add(ValToStr(Value));
+  s:=ValToStr(AValue);
+  if Items.IndexOf(s)<0 then Items.Add(s);
+  end;
+
+procedure TCustomFloatComboBox.AddCurrentValue;
+begin
+  AddValue(Value);
+  end;
+
+function TCustomFloatComboBox.GetValue(Index : integer) : extended;
+begin
+  Result:=StrToVal(Items[Index]);
   end;
 
 function TCustomFloatComboBox.IsValidChar(Key: Char): Boolean;
@@ -1335,7 +1414,7 @@ function TDegreeComboBox.StrToVal (const s : string) : extended;
 var
   val : extended;
 begin
-  if StrToDeg (Text,val) then begin
+  if StrToDeg (s,val) then begin
     Result:=Val;
     Text:=DegToStr(val,FFormat,FDigits,FDecimal,FormatSettings.DecimalSeparator);
     end
@@ -1345,9 +1424,9 @@ begin
     end;
   end;
 
-function TDegreeComboBox.ValToStr(Value : extended) : string;
+function TDegreeComboBox.ValToStr(AValue : extended) : string;
 begin
-  Result:=DegToStr(Value,FFormat,FDigits,FDecimal,FormatSettings.DecimalSeparator);
+  Result:=DegToStr(AValue,FFormat,FDigits,FDecimal,FormatSettings.DecimalSeparator);
   end;
 
 function TDegreeComboBox.IsValidChar(Key: Char): Boolean;
@@ -1360,13 +1439,9 @@ begin
 { ---------------------------------------------------------------- }
 procedure Register;
 begin
-  RegisterComponents(CompPalPage, [TNumUpDown]);
-  RegisterComponents(CompPalPage, [TNumberEdit]);
-  RegisterComponents(CompPalPage, [TRangeEdit]);
-  RegisterComponents(CompPalPage, [TFloatEdit]);
-  RegisterComponents(CompPalPage, [TFloatRangeEdit]);
-  RegisterComponents(CompPalPage, [TFloatComboBox]);
-  RegisterComponents(CompPalPage, [TDegreeComboBox]);
+  RegisterComponents(CompPalPage, [TNumUpDown,TNumberEdit,TRangeEdit]);
+  RegisterComponents(CompPalPage, [TFloatEdit,TFloatRangeEdit,TDegreeEdit]);
+  RegisterComponents(CompPalPage, [TFloatComboBox,TDegreeComboBox]);
   end;
 
 end.
