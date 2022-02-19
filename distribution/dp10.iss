@@ -21,9 +21,9 @@ AppPublisher=Dr. J. Rathlev
 AppPublisherURL=http://www.rathlev-home.de/?tools/othertools.html
 AppSupportURL=http://www.rathlev-home.de/?tools/othertools.html
 AppUpdatesURL=http://www.rathlev-home.de/?tools/othertools.html
-AppCopyright=Copyright © 2011-2018 Dr. J. Rathlev
+AppCopyright=Copyright © 2011-2022 Dr. J. Rathlev
 VersionInfoVersion={#ApplicationVersion}
-DefaultDirName={pf}\DosPanel
+DefaultDirName={commonpf}\DosPanel
 DefaultGroupName=Dos Panel
 OutputDir=.
 OutputBaseFilename=dospanel-setup
@@ -39,8 +39,8 @@ DisableDirPage=auto
 DisableProgramGroupPage=auto
 
 [Languages]
-Name: "en"; MessagesFile: compiler:Default.isl; LicenseFile:"..\docs\license-en.rtf";
-Name: "de"; MessagesFile: compiler:Languages\German.isl; LicenseFile:"..\docs\license-de.rtf";
+Name: "en"; MessagesFile: compiler:Default.isl; LicenseFile:"..\docs\license-en.rtf"; InfoBeforeFile:"..\docs\notes-en.rtf";
+Name: "de"; MessagesFile: compiler:Languages\German.isl; LicenseFile:"..\docs\license-de.rtf"; InfoBeforeFile:"..\docs\notes-de.rtf";
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
@@ -62,13 +62,5 @@ Name: "{commondesktop}\Dos Panel"; Filename: "{app}\DosPanel.exe"; Tasks: deskto
 
 [Run]
 Filename: "{app}\DosPanel.exe"; Description: "{cm:LaunchProgram,Dos Panel}"; Flags: nowait postinstall runasoriginaluser
-
-[Code]
-function ReadVersionNumber (const FName : string) : string;
-var
-  sv : string;
-begin
-  if GetVersionNumbersString(FName,sv) then Result:=sv else Result:='1.2';
-  end;
 
 
