@@ -252,8 +252,8 @@ procedure TfrmMain.FormCreate(Sender: TObject);
         s:=ParamStr(i);
         if (s[1]='/') or (s[1]='-') then begin
           delete (s,1,1);
-          if ReadOptionValue(s,siAltIni) then   // anderer Ort für Ini-Datei
-            IniName:=Erweiter(PrgPath,s,IniExt);
+          if ReadOptionValue(s,siAltIni) then  // anderer Ort für Ini-Datei
+            IniName:=Erweiter(AppDataPath,s,IniExt);
           end
         end;
       end;
@@ -716,7 +716,7 @@ begin
     s:=Caption; n:=integer(Data);
     end
   else n:=-1;
-  if (n>=0) and ConfirmDialog(Format(_('Remove application "%s" from panel?'),[s])) then begin
+  if (n>=0) and ConfirmDialog(SafeFormat(_('Remove application "%s" from panel?'),[s])) then begin
     with Apps[n] as TDosBoxApp do if length(Category)=0 then s:=MiscName
     else s:=Category;
     with tcCats,Tabs do begin

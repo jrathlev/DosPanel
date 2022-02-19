@@ -24,7 +24,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons,
-  Vcl.ExtCtrls, NumberEd, Vcl.ComCtrls, Vcl.Imaging.pngimage;
+  Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Imaging.pngimage;
 
 const
   defCycles = 4000;
@@ -47,7 +47,7 @@ type
     Small    : TBitmap;
     constructor Create (AImgType : TImgType; DefLargeImg,DefSmallImg : TPicture);
     constructor CreateFrom (Icons : TAppIcons);
-    destructor Destroy;
+    destructor Destroy; override;
     procedure Assign (Icons : TAppIcons);
     procedure AssignIcon (Icon : TIcon);
     procedure LoadFromFile (const Filename : string);
@@ -75,7 +75,7 @@ type
     Speed             : integer;
     Icons             : TAppIcons;
     constructor Create (DefLargeImg,DefSmallImg : TPicture);
-    destructor Destroy;
+    destructor Destroy; override;
     procedure Assign (ADosBoxApp : TDosBoxApp);
     procedure LoadIcons(const Filename : string);
     end;
@@ -162,7 +162,7 @@ implementation
 {$R *.dfm}
 
 uses DosPanelMain, GnuGetText, WinUtils, FileUtils, ShellDirDlg, Winapi.ShellApi,
-  SelectFromListDlg, System.StrUtils, WinDevUtils, StringUtils, WinNet;
+  SelectFromListDlg, System.StrUtils, WinDevUtils, StringUtils;
 
 const
   MemSizeList : array [0..4] of word = (8,16,32,48,64);
@@ -492,7 +492,7 @@ begin
     DefaultExt:='iso';
     Filename:='';
     Filter:=_('ISO images')+'|*.iso';
-    Title:=Format(_('Select iso image to be mounted as drive %s'),[cbCdRomDrive.Text]);
+    Title:=SafeFormat(_('Select iso image to be mounted as drive %s'),[cbCdRomDrive.Text]);
     if Execute then edIsoFile.Text:=Filename;
     end;
   end;
@@ -535,7 +535,7 @@ begin
     DelimitedText:=edCommands.Text;
     end;
   if SelectFromListDialog.Execute(CursorPos,_('Edit startup commands'),_('List of commands'),'',
-              [soEdit,soOrder],1,tcNone,'',sl,s) then edCommands.Text:=sl.DelimitedText;
+              [soEdit,soOrder],1,tcNone,'',sl,s)=mrOK then edCommands.Text:=sl.DelimitedText;
   sl.Free;
   end;
 
@@ -552,7 +552,7 @@ begin
     if Execute then begin
       if IsSubPath(edAppPath.Text,Filename) then
         edExeFile.Text:=MakeRelativePath(SetDirName(edAppPath.Text),Filename)
-      else ErrorDialog(Format(_('The executable file must be located beneath the root path:'+
+      else ErrorDialog(SafeFormat(_('The executable file must be located beneath the root path:'+
         sLineBreak+'%s'+sLineBreak+'Please try again!'),[edAppPath.Text]));
       end;
     end;
@@ -564,7 +564,7 @@ var
 begin
   s:=edAppPath.Text;
   if length(s)=0 then s:=frmMain.BasicSettings.RootPath;
-  if ShellDirDialog.Execute (Format(_('Select path to be mounted as drive %s'),[cbHardDrive.Text]),
+  if ShellDirDialog.Execute (SafeFormat(_('Select path to be mounted as drive %s'),[cbHardDrive.Text]),
       false,true,false,frmMain.BasicSettings.RootPath,s) then edAppPath.Text:=s;
   end;
 
