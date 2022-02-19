@@ -1,0 +1,317 @@
+#  Doesn't have any letters
+#. frmMain..MainMenu..itmGlobal..N2..Caption
+#: DosPanelMain.dfm:399
+#. frmMain..MainMenu..itmEntries..N3..Caption
+#: DosPanelMain.dfm:421
+#. frmMain..MainMenu..itmRun..N1..Caption
+#: DosPanelMain.dfm:464
+#. frmMain..PopupMenu..N4..Caption
+#: DosPanelMain.dfm:1700
+msgid "-"
+msgstr ""
+
+#  Doesn't have any letters
+#. AppSettingsDialog..gbHardDrive..Label4..Caption
+#: AppSettings.dfm:744
+#. AppSettingsDialog..gbCdDrive..Label5..Caption
+#: AppSettings.dfm:808
+msgid "=>"
+msgstr ""
+
+#  Doesn't have any letters
+#. AppSettingsDialog..gbSpeed..reCycles..Text
+#: AppSettings.dfm:631
+msgid "1.000"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:757
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:820
+msgid "A"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:758
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:821
+msgid "B"
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:582
+msgid "BG         "
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive..Text
+#: AppSettings.dfm:754
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:759
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:822
+msgid "C"
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:583
+msgid "CZ243      "
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:760
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive..Text
+#: AppSettings.dfm:818
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:823
+msgid "D"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:761
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:824
+msgid "E"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:762
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:825
+msgid "F"
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:584
+msgid "FR         "
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:763
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:826
+msgid "G"
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:585
+msgid "GK         "
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout..Text
+#: Settings.dfm:580
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:586
+msgid "GR         "
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:764
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:827
+msgid "H"
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:587
+msgid "HR         "
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:588
+msgid "HU         "
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:765
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:828
+msgid "I"
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:589
+msgid "IT         "
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:766
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:829
+msgid "J"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:767
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:830
+msgid "K"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:768
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:831
+msgid "L"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:769
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:832
+msgid "M"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:770
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:833
+msgid "N"
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:590
+msgid "NL     "
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:591
+msgid "NO     "
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:771
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:834
+msgid "O"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:772
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:835
+msgid "P"
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:592
+msgid "PL     "
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:773
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:836
+msgid "Q"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:774
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:837
+msgid "R"
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:593
+msgid "RU     "
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:775
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:838
+msgid "S"
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:594
+msgid "SK     "
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:595
+msgid "SP     "
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:596
+msgid "SU     "
+msgstr ""
+
+#. DosBoxSetDialog..gbDosBox..gbKeyLayout..cbKeyLayout....Items.Strings
+#: Settings.dfm:597
+msgid "SV"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:776
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:839
+msgid "T"
+msgstr ""
+
+#  Seems like a Font.Name extract
+#. AppSettingsDialog..Font.Name
+#: AppSettings.dfm:11
+#. frmMain..Font.Name
+#: DosPanelMain.dfm:11
+#. DosBoxSetDialog..Font.Name
+#: Settings.dfm:12
+#. TxtConvertDialog..Font.Name
+#: TxtConvertDlg.dfm:11
+msgid "Tahoma"
+msgstr ""
+
+#  Doesn't look like text
+#. frmMain..tbMain..ToolButton1..Caption
+#: DosPanelMain.dfm:298
+msgid "ToolButton1"
+msgstr ""
+
+#  Doesn't look like text
+#. frmMain..tbMain..ToolButton2..Caption
+#: DosPanelMain.dfm:313
+msgid "ToolButton2"
+msgstr ""
+
+#  Doesn't look like text
+#. frmMain..tbMain..ToolButton3..Caption
+#: DosPanelMain.dfm:357
+msgid "ToolButton3"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:777
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:840
+msgid "U"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:778
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:841
+msgid "V"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:779
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:842
+msgid "W"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:780
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:843
+msgid "X"
+msgstr ""
+
+#. AppSettingsDialog..gbHardDrive..cbHardDrive....Items.Strings
+#: AppSettings.dfm:781
+#. AppSettingsDialog..gbCdDrive..cbCdRomDrive....Items.Strings
+#: AppSettings.dfm:844
+msgid "Y"
+msgstr ""
+
