@@ -60,8 +60,6 @@ object ShellDirDialog: TShellDirDialog
       OnClick = ShellTreeViewClick
       OnMouseDown = ShellTreeViewMouseDown
       OnChange = ShellTreeViewChange
-      ExplicitLeft = 107
-      ExplicitWidth = 300
     end
     object panRoot: TPanel
       Left = 1
@@ -85,6 +83,7 @@ object ShellDirDialog: TShellDirDialog
         Width = 94
         Height = 71
         Anchors = [akLeft, akTop, akRight]
+        GroupIndex = 1
         Caption = 'Network'
         Flat = True
         Glyph.Data = {
@@ -535,6 +534,8 @@ object ShellDirDialog: TShellDirDialog
         Width = 94
         Height = 71
         Anchors = [akLeft, akTop, akRight]
+        GroupIndex = 1
+        Down = True
         Caption = 'Computer'
         Flat = True
         Glyph.Data = {
@@ -985,6 +986,7 @@ object ShellDirDialog: TShellDirDialog
         Width = 94
         Height = 71
         Anchors = [akLeft, akTop, akRight]
+        GroupIndex = 1
         Caption = 'Desktop'
         Flat = True
         Glyph.Data = {
@@ -1435,6 +1437,7 @@ object ShellDirDialog: TShellDirDialog
         Width = 94
         Height = 71
         Anchors = [akLeft, akTop, akRight]
+        GroupIndex = 1
         Caption = 'My Documents'
         Flat = True
         Glyph.Data = {
