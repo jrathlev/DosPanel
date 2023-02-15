@@ -21,7 +21,7 @@ AppPublisher=Dr. J. Rathlev
 AppPublisherURL=http://www.rathlev-home.de/?tools/othertools.html
 AppSupportURL=http://www.rathlev-home.de/?tools/othertools.html
 AppUpdatesURL=http://www.rathlev-home.de/?tools/othertools.html
-AppCopyright=Copyright © 2011-2022 Dr. J. Rathlev
+AppCopyright=Copyright © 2011-2023 Dr. J. Rathlev
 VersionInfoVersion={#ApplicationVersion}
 DefaultDirName={commonpf}\DosPanel
 DefaultGroupName=Dos Panel
@@ -36,6 +36,7 @@ SolidCompression=yes
 ChangesAssociations=yes
 ShowLanguageDialog=auto
 DisableDirPage=auto
+DisableWelcomePage=no
 DisableProgramGroupPage=auto
 
 [Languages]
