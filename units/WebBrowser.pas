@@ -93,6 +93,7 @@ type
                               const URL: OleVariant; const Flags: OleVariant;
                               const TargetFrameName: OleVariant; const PostData: OleVariant;
                               const Headers: OleVariant; var Cancel: WordBool);
+    procedure WebBrowserCommandStateChange(ASender: TObject; Command: Integer; Enable: WordBool);
     procedure NavigateComplete (Sender: TObject; const pDisp: IDispatch;
                                 const URL: OleVariant);
     procedure NewWindow(Sender: TObject; var ppDisp: IDispatch; var Cancel: WordBool);
@@ -112,7 +113,7 @@ implementation
 
 {$R *.DFM}
 
-uses System.IniFiles, Web.HTTPApp, Vcl.Menus, WinUtils, GnuGetText;
+uses System.IniFiles, Web.HTTPApp, Vcl.Menus, WinUtils, MsgDialogs, GnuGetText;
 
 { ------------------------------------------------------------------- }
 const
@@ -251,6 +252,14 @@ begin
       end;
     end;
   end;
+
+procedure TWebBrowserWin.WebBrowserCommandStateChange(ASender: TObject; Command: Integer; Enable: WordBool);
+begin
+  case Command of
+    CSC_NAVIGATEBACK: ActionBack.Enabled := Enable;
+    CSC_NAVIGATEFORWARD: ActionFwd.Enabled := Enable;
+  end;
+end;
 
 procedure TWebBrowserWin.NavigateComplete (Sender: TObject; const pDisp: IDispatch;
                                            const URL: OleVariant);

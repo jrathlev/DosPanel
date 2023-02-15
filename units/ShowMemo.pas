@@ -17,7 +17,9 @@
    the specific language governing rights and limitations under the License.
     
    Vers. 1 - Sep. 2004
-   last modified: August 2021
+   Vers. 2 - July 2022: define compiler switch "ACCESSIBLE" to make dialog
+                        messages accessible to screenreaders
+   last modified: December 2022
    *)
 
 
@@ -47,6 +49,7 @@ type
     FontSize : integer;
     FontStyle : TFontStyles;
     Orientation : TPrinterOrientation;
+    procedure Init;
     end;
 
   TShowDlgBtn = (sbOpen,sbErase,sbPrint,sbSearch,sbSection,sbError,sbFont);
@@ -169,6 +172,12 @@ procedure ShowTextFile (const Title,TextDatei,
                      PrtSettings : TPrinterSettings;
                      CodePage  : integer = 0); overload;
 
+procedure ShowTextFile (const Title,TextDatei : string;
+                     APos      : TPoint;
+                     DlgType   : TShowDlgType;
+                     Buttons   : TShowDlgButtons;
+                     PrtSettings : TPrinterSettings;
+                     CodePage  : integer = 0); overload;
 var
   ShowTextDialog : TShowTextDialog;
 
@@ -176,7 +185,8 @@ implementation
 
 {$R *.DFM}
 
-uses GnuGetText, FileUtils, System.IniFiles, WinUtils, ExtSysUtils, System.StrUtils;
+uses GnuGetText, PathUtils, System.IniFiles, System.StrUtils, WinUtils,
+  {$IFDEF ACCESSIBLE} ShowMessageDlg {$ELSE} MsgDialogs {$ENDIF};
 
 var
   IniFileName  : string;
@@ -256,29 +266,7 @@ begin
   TranslateComponent (self,'dialogs');
   Memo.Clear;
   PosFromIni:=false;
-  with PrinterSettings do begin
-    with Printer do begin
-      if Printers.Count>0 then begin
-        try
-          PrinterIndex:=-1;
-          PrtName:=Printers[PrinterIndex];
-        except
-          PrtName:='';   // kein Standarddrucker
-          end;
-        end
-      else PrtName:='';
-      end;
-    with Margins do begin
-      Top:=defTopMargin;
-      Bottom:=defBottomMargin;
-      Left:=defLeftMargin;
-      Right:=defRightMargin;
-      end;
-    FontName:=defFontName;
-    FontSize:=defFontSize;
-    FontStyle:=[];
-    Orientation:=defOrientation;
-    end;
+  PrinterSettings.Init;
   LWidth:=Width;
   end;
 
@@ -312,10 +300,30 @@ begin
         fc.Style:=Style;
         WriteInteger(ViewSect,IniFontStyle,fc.Value);
         end;
+      Free;
       end;
     end;
+  end;
 
-end;
+procedure TShowTextDialog.FormShow(Sender: TObject);
+begin
+  with Printer,PrinterSettings do begin
+    if Printers.Count>0 then begin
+      try
+        PrinterIndex:=Printers.IndexOf(PrtName);
+        PrtName:=Printers[PrinterIndex];
+      except
+        PrtName:='';   // kein Standarddrucker
+        end;
+      end
+    else PrtName:='';
+    PrintBtn.Enabled:=length(PrtName)>0;
+    end;
+  Width:=LWidth;
+  FitToScreen(Screen,self);
+  InitView(TextName);
+  BringToFront;
+  end;
 
 { ---------------------------------------------------------------- }
 (* Cursorposition anzeigen *)
@@ -324,7 +332,7 @@ var
   pt : TPoint;
 begin
   pt:=GetCaretPos(Memo);
-  StatusBar.Panels[0].Text:=TryFormat(dgettext('dialogs',' Line: %u of %u'),[pt.y+1,Memo.Lines.Count+1]);
+  StatusBar.Panels[0].Text:=SafeFormat(dgettext('dialogs',' Line: %u of %u'),[pt.y+1,Memo.Lines.Count+1]);
   end;
 
 procedure TShowTextDialog.InitView (const FName : string);
@@ -344,17 +352,9 @@ begin
     SelStart:=Perform(EM_LINEINDEX,LineNr,0);
     SelLength:=0;
 //    if LineNr=Lines.Count then SelLength:=0 else SelLength:=Perform(EM_LINEINDEX,LineNr+1,0)-SelStart;
-    StatusBar.Panels[0].Text:=TryFormat(dgettext('dialogs',' Line: %u of %u'),[LineNr+1,Lines.Count+1]);
+    StatusBar.Panels[0].Text:=SafeFormat(dgettext('dialogs',' Line: %u of %u'),[LineNr+1,Lines.Count+1]);
     end;
   with FindDialog do Options:=Options -[frDown];
-  end;
-
-procedure TShowTextDialog.FormShow(Sender: TObject);
-begin
-  Width:=LWidth;
-  FitToScreen(Screen,self);
-  InitView(TextName);
-  BringToFront;
   end;
 
 procedure TShowTextDialog.FormPaint(Sender: TObject);
@@ -374,8 +374,8 @@ begin
   if (Shift=[ssCtrl]) and (Key=ord('F')) then SearchBtnClick(Sender);
   if (Shift=[]) and (Key=VK_F3) then FindDialogFind(Sender);
   if (Key=VK_DELETE)  and (Memo.SelLength>0) then begin
-    if ConfirmDialog (Point(Left+200,Top+100),Caption,
-                      dgettext('dialogs','Delete selected text?'),mbYes) then begin
+    if ConfirmDialog (Point(Left+200,Top+100),
+                      dgettext('dialogs','Delete selected text?')) then begin
       with Memo do begin
         ReadOnly:=false;
         ClearSelection;
@@ -424,7 +424,7 @@ const
         end;
       if y=PrinterSettings.Margins.Top then begin   // Kopfzeile erzeugen
         font.style:=[fsbold];
-        sf:=TryFormat(dgettext('dialogs','Page: %u'),[pagenumber]);
+        sf:=SafeFormat(dgettext('dialogs','Page: %u'),[pagenumber]);
 //        textout(PrinterSettings.Margins.Left,y,StripPath(Caption,72));
         textout(PrinterSettings.Margins.Left,y,FTitle);
         textout(hp-TextWidth(sf),y,sf);
@@ -535,7 +535,7 @@ var
   sel      : boolean;
 begin
   if not Printer.Printing then begin
-    if Memo.SelLength>0 then sel:=ConfirmDialog('',dgettext('dialogs','Print selected lines?'))
+    if Memo.SelLength>0 then sel:=ConfirmDialog(dgettext('dialogs','Print selected lines?'))
     else sel:=false;
     Print(false,sel);
     Memo.SetFocus;
@@ -558,7 +558,7 @@ begin
 procedure TShowTextDialog.DeleteBtnClick(Sender: TObject);
 begin
   if Memo.SelLength>0 then begin
-    if ConfirmDialog (Point(Left+200,Top+100),Caption,dgettext('dialogs','Delete selected text?'),mbYes) then begin
+    if ConfirmDialog (Point(Left+200,Top+100),dgettext('dialogs','Delete selected text?')) then begin
       with Memo do begin
         ReadOnly:=false;
         ClearSelection;
@@ -568,8 +568,7 @@ begin
       end;
     end
   else begin
-    if ConfirmDialog (Point(Left+200,Top+100),Caption,
-                      TryFormat(dgettext('dialogs','Delete file "%s"?'),[TextName]),mbYes) then begin
+    if ConfirmDialog (Point(Left+200,Top+100),SafeFormat(dgettext('dialogs','Delete file "%s"?'),[TextName])) then begin
       DeleteFile(TextName);
       Memo.Clear;
       end;
@@ -587,7 +586,7 @@ procedure TShowTextDialog.FindDialogFind(Sender: TObject);
 begin
   with FindDialog do
     if not SearchMemo(Memo,false,FindText,Options) then
-      ShowMessage(TryFormat(dgettext('dialogs','"%s" not found!'),[FindText]))
+      ShowMessage(SafeFormat(dgettext('dialogs','"%s" not found!'),[FindText]))
     else MemoChange(Sender);
   end;
 
@@ -606,6 +605,11 @@ procedure TShowTextDialog.FormKeyDown(Sender: TObject; var Key: Word;
 begin
   if (ssCtrl in Shift) and (Key=ord('F')) then FindDialog.Execute
   else if (Shift=[]) and (Key=VK_F3) then FindDialogFind(Sender)
+{$IFDEF ACCESSIBLE}
+  else if (Key=VK_F11) then begin
+    with ActiveControl do if length(Hint)>0 then ShowHintInfo(Hint);
+    end
+{$ENDIF}
   else if (Key=VK_ESCAPE) and (FDlgType=stShow) then Close;
   end;
 
@@ -806,7 +810,6 @@ begin
     else Visible:=false;
     with PrintBtn do if sbPrint in Buttons then begin
       Visible:=true; Left:=x; x:=x+Width-1;
-      Enabled:=length(PrinterSettings.PrtName)>0; //Printer.Printers.Count>0;
       end
     else Visible:=false;
     with DeleteBtn do if sbErase in Buttons then begin
@@ -853,7 +856,7 @@ begin
       TextName:=TextDatei;
       if DlgType=stModal then ShowModal else Show;
       end
-    else ErrorDialog ('',dgettext('dialogs','File: ')+TryFormat(dgettext('dialogs','"%s" not found!'),[TextDatei]));
+    else ErrorDialog (dgettext('dialogs','File: ')+SafeFormat(dgettext('dialogs','"%s" not found!'),[TextDatei]));
     end;
   end;
 
@@ -870,10 +873,25 @@ procedure TShowTextDialog.Execute (const Title,TextDatei,
 begin
   PrinterSettings:=PrtSettings;
   Execute(Title,TextDatei,PrevCap1,NextCap1,SrchText1,PrevCap2,
-    NextCap2,SrchText2,Filter,APos    ,Line,DlgType,Buttons,CodePage);
+    NextCap2,SrchText2,Filter,APos,Line,DlgType,Buttons,CodePage);
   end;
 
 { ------------------------------------------------------------------- }
+procedure TPrinterSettings.Init;
+begin
+  PrtName:='';
+  with Margins do begin
+    Top:=defTopMargin;
+    Bottom:=defBottomMargin;
+    Left:=defLeftMargin;
+    Right:=defRightMargin;
+    end;
+  FontName:=defFontName;
+  FontSize:=defFontSize;
+  FontStyle:=[];
+  Orientation:=defOrientation;
+  end;
+
 function LoadPrinterSettings(const AIniName,ASection : string) : TPrinterSettings;
 var
   n : integer;
@@ -955,6 +973,16 @@ begin
   ShowtextDialog.Execute(Title,TextDatei,PrevCap1,NextCap1,SrchText1,PrevCap2,
     NextCap2,SrchText2,Filter,APos,Line,DlgType,Buttons,CodePage);
   if DlgType=stModal then FreeAndNil(ShowTextDialog);
+  end;
+
+procedure ShowTextFile (const Title,TextDatei : string;
+                     APos      : TPoint;
+                     DlgType   : TShowDlgType;
+                     Buttons   : TShowDlgButtons;
+                     PrtSettings : TPrinterSettings;
+                     CodePage  : integer = 0);
+begin
+  ShowTextFile(Title,TextDatei,'','','','','','','',APos,1,DlgType,Buttons,PrtSettings,CodePage);
   end;
 
 procedure PrintTextFile (const TextDatei : string; PrtSettings : TPrinterSettings; CodePage : integer = 0);

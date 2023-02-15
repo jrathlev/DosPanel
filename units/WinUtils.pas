@@ -14,7 +14,7 @@
 
    New compilation: April 2015
    language dependend strings in UnitConsts
-   last modified: August 2020
+   last modified: July 2022
    *)
 
 unit WinUtils;
@@ -120,6 +120,11 @@ function FitToMonitor (Mon : TMonitor; BoundsRect : TRect) : TPoint;
 // Calculate the maximum text width for multiline text
 function MaxTextWidth(const Text : string; Canvas : TCanvas) : integer;
 
+// calculate text width for given font
+function GetTextWidth(const Text : string; AFont : TFont) : integer;
+function GetMaxTextWidth(const Text : string; AFont : TFont) : integer;
+function GetMaxTextExtent(const Text : string; AFont : TFont) : TSize;
+
 // Count number of lines in Text separated by sLineBreak
 function TextLineCount(const Text : string) : integer;
 
@@ -133,61 +138,15 @@ procedure ScaleImageList (imgList: TImageList; OldDPI,NewDPI : integer);
 procedure SetGlyphFromImagelist (SpdBtn : TSpeedButton; ImgLst : TImageList; AIndex : integer);
 procedure SetSpeedButtonGlyphs (AControl : TWinControl; BaseIndex : integer; ImgList: TImageList);
 
+// scale Screen fonts - only to called from main form
+procedure ScaleScreenFonts (OldDPI,NewDPI : integer);
+
+// adjust Itemheight of owner drawn comboboxes
+procedure AdjustComboBoxes(AControl : TWinControl; OldDPI,NewDPI : integer);
+
 { ---------------------------------------------------------------- }
 // Dateifilter-Index ermitteln (siehe TOpenDialog)
 function GetFilterIndex(AFilter,AExtension : string) : integer;
-
-{ ---------------------------------------------------------------- }
-// MessageDlg in Bildschirmmitte (X<0) oder an Position X,Y
-function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
-                       Buttons: TMsgDlgButtons; DefaultButton : TMsgDlgBtn;
-                       Pos : TPoint; Delay : integer;
-                       AMonitor : TDefaultMonitor = dmActiveForm) : integer; overload;
-function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
-                       Buttons: TMsgDlgButtons;
-                       Pos : TPoint; Delay : integer;
-                       AMonitor : TDefaultMonitor = dmActiveForm) : integer; overload;
-function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
-                       Buttons: TMsgDlgButtons) : integer; overload;
-function MessageDialog(const Msg: string; DlgType: TMsgDlgType;
-                       Buttons: TMsgDlgButtons) : integer; overload;
-function MessageDialog(Pos : TPoint; const Msg: string; DlgType: TMsgDlgType;
-                       Buttons: TMsgDlgButtons) : integer;  overload;
-
-function ConfirmDialog (const Title,Msg : string;
-                        AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
-function ConfirmDialog (const Msg : string; DefaultButton : TMsgDlgBtn = mbYes;
-                        AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
-function ConfirmDialog (Pos : TPoint; const Msg : string; DefaultButton : TMsgDlgBtn = mbYes;
-                        AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
-function ConfirmDialog (Pos : TPoint; const Title,Msg : string;
-                        AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
-function ConfirmDialog (Pos : TPoint; const Title,Msg : string; DefaultButton : TMsgDlgBtn;
-                        AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
-
-procedure InfoDialog (const Title,Msg : string; Delay : integer;
-                      AMonitor : TDefaultMonitor = dmActiveForm); overload;
-procedure InfoDialog (const Title,Msg : string;
-                      AMonitor : TDefaultMonitor = dmActiveForm); overload;
-procedure InfoDialog (const Msg : string;
-                      AMonitor : TDefaultMonitor = dmActiveForm); overload;
-procedure InfoDialog (Pos : TPoint; const Title,Msg : string;
-                      AMonitor : TDefaultMonitor = dmActiveForm); overload;
-procedure InfoDialog (Pos : TPoint; const Msg : string;
-                      AMonitor : TDefaultMonitor = dmActiveForm); overload;
-
-procedure ErrorDialog (const Title,Msg : string; x,y : integer;
-                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
-procedure ErrorDialog (const Title,Msg : string; Delay : integer;
-                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
-procedure ErrorDialog (const Title,Msg : string;
-                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
-procedure ErrorDialog (const Msg : string;
-                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
-procedure ErrorDialog (Pos : TPoint; const Title,Msg : string;
-                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
-procedure ErrorDialog (Pos : TPoint; const Msg : string;
-                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
 
 { ---------------------------------------------------------------- }
 // get current cursor position
@@ -211,11 +170,17 @@ function BottomRightPos (AControl : TControl) : TPoint; overload;
 function BottomRightPos (AControl : TControl; X,Y : integer) : TPoint; overload;
 function BottomRightPos (AControl : TControl; Offset : TPoint) : TPoint; overload;
 
+// area of component
+function GetRect (AControl : TControl) : TRect;
+
+// programmatic click on speed button
+procedure SpeedButtonClick (AButton : TSpeedButton);
+
 // enable/disable all child controls
 procedure EnableControls (AControl : TWinControl; AEnabled : boolean; Recursive : boolean = false);
 
-// area of component
-function GetRect (AControl : TControl) : TRect;
+// Enable tab stops for TStaticText and TEdit/ReadOnly controls
+procedure SetTabStops (AWinControl : TWinControl; AEnable : boolean);
 
 // adjust size of dialogs if styles are used
 procedure AdjustClientSize (AForm : TForm; AControl : TControl; Dist : integer = 5);
@@ -248,12 +213,17 @@ procedure SaveHistory (const IniName,Section : string; Erase : boolean;
 procedure AddToHistory (History : TStrings; const hs : string; MaxCount : integer); overload;
 procedure AddToHistory (History : TStrings; const hs : string); overload;
 procedure AddToHistory (Combo : TComboBox; const hs : string); overload;
+procedure AddToHistory (Combo : TComboBox); overload;
 procedure RemoveFromHistory (History : TStrings; const hs : string);
 
 { ---------------------------------------------------------------- }
 // Entferne alle Objekte einer String-Liste oder einer ListView-Liste aus dem Speicher
 procedure FreeListObjects (Liste : TStrings);
 procedure FreeListViewData (Liste : TListItems);
+
+{ ---------------------------------------------------------------- }
+// Ausgew‰hlten Eintrag in einer ListBox
+function GetSelectedItem (ListBox : TListBox) : string;
 
 { ---------------------------------------------------------------- }
 // Listview-Index aus Caption ermitteln (wie IndexOf bei TListBox)
@@ -518,18 +488,67 @@ begin
     end;
   end;
 
+{ ---------------------------------------------------------------- }
 // Calculate the maximum text width for multiline text
 function MaxTextWidth(const Text : string; Canvas : TCanvas) : integer;
 var
   n,k : integer;
+  s   : string;
 begin
   n:=1; Result:=0;
   repeat
     k:=PosEx(sLineBreak,Text,n);
     if k=0 then k:=length(Text)+1;
-    Result:=Max(Result,Canvas.TextWidth(copy(Text,n,k-n+1)));
+    s:=copy(Text,n,k-n);
+    Result:=Max(Result,Canvas.TextWidth(s));
     n:=k+length(sLineBreak);
     until (k=0) or (n>=length(Text));
+  end;
+
+// calculate text width and height for given font
+function GetTextWidth(const Text : string; AFont : TFont) : integer;
+var
+  bm : TBitmap;
+begin
+  bm:=TBitmap.Create;                      // prepare temp. canvas
+  with bm.Canvas do begin
+    Font.Assign(AFont);
+    Result:=TextWidth(Text);
+    Free;
+    end;
+  end;
+
+function GetMaxTextWidth(const Text : string; AFont : TFont) : integer;
+var
+  n,k : integer;
+  s   : string;
+  bm  : TBitmap;
+begin
+  n:=1; Result:=0;
+  bm:=TBitmap.Create;                      // prepare temp. canvas
+  bm.Canvas.Font.Assign(AFont);
+  repeat
+    k:=PosEx(sLineBreak,Text,n);
+    if k=0 then k:=length(Text)+1;
+    s:=copy(Text,n,k-n);
+    Result:=Max(Result,bm.Canvas.TextWidth(s));
+    n:=k+length(sLineBreak);
+    until (k=0) or (n>=length(Text));
+  bm.Free;
+  end;
+
+function GetMaxTextExtent(const Text : string; AFont : TFont) : TSize;
+var
+  w,h : integer;
+  bm  : TBitmap;
+begin
+  bm:=TBitmap.Create;                      // prepare temp. canvas
+  bm.Canvas.Font.Assign(AFont);
+  with Result do begin
+    Width:=MaxTextWidth(Text,bm.Canvas);
+    Height:=TextLineCount(Text)*bm.Canvas.TextHeight('X');
+    end;
+  bm.Free;
   end;
 
 // Count number of lines in Text separated by sLineBreak
@@ -545,7 +564,8 @@ begin
   end;
 
 { ------------------------------------------------------------------- }
-// Scale button glyphs for High DPI awareness
+// procedures to adjust visible components for High DPI awareness
+// Scale button glyphs
 procedure ScaleGlyph (AControl : TControl; OldDPI,NewDPI : integer);
 var
   bm,bms,gl : TBitmap;
@@ -622,7 +642,7 @@ var
   mb,ib,sib,smb   : TBitmap;
   til             : TImageList;
 begin
-  if MulDiv(100,NewDPI,OldDPI)<130 then Exit;
+  if MulDiv(100,NewDPI,OldDPI)<120 then Exit;
   with imgList do OldSize.Create(Width,Height);
   til:=TImageList.Create(nil);  //create temporary list
   til.Assign(imgList);
@@ -702,7 +722,7 @@ procedure SetSpeedButtonGlyphs (AControl : TWinControl; BaseIndex : integer; img
 var
   i,n : integer;
 begin
-  with AControl do for i := 0 to ControlCount-1 do begin
+  with AControl do for i:=0 to ControlCount-1 do begin
     if Controls[i] is TSpeedButton then begin
       n:=Controls[i].Tag-BaseIndex;
       if n>=0 then
@@ -710,6 +730,31 @@ begin
       end;
     if Controls[i] is TWinControl then
       SetSpeedButtonGlyphs(Controls[i] as TWinControl,BaseIndex,imgList);
+    end;
+  end;
+
+// adjust ItemHeight of owner drawn comboboxes
+procedure AdjustComboBoxes(AControl : TWinControl; OldDPI,NewDPI : integer);
+var
+  i : integer;
+begin
+  with AControl do for i:=0 to ControlCount-1 do begin
+    if (Controls[i] is TComboBox) then with (Controls[i] as TComboBox) do begin
+      if Style in [csOwnerDrawFixed, csOwnerDrawVariable] then ItemHeight:=MulDiv(ItemHeight,NewDPI,OldDPI);
+      end;
+    if Controls[i] is TWinControl then
+      AdjustComboBoxes(Controls[i] as TWinControl,OldDPI,NewDPI);
+    end;
+  end;
+
+// scale Screen fonts - only to called from main form
+procedure ScaleScreenFonts (OldDPI,NewDPI : integer);
+begin
+  with Screen do begin
+    with MessageFont do Height:=MulDiv(Height,NewDPI,OldDPI);
+    with MenuFont do Height:=MulDiv(Height,NewDPI,OldDPI);
+    with HintFont do Height:=MulDiv(Height,NewDPI,OldDPI);
+    with IconFont do Height:=2*Height; //MulDiv(Height,NewDPI,OldDPI);
     end;
   end;
 
@@ -726,195 +771,6 @@ begin
     if AnsiContainsText(ReadNxtStr(AFilter,'|'),AExtension) then Result:=n;
     until (Result>0) or (length(AFilter)=0);
   if Result=0 then Result:=n;  // letztes Filter (*.*)
-  end;
-
-{ ---------------------------------------------------------------- }
-// neuer Message-Dialog mit Positionspr¸fung
-// Delay = 0: ShowModal
-//       > 0: Anzeigen und automatisch schlieﬂen nach "Delay" in s
-function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
-                Buttons: TMsgDlgButtons; DefaultButton : TMsgDlgBtn;
-                Pos : TPoint; Delay : integer;
-                AMonitor : TDefaultMonitor = dmActiveForm) : integer;
-var
-  w : integer;
-begin
-  with CreateMessageDialog(Msg,DlgType,Buttons,DefaultButton) do begin
-    DefaultMonitor:=AMonitor;
-//    ScaleBy(Screen.PixelsPerInch,PixelsPerInchOnDesign);
-    Scaled:=true;
-    try
-      with Pos do begin
-        if (Y < 0) and (X < 0) then Position:=poScreenCenter
-        else begin
-//          if X<0 then X:=Left;
-//          if Y<0 then Y:=Top;
-          CheckScreenBounds(Screen,x,y,Width,Height);
-          Left:=x; Top:=y;
-          end;
-        end;
-      if length(Title)>0 then begin
-        Caption:=Title;
-        w:=Canvas.TextWidth(Title)+50;
-        if w>ClientWidth then ClientWidth:=w;
-        end;
-      FormStyle:=fsStayOnTop;
-      if Delay<=0 then Result:=ShowModal
-      else begin
-        Show;
-        Delay:=Delay*10;
-        repeat
-          Application.ProcessMessages;
-          Sleep(100);
-          dec(Delay);
-          until (Delay=0) or (ModalResult<>mrNone);
-        if ModalResult=mrNone then begin
-          Close;
-          Result:=mrOK;
-          end
-        else Result:=ModalResult;
-        end;
-    finally
-      Free;
-      end;
-    end;
-  end;
-
-function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
-                Buttons: TMsgDlgButtons;
-                Pos : TPoint; Delay : integer;
-                AMonitor : TDefaultMonitor = dmActiveForm) : integer;
-var
-  DefaultButton: TMsgDlgBtn;
-begin
-  if mbOk in Buttons then DefaultButton := mbOk else
-    if mbYes in Buttons then DefaultButton := mbYes else
-      DefaultButton := mbRetry;
-  Result:=MessageDialog(Title,Msg,DlgType,Buttons,DefaultButton,Pos,Delay,AMonitor);
-end;
-
-function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
-  Buttons: TMsgDlgButtons) : integer;
-begin
-  Result:=MessageDialog(Title,Msg,DlgType,Buttons,CenterPos,0);
-  end;
-
-function MessageDialog(const Msg: string; DlgType: TMsgDlgType;
-  Buttons: TMsgDlgButtons) : integer;
-begin
-  Result:=MessageDialog('',Msg,DlgType,Buttons,CenterPos,0);
-  end;
-
-function MessageDialog(Pos : TPoint; const Msg: string; DlgType: TMsgDlgType;
-  Buttons: TMsgDlgButtons) : integer;
-begin
-  Result:=MessageDialog('',Msg,DlgType,Buttons,Pos,0);
-  end;
-
-{ ---------------------------------------------------------------- }
-// Best‰tigung in Bildschirmmitte (X<0) oder an Position X,Y
-function ConfirmDialog (Pos : TPoint; const Title,Msg : string;
-                        AMonitor : TDefaultMonitor) : boolean;
-begin
-  Result:=MessageDialog (Title,Msg,mtConfirmation,[mbYes,mbNo],Pos,0,AMonitor)=mrYes;
-  end;
-
-// Best‰tigung auf einstellbarem Monitor
-function ConfirmDialog (Pos : TPoint; const Msg : string; DefaultButton : TMsgDlgBtn;
-                        AMonitor : TDefaultMonitor) : boolean;
-begin
-  Result:=MessageDialog ('',Msg,mtConfirmation,[mbYes,mbNo],DefaultButton,Pos,0,AMonitor)=mrYes;
-  end;
-
-function ConfirmDialog (Pos : TPoint; const Title,Msg : string; DefaultButton : TMsgDlgBtn;
-                        AMonitor : TDefaultMonitor) : boolean;
-begin
-  Result:=MessageDialog (Title,Msg,mtConfirmation,[mbYes,mbNo],DefaultButton,Pos,0,AMonitor)=mrYes;
-  end;
-
-// Best‰tigung in Bildschirmmitte
-function ConfirmDialog (const Title,Msg : string;
-                        AMonitor : TDefaultMonitor) : boolean;
-begin
-  Result:=ConfirmDialog(CenterPos,Title,Msg,AMonitor);
-  end;
-
-function ConfirmDialog (const Msg : string; DefaultButton : TMsgDlgBtn;
-                        AMonitor : TDefaultMonitor) : boolean;
-begin
-  Result:=MessageDialog ('',Msg,mtConfirmation,[mbYes,mbNo],DefaultButton,CenterPos,0,AMonitor)=mrYes;
-  end;
-
-// Information an Position ausgeben
-procedure InfoDialog (Pos : TPoint; const Title,Msg : string;
-                     AMonitor : TDefaultMonitor);
-begin
-  MessageDialog (Title,Msg,mtInformation,[mbOK],Pos,0,AMonitor);
-  end;
-
-procedure InfoDialog (Pos : TPoint; const Msg : string;
-                      AMonitor : TDefaultMonitor);
-begin
-  InfoDialog(Pos,'',Msg,AMonitor);
-  end;
-
-// Information in Bildschirmmitte ausgeben
-procedure InfoDialog (const Title,Msg : string;
-                      AMonitor : TDefaultMonitor);
-begin
-  InfoDialog(CenterPos,Title,Msg,AMonitor);
-  end;
-
-// Information in Bildschirmmitte ausgeben und f¸r Delay s anzeigen
-procedure InfoDialog (const Title,Msg : string; Delay : integer;
-                      AMonitor : TDefaultMonitor);
-begin
-  MessageDialog (Title,Msg,mtInformation,[mbOK],CenterPos,Delay,AMonitor);
-  end;
-
-procedure InfoDialog (const Msg :string;
-                      AMonitor : TDefaultMonitor);
-begin
-  InfoDialog(CenterPos,'',Msg,AMonitor);
-  end;
-
-// Fehlermeldung an Position ausgeben
-procedure ErrorDialog (const Title,Msg : string; x,y : integer;
-                       AMonitor : TDefaultMonitor);
-begin
-  MessageDialog (Title,Msg,mtError,[mbOK],Point(x,y),0,AMonitor);
-  end;
-
-procedure ErrorDialog (Pos : TPoint; const Title,Msg : string;
-                       AMonitor : TDefaultMonitor);
-begin
-  MessageDialog (Title,Msg,mtError,[mbOK],Pos,0,AMonitor);
-  end;
-
-procedure ErrorDialog (Pos : TPoint; const Msg : string;
-                       AMonitor : TDefaultMonitor);
-begin
-  ErrorDialog(Pos,'',Msg,AMonitor);
-  end;
-
-// Fehlermeldung in Bildschirmmitte ausgeben und f¸r Delay s anzeigen
-procedure ErrorDialog (const Title,Msg : string; Delay : integer;
-                       AMonitor : TDefaultMonitor);
-begin
-  MessageDialog (Title,Msg,mtError,[mbOK],CenterPos,Delay,AMonitor);
-  end;
-
-// Fehlermeldung in Bildschirmmitte ausgeben
-procedure ErrorDialog (const Title,Msg : string;
-                       AMonitor : TDefaultMonitor);
-begin
-  ErrorDialog(CenterPos,Title,Msg,AMonitor);
-  end;
-
-procedure ErrorDialog (const Msg : string;
-                       AMonitor : TDefaultMonitor);
-begin
-  ErrorDialog(CenterPos,'',Msg,AMonitor);
   end;
 
 { ------------------------------------------------------------------- }
@@ -1022,6 +878,21 @@ begin
   Result:=BottomRightPos(AControl,Point(X,Y));
   end;
 
+// area of component
+function GetRect (AControl : TControl) : TRect;
+begin
+  with AControl do Result:=Rect(Left,Top,Left+Width,Top+Height);
+  end;
+
+{ ------------------------------------------------------------------- }
+// programmatic click on speed button
+procedure SpeedButtonClick (AButton : TSpeedButton);
+begin
+  with AButton do begin
+    Down:=true; Click;
+    end;
+  end;
+
 // enable/disable all child controls
 procedure EnableControls (AControl : TWinControl; AEnabled,Recursive : boolean);
 var
@@ -1036,10 +907,18 @@ begin
     end;
   end;
 
-// area of component
-function GetRect (AControl : TControl) : TRect;
+// Enable tab stops for TStaticText and TEdit/ReadOnly controls
+procedure SetTabStops (AWinControl : TWinControl; AEnable : boolean);
+var
+  i : integer;
 begin
-  with AControl do Result:=Rect(Left,Top,Left+Width,Top+Height);
+  with AWinControl do for i:=0 to ControlCount-1 do begin
+    if (Controls[i] is TStaticText) then (Controls[i] as TStaticText).TabStop:=AEnable
+    else if (Controls[i] is TCustomEdit) then with (Controls[i] as TCustomEdit) do begin
+      if ReadOnly then TabStop:=AEnable;
+      end;
+    if (Controls[i] is TWinControl) then SetTabStops(Controls[i] as TWinControl,AEnable);
+    end;
   end;
 
 { ------------------------------------------------------------------- }
@@ -1201,7 +1080,15 @@ begin
 
 procedure AddToHistory (Combo : TComboBox; const hs : string);
 begin
-  with Combo do AddToHistory (Items,hs,DropDownCount);
+  with Combo do begin
+    AddToHistory (Items,hs,DropDownCount);
+    if Items.Count>0 then ItemIndex:=0;
+    end;
+  end;
+
+procedure AddToHistory (Combo : TComboBox); overload;
+begin
+  AddToHistory(Combo,Combo.Text);
   end;
 
 procedure RemoveFromHistory (History : TStrings; const hs : string);
@@ -1234,6 +1121,14 @@ begin
   with Liste do for i:=0 to Count-1 do with Item[i] do if Data<>nil then begin
     TObject(Data).Free; Data:=nil;
     end;
+  end;
+
+{ ---------------------------------------------------------------- }
+// Ausgew‰hlten Eintrag in einer ListBox
+function GetSelectedItem (ListBox : TListBox) : string;
+begin
+  with ListBox do if ItemIndex>=0 then Result:=Items[ItemIndex]
+  else Result:='';
   end;
 
 //-----------------------------------------------------------------------------

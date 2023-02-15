@@ -177,7 +177,7 @@ function IntToHexStr (Value,Digits,Group : cardinal) : string;
 // Integer-Zahl als Dezimal-Zahl, Digits = Mindestanzahl der Stellen,
 //      Group = Gruppierung von Stellen
 function IntToDecimal (Value : int64; Digits,Group : cardinal;
-                       Zeros : boolean = false) : string; overload;
+                       Zeros : boolean = false) : string;
 
 // Integer-Zahl als Oktal-Zahl, Digits = Mindestanzahl der Stellen,
 //      Group = Gruppierung von Stellen
@@ -992,17 +992,17 @@ begin
 
 { ---------------------------------------------------------------- }
 const
-  rsBytes = 'B';
-  rsKiBytes = 'KiB';    // 1024 byte
-  rsMiBytes = 'MiB';    // 1024*1024 byte
-  rsGiBytes = 'GiB';    // 1024*1024*1024 byte
-  rsKBytes = 'kB';      // 1000 byte
-  rsMBytes = 'MB';      // 1000*1000 byte
-  rsGBytes = 'GB';      // 1000*1000*1000 byte
-  rsGetBytePrefixes = 'KMGT';
+  sBytes = 'B';
+  sKiBytes = 'KiB';    // 1024 byte
+  sMiBytes = 'MiB';    // 1024*1024 byte
+  sGiBytes = 'GiB';    // 1024*1024*1024 byte
+  sKBytes = 'kB';      // 1000 byte
+  sMBytes = 'MB';      // 1000*1000 byte
+  sGBytes = 'GB';      // 1000*1000*1000 byte
+  sGetBytePrefixes = 'KMGT';
 
   Suffixes : array[boolean,1..3] of string =
-    ((rsKiBytes,rsMiBytes,rsGiBytes),(rsKBytes,rsMBytes,rsGBytes));
+    ((sKiBytes,sMiBytes,sGiBytes),(sKBytes,sMBytes,sGBytes));
 
 // Convert number of bytes to string using prefixes from IEC 1996
 // DecSep : replace character from system default
@@ -1026,7 +1026,7 @@ var
 
 begin
   if Decimal then d:=1000 else d:=1024;
-  if Bytes<d then Result:=IntToStr(Bytes)+' '+rsBytes  // bytes
+  if Bytes<d then Result:=IntToStr(Bytes)+' '+sBytes  // bytes
   else begin
     fs:=FormatSettings;
     if DecSep<>#0 then fs.DecimalSeparator:=DecSep;
@@ -1063,10 +1063,10 @@ begin
   fs:=FormatSettings;
   if DecSep<>#0 then fs.DecimalSeparator:=DecSep;
   Result:=false; size:=0; fac:=1000;
-  pf:=rsGetBytePrefixes;
+  pf:=sGetBytePrefixes;
   s:=Trim(s);
   if length(s)=0 then s:='0';
-  if UpCase(s[length(s)])=rsBytes then delete(s,length(s),1);   // bytes
+  if UpCase(s[length(s)])=sBytes then delete(s,length(s),1);   // bytes
   if UpCase(s[length(s)])='I' then begin
     delete(s,length(s),1);   // optional "i"
     fac:=1024;

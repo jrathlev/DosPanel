@@ -370,7 +370,7 @@ var
   n,cl,sf : dword;
 begin
   d:=IncludeTrailingPathDelimiter(ExtractFileDrive(Path));
-  n:=50; v:=StrAlloc(n);
+  n:=255; v:=StrAlloc(n);
   Result:=GetVolumeInformation(pchar(d),v,n,nil,cl,sf,nil,0);
   if Result then VolumeID:=Trim(v)  // remove leading and trailing spaces
   else VolumeID:=rsNotAvail;

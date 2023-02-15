@@ -13,7 +13,7 @@
    the specific language governing rights and limitations under the License.
 
    Vers. 1 - Sep. 2002 
-   last modified: Nov. 2021
+   last modified: July 2022
    *)
 
 unit InpText;
@@ -27,13 +27,14 @@ type
   TInputTextDialog = class(TForm)
     OKBtn: TBitBtn;
     CancelBtn: TBitBtn;
-    Descriptor: TLabel;
     CharTabBtn: TBitBtn;
     TextFeld: TComboBox;
+    Descriptor: TStaticText;
     procedure CharTabBtnClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure TextFeldKeyPress(Sender: TObject; var Key: Char);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
     FIniName,FIniSection : string;
@@ -72,7 +73,8 @@ implementation
 
 {$R *.DFM}
 
-uses CharTableDlg, System.IniFiles, WinUtils, GnuGetText;
+uses CharTableDlg, System.IniFiles, GnuGetText, WinUtils
+  {$IFDEF ACCESSIBLE}, ShowMessageDlg{$ENDIF};
 
 { ------------------------------------------------------------------- }
 procedure TInputTextDialog.LoadFromIni(AIniName,AIniSection : string);
@@ -107,6 +109,16 @@ procedure TInputTextDialog.FormDestroy(Sender: TObject);
 begin
   if (length(FIniName)>0) and (length(FIniSection)>0) then
     SaveHistory(FIniName,FIniSection,true,TextFeld);
+  end;
+
+procedure TInputTextDialog.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+{$IFDEF ACCESSIBLE}
+  if (Key=VK_F11) then begin
+    with ActiveControl do if length(Hint)>0 then ShowHintInfo(Hint);
+    end;
+{$ENDIF}
   end;
 
 { ------------------------------------------------------------------- }
@@ -148,6 +160,7 @@ begin
     if Items.Count=0 then Style:=csSimple else Style:=csDropDown;
     AutoComplete:=true;
     Text:=AText;
+    Hint:=Desc;
     end;
   w:=TextFeld.Canvas.TextWidth(AText)+20;
   if w>311 then ClientWidth:=w else ClientWidth:=311;

@@ -24,8 +24,10 @@
    Vers. 2.3 - Sep. 2009 : history list for selected directories
    Vers. 2.4 - Mar. 2010 : adjustable window sizes
    Vers. 3.0 - Apr. 2012 : Delphi XE2
-   Vers. 3.1 - Nov. 2015 : Delph 10, adaption to new shell control components
-   last modified: April 2022
+   Vers. 3.1 - Nov. 2015 : Delphi 10, adaption to new shell control components
+   Vers. 3.2 - July 2022 : define compiler switch "ACCESSIBLE" to make dialog
+                        messages accessible to screenreaders
+   last modified: July 2022
    *)
 
 unit ShellDirDlg;
@@ -125,7 +127,8 @@ implementation
 {$R *.dfm}
 
 uses System.IniFiles, Vcl.Dialogs, System.StrUtils, Winapi.ShlObj, Winapi.Shellapi,
-  Winapi.ActiveX, WinShell, WinUtils, FileUtils, GnuGetText, SelectDlg;
+  Winapi.ActiveX, WinShell, WinUtils, {$IFDEF ACCESSIBLE} ShowMessageDlg {$ELSE} MsgDialogs {$ENDIF},
+  PathUtils, GnuGetText, SelectDlg;
 
 const
   FMaxLen = 15;
@@ -378,6 +381,52 @@ var
   fc,dc,ec : cardinal;
   n   : integer;
   err : boolean;
+
+  // Delete a directory including all subdirectories and files
+  procedure DeleteDirectory (const Base,Dir           : string;
+                             DeleteRoot               : boolean;
+                             var DCount,FCount,ECount : cardinal);
+  // DCount: number of deleted directories
+  // FCount: number of deleted files
+  // ECount: number of errors
+  var
+    DirInfo    : TSearchRec;
+    fc,dc,
+    Findresult : integer;
+    s,sd       : string;
+  begin
+    if length(Dir)>0 then sd:=SetDirName(Base)+Dir else sd:=Base;
+    if DirectoryExists(sd) then begin
+      FindResult:=FindFirst(SetDirName(sd)+'*.*',faAnyFile,DirInfo);
+      while FindResult=0 do with DirInfo do begin
+        if NotSpecialDir(Name) and ((Attr and faDirectory)<>0) then
+          DeleteDirectory(Base,SetDirName(Dir)+DirInfo.Name,DeleteRoot,DCount,FCount,ECount);
+        FindResult:=FindNext(DirInfo);
+        end;
+      FindClose(DirInfo);
+      fc:=0; dc:=0;
+      FindResult:=FindFirst(SetDirName(sd)+'*.*',faArchive+faReadOnly+faHidden+faSysfile+faNormal,DirInfo);
+      while FindResult=0 do with DirInfo do begin
+        if NotSpecialDir(Name) then begin
+          inc(fc);
+          (* Dateien löschen *)
+          s:=SetDirName(sd)+Name;
+          FileSetAttr(s,faArchive);
+          if DeleteFile(s) then begin
+            inc(FCount); inc(dc);
+            end
+          else inc(ECount);  // Fehler
+          end;
+        FindResult:=FindNext(DirInfo);
+        end;
+      FindClose(DirInfo);
+      if (fc=dc) and (DeleteRoot or (length(Dir)>0)) then begin   // Verzeichnis leer ==> löschen
+        FileSetAttr(sd,0);    // Attribute zum Löschen entfernen
+        if RemoveDir(sd) then inc(DCount) else inc(ECount);
+        end;
+      end;
+    end;
+
 begin
   s:=ShellTreeView.Path;
   n:=SelectOption(dgettext('dialogs','Delete directory'),
@@ -478,9 +527,26 @@ begin
 procedure TShellDirDialog.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (Shift=[]) and (Key=VK_F5) then
-    with ShellTreeView do if assigned(Selected) then Refresh(Selected);
-  if Key=VK_Return then ModalResult:=mrOK;
+  if (Shift=[]) and (Key=VK_F5) then begin
+    with ShellTreeView do if assigned(Selected) then Refresh(Selected)
+    end
+{$IFDEF ACCESSIBLE}
+  else if (Key=VK_F11) then begin
+    with ActiveControl do if length(Hint)>0 then ShowHintInfo(Hint);
+    end
+  else if ssCtrl in Shift then begin
+    case Key of
+    ord('T'),ord('t') : SpeedButtonClick(spbDesktop);
+    ord('D'),ord('d') : SpeedButtonClick(spbMyFiles);
+    ord('C'),ord('c') : SpeedButtonClick(spbComputer);
+    ord('W'),ord('w') : SpeedButtonClick(spbNetwork);
+    ord('N'),ord('n') : SpeedButtonClick(spbNew);
+    ord('U'),ord('u') : SpeedButtonClick(spbUp);
+    ord('H'),ord('h') : SpeedButtonClick(spbHome);
+      end;
+    end
+{$ENDIF}
+  else if Key=VK_Return then ModalResult:=mrOK;
   end;
 
 procedure TShellDirDialog.ShowFiles (AShow : boolean);

@@ -1,5 +1,7 @@
 (* Delphi Unit
    Show text and buttons to select several options
+   ===============================================
+   Messages are accessible to screenreaders (uses "TStaticText")
 
    © Dr. J. Rathlev, D-24222 Schwentinental (kontakt(a)rathlev-home.de)
 
@@ -11,8 +13,8 @@
    WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
    the specific language governing rights and limitations under the License.
 
-   Jun. 2009
-   last modified: Nov. 2021
+   Vers. 1 - June 2009
+   last modified: August 2022
    *)
 
 unit SelectDlg;
@@ -21,7 +23,7 @@ interface
 
 uses Winapi.Windows, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Forms, 
   Vcl.Controls, Vcl.StdCtrls, Vcl.Dialogs, Vcl.Buttons, Vcl.ExtCtrls,
-  Vcl.ImgList, Vcl.Imaging.pngimage, System.ImageList;
+  Vcl.ImgList, System.ImageList;
 
 const
   OptionChecked = $100;
@@ -29,15 +31,17 @@ const
 
 type
   TSelectDialog = class(TForm)
-    lbCaption: TLabel;
     imgIcon: TImage;
     ilIcons: TImageList;
     cbOption: TCheckBox;
+    stCaption: TStaticText;
     procedure FormCreate(Sender: TObject);
+    procedure imgIconClick(Sender: TObject);
   private
     { Private declarations }
     Buttons : array  of TButton;
     Selection : integer;
+    ActiveScreenReader : boolean;
     procedure ButtonClick(Sender: TObject);
   public
     { Public declarations }
@@ -90,7 +94,16 @@ var
 procedure TSelectDialog.FormCreate(Sender: TObject);
 begin
   TranslateComponent (self,'dialogs');
+  ActiveScreenReader:=false;
+{$IFDEF ACCESSIBLE}
+  if not SystemParametersInfo(SPI_GETSCREENREADER,0,@ActiveScreenReader,0) then ActiveScreenReader:=false;
+{$ENDIF}
   end;
+
+procedure TSelectDialog.imgIconClick(Sender: TObject);
+begin
+
+end;
 
 {$IFDEF HDPI}   // scale glyphs and images for High DPI
 procedure TSelectDialog.AfterConstruction;
@@ -120,7 +133,6 @@ function TSelectDialog.Execute (APos : TPoint;
 var
   w,h,dh,i,j,n,nr,nl,k,l,bw,ppi,tw,tl : integer;
 begin
-  AdjustFormPosition(Screen,self,APos);
   Caption:=ATitle;
   if ButtonWidth=0 then bw:=105 else bw:=ButtonWidth;
 //  w:=3*bw+70; l:=50;
@@ -132,14 +144,15 @@ begin
   tw:=MaxTextWidth(ACaption,Canvas);
   if fsBold in ACaptionFormat then tw:=MulDiv(tw,5,4);
   tl:=TextLineCount(ACaption);
-  with lbCaption do begin
+  with stCaption do begin
     Font.Style:=ACaptionFormat;
-    Left:=l; Height:=tl*MulDiv(abs(Font.Height),12,10);
+    Caption:=ACaption;
+    Left:=l; Height:=tl*MulDiv(abs(Font.Height),12,10)+n;
     if tw<w-l-n then tw:=w-l-n else w:=tw+l+n;
     Width:=tw;
-    Caption:=ACaption;
-    h:=Top+Height+15;
+    h:=Top+Height+n;
     dh:=MulDiv(abs(Font.Height),24,10);
+    TabOrder:=0; TabStop:=ActiveScreenReader;
     end;
   ClientWidth:=w;
   with cbOption do begin
@@ -176,7 +189,7 @@ begin
         Caption:=AButtons[k];
         Tag:=k;
         TabStop:=true;
-        TabOrder:=k;
+        TabOrder:=k+1;
         ModalResult:=mrOK;
         OnClick:=ButtonClick;
         end;
@@ -201,7 +214,7 @@ begin
         Tag:=k;
         end;
       TabStop:=true;
-      TabOrder:=k;
+      TabOrder:=k+1;
       ModalResult:=mrOK;
       OnClick:=ButtonClick;
       end;
@@ -210,8 +223,16 @@ begin
   Selection:=-1;
   if PreSelection>0 then PreSelection:=PreSelection and OptionMask;
   if PreSelection>length(AButtons) then PreSelection:=-1;
-  if PreSelection<0 then ActiveControl:=Buttons[n-1]
-  else ActiveControl:=Buttons[PreSelection];
+  if ActiveScreenReader then begin
+    ActiveControl:=nil;
+    with cbOption do if Visible then TabOrder:=1;
+    end
+  else begin
+    with cbOption do if Visible then TabOrder:=n;
+    if PreSelection<0 then ActiveControl:=Buttons[n-1]
+    else ActiveControl:=Buttons[PreSelection];
+    end;
+  AdjustFormPosition(Screen,self,APos);
   ShowModal;
   Result:=Selection;
   if (Result>=0) and cbOption.Checked then Result:=Result+OptionChecked;

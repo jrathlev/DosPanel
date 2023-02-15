@@ -20,7 +20,7 @@
    the specific language governing rights and limitations under the License.
 
    New compilation - May 2007
-   last modified:  Sept. 2019
+   last modified:  December 2022
    *)
 
 unit StringUtils;
@@ -40,10 +40,15 @@ const
   // code pages
   cpOem = 437;
   cpAnsi = 850;
-  cpLatin1 = 1252;
   cpAscii = 20127;
-  cpIso8859_1 = 28591;  // Western European (Latin1)
-  cpIso8859_15 = 28605; // Euro zone ( Latin 9)
+  cpLatin1 = 1252;  // ANSI code page
+  cpUtf8 = 65001;  // UTF-8 code page
+  cpUtf16LE = 1200;
+  cpUtf16BE = 1201;
+  cpIso8859_1 = 28591;
+  cpIso8859_2 = 28592;
+  cpIso8859_5 = 28595;
+  cpIso8859_15 = 28605;
 
   ChrID = '#';             // Kennzeichner für num. Zeichenwerte
   VertBar = '|';
@@ -239,6 +244,7 @@ function ReplOptionChar (s : string; Back : boolean) : string;
 function IsLetter (c : char) : boolean;
 function IsDigit (c : char) : boolean;
 function IsHexDigit (c : char) : boolean;
+function PosNonDigit (const s : string; n : integer = 1) : integer;
 
 // Zahl in Dreíergruppen (fix und float)
 function InsertThousandSeparators (const NumStr : string; ThSep : char;
@@ -621,7 +627,7 @@ begin
   end;
 
 {------------------------------------------------------------------}
-(* Substring-Pos. ohne Unterschreidung groß/klein *)
+(* Substring-Pos. ohne Unterscheidung groß/klein *)
 function TextPos (const Substr, S: string): Integer;
 begin
   Result:=Pos(AnsiUppercase(Substr),AnsiUppercase(s));

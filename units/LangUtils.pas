@@ -80,7 +80,7 @@ unit LangUtils;
 
 interface
 
-uses System.Classes, System.SysUtils, Vcl.Menus;
+uses System.Classes, System.SysUtils, Vcl.Menus, Vcl.Graphics;
 
 const
   LangName = 'Language.cfg';  // Sprachen
@@ -106,6 +106,7 @@ type
     MenuSizeBefore : integer;
     FLangCode : TLangCodeString;
     FOnLangItemClick : TLanguageMenuEvent;
+    FOnLangMeasureItem :TMenuMeasureItemEvent;
     FCurrentLanguage,
     FPath,FName : string;
     procedure AddMenuItems;
@@ -117,6 +118,7 @@ type
     function LoadDefaultNames : boolean;
   protected
     procedure DoLangItemClick(Sender : TObject); virtual;
+    procedure DoLangMeasureItem (Sender: TObject; ACanvas: TCanvas; var Width, Height: Integer);
     function GetLangIndex (Value: TLangCodeString) : integer;
     procedure SetLangCode (Value: TLangCodeString);
   public
@@ -128,6 +130,7 @@ type
     property LanguageCode[Index : integer] : TLangCodeString read GetLangCode;
     property Menu : TMenuItem read FMenu write SetMenu;
     property OnLanguageItemClick : TLanguageMenuEvent read FOnLangItemClick write FOnLangItemClick;
+    property OnLanguageMeasureItem: TMenuMeasureItemEvent read FOnLangMeasureItem write FOnLangMeasureItem;
     end;
 
 // InitTranslation muss in der Projekt-Datei vor "Application.Initialize" stehen
@@ -153,8 +156,7 @@ implementation
 
 uses
   Winapi.Windows, Vcl.Forms, Winapi.ShlObj, System.IniFiles, System.StrUtils,
-  System.IOUtils, GnuGetText, IniFileUtils, UnitConsts, StringUtils, WinShell,
-  InitProg, Placeholders;
+  System.IOUtils, GnuGetText, UnitConsts, StringUtils, WinShell, InitProg, Placeholders;
 
 { ------------------------------------------------------------------- }
 (* Name enthält vollständigen Pfad *)
@@ -251,6 +253,7 @@ begin
         GroupIndex:=123;
         Tag:=i+1;
         Checked:=AnsiSameStr(FLangCode,CardinalToLangCodeString(cardinal(Objects[i])));
+        OnMeasureItem:=DoLangMeasureItem;
         end;
       FMenu.Add(mi);
       end;
@@ -293,6 +296,12 @@ begin
       if Tag>0 then FOnLangItemClick(FMenu,CardinalToLangCodeString(cardinal(Objects[Tag-1])));
       end;
     end;
+  end;
+
+procedure TLanguageList.DoLangMeasureItem (Sender: TObject; ACanvas: TCanvas;
+    var Width, Height: Integer);
+begin
+  if Assigned (FOnLangMeasureItem) then FOnLangMeasureItem(Sender,ACanvas,Width,Height);
   end;
 
 function TLanguageList.LoadLanguageNames (LangCode : TLangCodeString) : boolean;
@@ -436,8 +445,10 @@ procedure SaveLanguage (NewLangCode : TLangCodeString);
 begin
   SelectedLanguage:=NewLangCode;
   if LangFromCfg then begin
-    WriteStringToIniFile(CfgName,LangSekt,LangID,SelectedLanguage);
-    UpdateIniFile(CfgName);
+    with TIniFile.Create(CfgName) do begin
+      WriteString(LangSekt,LangID,SelectedLanguage);
+      Free;
+      end;
     end;
   end;
 
@@ -452,12 +463,8 @@ procedure ChangeLanguage (NewLangCode : TLangCodeString);
 var
   i : integer;
 begin
-  SelectedLanguage:=NewLangCode;
-  if LangFromCfg then begin
-    WriteStringToIniFile(CfgName,LangSekt,LangID,SelectedLanguage);
-    UpdateIniFile(CfgName);
-    end;
-  UseLanguage(SelectedLanguage);
+  SaveLanguage(NewLangCode);
+  UseLanguage(NewLangCode);
   with Application do for i:=0 to ComponentCount-1 do if (Components[i] is TForm) then
     ReTranslateComponent(Components[i]);
   end;

@@ -15,7 +15,7 @@
    Vers. 1 - Mai 2005
          1.1 - Aug. 2005 : return process exit code
          2.0 - July 2015 : optional view of console output fixed
-   last updated: July 2017
+   last modified: June 2022
    *)
 
 unit WinExecute;
@@ -29,6 +29,7 @@ type
   TProcessFlag = (pfConsole,pfShowConsole,pfShowOutput,pfShowError);
   TProcessFlags = set of TProcessFlag;
 
+// Programm mit CreateProcess starten
 function ExecuteProcess (const AppName,Options,WorkDir : string; Flags : TProcessFlags;
                          WaitTime : integer = 0; IgnoreTimeout : boolean = false;
                          Output : TStringList = nil; CodePage : integer = 850) : HResult; overload;
@@ -62,7 +63,7 @@ function RunElevated (const ExecuteFile : string) : boolean; overload;
 
 implementation
 
-uses Winapi.Shellapi, Show, WinUtils, WinApiUtils, StringUtils, UnitConsts;
+uses Winapi.Shellapi, Show, WinUtils, MsgDialogs, WinApiUtils, StringUtils, UnitConsts;
 
 var
   FCancelProcess : boolean;
@@ -84,10 +85,14 @@ begin
   end;
 
 { ------------------------------------------------------------------- }
-// Prozess mit Befehlszeile "CmdLine" starten
-// ShowConsole = true : keine Anzeige von StdOut
-//           = false: Anzeige von StdOut
-// ShowErr   = true : Anzeige von Fehlern
+// Prozess starten
+// AppName: exe-Datei
+// Options: Parameter der Befehlszeile
+// WorkDir: Arbeistverzeichnis
+// Flags: pfConsole     - ist eine Konsolen-Anwendung
+//        pfShowConsole - Konsolenfenszer anzeigen
+//        pfShowOutput  - StdOut als Fenster anzeigen
+//        pfShowError   - Anzeige von Fehlern
 // WaitTime  > 0 : Warte auf das Ende des Prozesses für max. "WaitTime" in Millisekunden
 //           = 0 : Warten auf den gestarteten Prozess
 // IgnoreTimeout = true: Timeout nicht als Fehler zurück geben
@@ -226,6 +231,7 @@ begin
   else Result:=GetLastError;
   end;
 
+// Prozess mit Befehlszeile "CmdLine" starten
 function ExecuteProcess (const CmdLine,WorkDir : string; Flags : TProcessFlags;
                          WaitTime : integer = 0; IgnoreTimeout : boolean = false;
                          Output : TStringList = nil) : HResult;

@@ -154,6 +154,8 @@ function GetProgramFolder (pfType : TProgramFolder) : string;
 
 function GetPersonalFolder : string;
 function GetAppDataFolder : string;
+function GetLocalAppDataFolder : string;
+function GetMusicFolder : string;
 
 procedure RefreshDesktop;
 
@@ -363,6 +365,16 @@ begin
 function GetAppDataFolder : string;
 begin
   Result:=GetDesktopFolder(CSIDL_APPDATA);
+  end;
+
+function GetLocalAppDataFolder : string;
+begin
+  Result:=GetDesktopFolder(CSIDL_LOCAL_APPDATA);
+  end;
+
+function GetMusicFolder : string;
+begin
+  Result:=GetDesktopFolder(CSIDL_MYMUSIC);
   end;
 
 { ---------------------------------------------------------------- }
@@ -693,6 +705,7 @@ var
   siSrcFile: IShellItem;
   siDestFolder: IShellItem;
   destFileName : string;
+  ua           : BOOL;
 begin
   //init com
   Result:=CoInitializeEx(nil, COINIT_APARTMENTTHREADED or COINIT_DISABLE_OLE1DDE);
@@ -737,7 +750,7 @@ var
 begin
   if Silent then f:=FOF_SILENT else f:=0;
   Result:=DoIFileOperation(WinHandle,Source,Dest,FO_COPY,
-    f+FOF_NOERRORUI+FOF_FILESONLY+FOF_NOCONFIRMATION+FOF_NOCONFIRMMKDIR+FOF_NO_CONNECTED_ELEMENTS);
+    f+FOF_NOERRORUI+FOFX_EARLYFAILURE+FOF_FILESONLY+FOF_NOCONFIRMATION+FOF_NOCONFIRMMKDIR+FOF_NO_CONNECTED_ELEMENTS);
   end;
 
 function IShellMoveFiles (WinHandle : HWnd; const Source,Dest : string; Silent : boolean) : HResult;
@@ -746,7 +759,7 @@ var
 begin
   if Silent then f:=FOF_SILENT else f:=0;
   Result:=DoIFileOperation(WinHandle,Source,Dest,FO_MOVE,
-    f+FOF_NOERRORUI+FOF_FILESONLY+FOF_NOCONFIRMATION+FOF_NOCONFIRMMKDIR+FOF_NO_CONNECTED_ELEMENTS);
+    f+FOF_NOERRORUI+FOFX_EARLYFAILURE+FOF_FILESONLY+FOF_NOCONFIRMATION+FOF_NOCONFIRMMKDIR+FOF_NO_CONNECTED_ELEMENTS);
   end;
 
 function IShellDeleteFiles (WinHandle : HWnd; const Source : string; Recycle,NoPrompt : boolean) : HResult;
@@ -754,7 +767,7 @@ var
   f : integer;
 begin
   if Recycle then f:=FOF_ALLOWUNDO else f:=0;
-  if NoPrompt then f:=f+FOF_NOERRORUI;
+  if NoPrompt then f:=f+FOF_NOERRORUI+FOFX_EARLYFAILURE;
   Result:=DoIFileOperation(WinHandle,Source,'',FO_DELETE,
     f+FOF_FILESONLY+FOF_NOCONFIRMATION+FOF_NO_CONNECTED_ELEMENTS);
   end;
@@ -764,7 +777,7 @@ var
   f : integer;
 begin
   if Recycle then f:=FOF_ALLOWUNDO else f:=0;
-  if NoPrompt then f:=f+FOF_NOERRORUI;
+  if NoPrompt then f:=f+FOF_NOERRORUI+FOFX_EARLYFAILURE;
   Result:=DoIFileOperation(WinHandle,IncludeTrailingPathDelimiter(Source),'',FO_DELETE,
     f+FOF_NOCONFIRMATION+FOF_NO_CONNECTED_ELEMENTS);
   end;

@@ -35,56 +35,29 @@
                           handling of extended-length paths in unit XlFileUtils
                           new file for resource strings: FileConsts
          4.1 - Jan. 2017: several changes and enhancements
-         4.2 - Jan. 2019: new functtion: GetExistingParentPath
-         4.3 - Jan. 2020: new function: RemoveFirstDir
+         4.2 - Jan. 2019: new functtion: GetExistingParentPath => PathUtils 2023/02
+         4.3 - Jan. 2020: new function: RemoveFirstDir => PathUtils 2023/02
+         4.4 - June 2022: extensions to be used with portable devices
 
-   last modified: Sept. 2020
+   last modified: July 2022
    *)
 
 unit FileUtils;
 
 interface
 
-uses WinApi.Windows, System.Classes, System.SysUtils, System.IniFiles;
+uses WinApi.Windows, System.Classes, System.SysUtils, IStreamApi;
 
 const
-  Punkt = '.';
-  DPunkt = ':';
-  BSlash = '\';
-  IllegalFilenameChars = [#0..#31,'*','?','<','>',':','"','/','\','|'];
-  IllegalFileCharStr = '* ? < > : " / \ |';
-
   FILE_WRITE_ATTRIBUTES = $0100;
   defBlockSize = 256*1024;
 
-  faAllFiles  = faArchive+faReadOnly+faHidden+faSysfile;
+  faAllFiles  = faArchive+faReadOnly+faHidden+faSysfile+faNormal;
   faNoArchive = faReadOnly+faHidden+faSysfile;
   faSuperHidden = faHidden+faSysfile;  //  hidden system dirs and files
 
-  UcBom = $FEFF;   //UniCode-Signatur (Low Endian)
-  Utf8BomS : RawByteString = #$EF#$BB#$BF;
-  Utf8Bom : array[0..2] of byte = ($EF,$BB,$BF);
-
-  cpLatin1 = 1252;  // ANSI code page
-  cpUtf8 = 65001;  // UTF-8 code page
-  cpUtf16LE = 1200;
-  cpUtf16BE = 1201;
-  cpIso8859_1 = 28591;
-  cpIso8859_2 = 28592;
-  cpIso8859_15 = 28605;
-
 type
 { ------------------------------------------------------------------- }
-// Unicode extensions to TIniFile
-  TUnicodeIniFile = class(TIniFile)
-    FFileName : string;
-    constructor CreateForRead (const FileName: string);
-    constructor CreateForWrite (const FileName: string);
-    function ReadString(const Section, Ident, Default: string): string; override;
-    function ReadInt64(const Section, Ident: string; Default: int64): int64;
-    procedure WriteInt64(const Section, Ident: string; Value: int64);
-  end;
-
   TInt64 = record
     case integer of
     0: (AsInt64 : int64);
@@ -95,12 +68,33 @@ type
     5 :(FileTime : TFileTime);
     end;
 
+  TFileStreamData = record
+    FileStream: IStream;
+    BufferSize: Cardinal;
+    procedure Reset;
+  end;
+
   TFileTimestamps = record
-    Valid          : boolean;
-    CreationTime,
-    LastAccessTime,
-    LastWriteTime  : TFileTime;
-    end;
+    Valid: boolean;
+    CreationTime, LastAccessTime, LastWriteTime: TFileTime;
+    procedure Reset;
+    procedure SetTimeStamps(CTime, MTime: TDateTime);
+  end;
+
+  TFileData = record
+  private
+    function GetModTime: TDateTime;
+    function GetCreateTime: TDateTime;
+  public
+    FileName,FullPath : string;
+    StreamData: TFileStreamData;
+    FileSize: int64;
+    FileAttr: Cardinal;
+    TimeStamps: TFileTimestamps;
+    procedure Reset;
+    property CreationTime: TDateTime read GetCreateTime;
+    property ModifiedTime: TDateTime read GetModTime;
+  end;
 
   TFileInfo = record
     Name     : string;
@@ -111,14 +105,9 @@ type
     Attr,Res : cardinal;
     end;
 
-  TFileData = record
-    TimeStamps : TFileTimestamps;
-    FileSize   : int64;
-    FileAttr   : cardinal;
-    end;
-
   TReparseType = (rtNone,rtJunction,rtSymbolic);
 
+{ ------------------------------------------------------------------- }
 // similar to TFileStream but different error handling
   TExtFileStream = class(THandleStream)
   strict private
@@ -202,13 +191,15 @@ function GetFileInfo (const FileName : string; var FSize : int64;
 function GetFileInfo (const FileName : string; var FileInfo : TFileInfo;
                       IncludeDirs : boolean = false) : boolean; overload;
 
-function GetFileData (const FileName : string; var FileData : TFileData) : boolean;
+function GetFileData (const AFileName : string; var FileData : TFileData) : boolean;
 
 // get file version, description, ...
 function GetFileInfoString (const Filename : string) : string;
 
 // get time (UTC) of last file write
 function GetFileLastWriteDateTime(const FileName: string): TDateTime;
+function GetFileDateTime (const FileName : string) : TDateTime;
+
 
 // get time (UTC) of last file write
 function GetFileLastWriteTime(const FileName: string) : TFileTime;
@@ -324,111 +315,6 @@ function CopyAlternateStreams (const SrcFilename,DestFilename : string): cardina
 function CopyAttrAndTimestamp (const SrcFilename,DestFilename : string) : cardinal;
 
 { ---------------------------------------------------------------- }
-// Add trailing path delimiter if path is not empty
-function SetDirName (const Dir : string) : string;
-
-// Compare directory names including trailing path delimiter
-function SameDirName (const S1, S2: string): Boolean;
-
-{ ---------------------------------------------------------------- }
-// Get file extension without leading period
-function GetExt (const Name : string) : string;
-
-// Delete file extension
-function DelExt (Name : string) : string;
-
-// Change file extension
-function NewExt (Name,Ext  : string) : string;
-
-// Add a file extension
-function AddExt (const Name,Ext : string; ReplaceMode : integer = 0) : string;
-
-// Check extension
-function HasExt (const Name,Ext : string) : boolean;
-
-{ ---------------------------------------------------------------- }
-// Add a path to a filename
-function AddPath (Path,Name : string) : string;
-
-// Expand filename to full path and add extension (if not exists)
-function ExpandToPath (Pfad,Name,Ext : string) : string;
-function Erweiter (const Pfad,Name,Ext : string) : string;
-
-// Add suffix and extension to filename
-function AddNameSuffix (FName,Suffix,Ext : string) : string;
-
-// Insert suffix between filename and extension
-function InsertNameSuffix (FName,Suffix : string) : string;
-
-// Remove suffix of length CharCount from filename with extension
-function RemoveNameSuffix (FName : string; CharCount : integer) : string;
-
-// Check if FName has prefix matching to Pref
-function HasPrefix(const Pref,FName : string) : boolean;
-
-// Strip a path to a maximum length of Len characters
-function StripPath (Name : String;
-                    Len  : integer) : String;
-
-// Extract parent path
-function ExtractParentPath (Dir : string) : string;
-
-// Remove the first subdirectory from path
-function RemoveFirstDir (const Dir : string) : string;
-
-// Extract last subdirectory from path
-function ExtractLastDir (const Path : string) : string;
-
-// Get last existing parent path, set DefPath if not found
-function GetExistingParentPath (const Path,DefPath : string) : string;
-
-// Check if Path2 is a subpath of Path1 (both are full paths)
-function IsSubPath (const Path1,Path2 : string) : boolean;
-
-// Check if Path is a root path (e.g. "C:\..")
-function IsRootPath (const Path : string) : boolean;
-
-// Check if Path2 is identical to Path1 (both are full paths)
-function IsSamePath (const Path1,Path2 : string) : boolean;
-
-// Check if Path is an absolute path (starting with \ or drive)
-function ContainsFullPath (const Path : string) : boolean;
-
-// Convert absolute path to relative and and vice versa
-function MakeRelativePath (const BaseName,DestName: string) : string;
-function MakeAbsolutePath (const BaseName,DestName: string) : string;
-
-// Expand relative path "DestName" to absolute path based on "BaseName"
-function ExpandRelativePath (const BaseName,DestName: string) : string;
-
-// Expand relative path to absolute path
-function ExpandPath (const DestName: string) : string;
-
-// Check for illegal characters in path
-function CheckPathChars (APath : string) : boolean;
-
-// Check for illegal characters in filename (without path)
-function CheckFilename (const Filename : string) : boolean;
-
-// Replace illegal characters by AChar
-function ReplaceIllegalChars (const Filename : string; AChar : char) : string;
-
-// Extract identical leading path fragments
-function ExtractSamePath(const Path1,Path2 : string) : string;
-
-// Replace drive letter in path
-function ReplaceDrive(const Path,Drive : string) : string;
-
-// Remove drive
-function RemoveDrive (const Path : string) : string;
-
-{ ---------------------------------------------------------------- }
-// Check for special directories ('.'=self and '..'=one up )
-// or if directory starts with specified character
-function NotSpecialDir (const Name : string; StartChars : array of char) : boolean; overload;
-function NotSpecialDir (const Name : string) : boolean; overload;
-
-{ ---------------------------------------------------------------- }
 // get the type of the reparse point (junction or symbolic)
 function GetReparsePointType(const FileName : string) : TReparseType;
 
@@ -468,6 +354,10 @@ function HasNoSubDirs (const Directory : string) : boolean;
 procedure DeleteEmptyDirectories (const Directory : string);
 
 { ---------------------------------------------------------------- }
+// Check if directory has specified file type
+function HasFileType (const Directory,Ext : string) : boolean;
+
+{ ---------------------------------------------------------------- }
 // Count files in directory and calculate the resulting volume
 procedure CountFiles (const Base,Dir,Ext : string; IncludeSubDir : boolean;
                       var FileCount : integer; var FileSize : int64); overload;
@@ -482,28 +372,21 @@ procedure DeleteDirectory (const Base,Dir           : string;
                            DeleteRoot               : boolean;
                            var DCount,FCount,ECount : cardinal); overload;
 function DeleteDirectory (const Directory : string;
-                          DeleteRoot      : boolean) : boolean; overload;
+                          DeleteRoot      : boolean = true) : boolean; overload;
 
 { ---------------------------------------------------------------- }
 // Check if a directory is accessible
 function CanAccess (const Directory : string; var ErrorCode : integer) : boolean; overload;
 function CanAccess (const Directory : string) : boolean; overload;
 
-{ ---------------------------------------------------------------- }
-type
-  TUcStringList = class (TStringList)
-  private
-    FHasBom : boolean;
-  public
-    property HasBom : boolean read FHasBom;
-    constructor Create;
-    procedure LoadFromStream(Stream: TStream; Encoding: TEncoding); override;
-    end;
+// Returns true if GetLastError = ERROR_FILE_NOT_FOUND
+function FileNotFound (const FileName : string) : boolean;
 
+{ ---------------------------------------------------------------- }
 implementation
 
-uses System.StrUtils, System.Masks, Winapi.PsAPI, WinApi.AccCtrl, WinApi.AclApi,
-  Winapi.Shlwapi, System.RTLConsts, WinApiUtils, FileConsts, ExtSysUtils;
+uses System.StrUtils, Winapi.PsAPI, WinApi.AccCtrl, WinApi.AclApi,
+  System.RTLConsts, WinApiUtils, FileConsts, ExtSysUtils, PathUtils;
 
 { ---------------------------------------------------------------- }
 { TExtFileStream }
@@ -570,83 +453,10 @@ begin
   ErrorCode:=FError;
   end;
 
-{ ---------------------------------------------------------------- }
-// Unicode extensions to TIniFile
-constructor TUnicodeIniFile.CreateForRead (const FileName: string);
-begin
-  FFileName:=FileName;
-  inherited Create(FileName);
-  end;
-
-// force Unicode to ini file
-constructor TUnicodeIniFile.CreateForWrite (const FileName: string);
-const
-  UcSection = '[Unicode]';
-var
-  fs  : TFileStream;
-  uid : word;
-  sl  : TStringList;
-begin
-  FFileName:=FileName;
-  if FileExists(FileName) then begin
-    fs:=TFileStream.Create(FileName,fmOpenReadWrite);
-    try
-      fs.Read(uid,2);
-      if uid<>UcBom then begin  // in Unicode konvertieren
-        fs.Position:=0;
-        sl:=TStringList.Create;
-        sl.LoadFromStream(fs);
-        sl.Insert(0,UcSection);
-        fs.Size:=0;
-        sl.SaveToStream(fs,TEncoding.Unicode);
-        sl.Free;
-        end
-    finally
-      fs.Free;
-      end;
-    end
-  else if DirectoryExists(ExtractFilePath(FileName)) then begin
-    try
-      fs:=TFileStream.Create(FileName,fmCreate);
-      sl:=TStringList.Create;
-      sl.Add(UcSection);
-      try
-        sl.SaveToStream(fs,TEncoding.Unicode);
-      finally
-        sl.Free;
-        end;
-    finally
-      fs.Free;
-      end;
-    end;
-  inherited Create(FileName);
-  end;
-
-// replace original function to increase the string length to more than 2047 chars
-function TUnicodeIniFile.ReadString(const Section, Ident, Default: string): string;
-var
-  Buffer: array[0..65535] of Char;
-begin
-  SetString(Result, Buffer, GetPrivateProfileString(PChar(Section),
-    PChar(Ident), PChar(Default), Buffer, Length(Buffer), PChar(FFileName)));
-  end;
-
-// are missing in System.IniFiles
-function TUnicodeIniFile.ReadInt64(const Section, Ident: string; Default: int64): int64;
-var
-  IntStr: string;
-begin
-  IntStr := ReadString(Section,Ident,'');
-  if (IntStr.Length>2) and (IntStr.StartsWith('0x',true)) then IntStr:='$'+IntStr.Substring(2);
-  Result:=StrToInt64Def(IntStr,Default);
-  end;
-
-procedure TUnicodeIniFile.WriteInt64(const Section, Ident: string; Value: int64);
-begin
-  WriteString(Section,Ident,IntToStr(Value));
-  end;
-
 { ------------------------------------------------------------------- }
+const
+  Utf8Bom : array[0..2] of byte = ($EF,$BB,$BF);
+
 // create new file and write BOM
 function WriteUtf8Bom (const Filename : string) : integer;
 var
@@ -967,6 +777,11 @@ begin
     or not FileTimeToDateTime(FileData.ftLastWriteTime,Result) then Result:=0;
   end;
 
+function GetFileDateTime (const FileName : string) : TDateTime;
+begin
+  if not FileAge(Filename,Result) then Result:=0;
+  end;
+
 // set time (UTC) of last file write
 function SetFileLastWriteDateTime(const FileName: string; FileTime : TDateTime) : integer;
 var
@@ -1032,16 +847,16 @@ begin
 
 { ------------------------------------------------------------------- }
 // get file size, timestamps and attributes
-function GetFileData (const FileName : string; var FileData : TFileData) : boolean;
+function GetFileData (const AFileName : string; var FileData : TFileData) : boolean;
 var
   FindRec : TSearchRec;
   FindResult : integer;
 begin
   Result:=false;            // does not exist
   with FileData do begin
-    FillChar(TimeStamps,sizeof(TFileTimestamps),0);
-    FileSize:=0; FileAttr:=INVALID_FILE_ATTRIBUTES;
-    FindResult:=FindFirst(FileName,faAnyFile,FindRec);
+    Reset;
+    FileName:=ExtractFileName(AFileName);
+    FindResult:=FindFirst(AFileName,faAnyFile,FindRec);
     if (FindResult=0) then with FindRec do begin
       TimeStamps:=GetTimestampsFromFindData(FindData);
       FileSize:=Size;
@@ -1464,390 +1279,6 @@ begin
   end;
 
 { ------------------------------------------------------------------- }
-// Add trailing path delimiter if path is not empty
-function SetDirName (const Dir : string) : string;
-begin
-  if length(Dir)>0 then Result:=IncludeTrailingPathDelimiter(Dir)
-  else Result:='';
-  end;
-
-// Compare directory names including trailing path delimiter
-function SameDirName (const S1,S2: string): Boolean;
-begin
-  Result:=SameFileName(SetDirName(S1),SetDirName(S2));
-  end;
-
-{ --------------------------------------------------------------- }
-// Get file extension without leading period
-function GetExt (const Name : string) : string;
-var
-  i,j : integer;
-begin
-  Result:='';
-  j:=length(Name);
-  if j>0 then begin
-    i:=j;
-    while (i>0) and (Name[i]<>Punkt) and (not IsPathDelimiter(Name,i)) do dec(i);
-    if (i>0) and (Name[i]=Punkt) then Result:=copy(name,i+1,j-i)
-    end;
-  end;
-
-{ --------------------------------------------------------------- }
-// Delete file extension (from end to last period)
-function DelExt (Name : string) : string;
-var
-  i,j : integer;
-begin
-  j:=length(Name);
-  if j>0 then begin
-    i:=j;
-    while (i>0) and (Name[i]<>Punkt) and (not IsPathDelimiter(Name,i)) do dec(i);
-    if (i>0) and (Name[i]=Punkt) then delete (Name,i,j-i+1);
-    end;
-  Result:=Name;
-  end;
-
-{ --------------------------------------------------------------- }
-// Change file extension (from end to last period)
-function NewExt (Name,Ext  : string) : string;
-begin
-  if length(Name)>0 then begin
-    Name:=DelExt(Name);
-    if (length(Ext)>0) and (Ext[1]=Punkt) then delete(Ext,1,1);
-    if length(Ext)>0 then Result:=Name+Punkt+Ext
-    else Result:=Name;
-    end
-  else Result:='';
-  end;
-
-{ --------------------------------------------------------------- }
-// Add a file extension
-// ReplaceMode = 2 - add extension in any case
-//             = 1 - replace existing extension
-//             = 0 - no action if same extension already exists (default)
-function AddExt (const Name,Ext  : string; ReplaceMode : integer) : string;
-var
-  ok : boolean;
-  se : string;
-begin
-  Result:=Name;
-  if (length(Name)=0) or (length(Ext)=0) then Exit
-  else begin
-    if ReplaceMode=0 then begin
-      se:=GetExt(Name);
-      ok:=(length(se)=0) or not AnsiSameText(se,Ext);
-      end
-    else ok:=true;
-    if ok then begin
-      if ReplaceMode=1 then Result:=NewExt(Name,Ext)
-      else begin
-        if Result[length(Result)]=Punkt then Delete(Result,length(Result),1);
-        if (Ext[1]=Punkt) then Result:=Result+Ext else Result:=Result+Punkt+Ext;
-        end;
-      end
-    end;
-  end;
-
-// Check extension
-function HasExt (const Name,Ext : string) : boolean;
-begin
-  Result:=AnsiSameText(GetExt(Name),Ext);
-  end;
-
-{ --------------------------------------------------------------- }
-// Add a path to a filename
-function AddPath (Path,Name : string) : string;
-begin
-  if length(Name)>0 then begin
-    if length(Path)>0 then Result:=SetDirName(Path)+Name else Result:=Name;
-    end
-  else Result:=Path;
-  end;
-
-{ --------------------------------------------------------------- }
-// Expand filename to full path and add extension (if not exists)
-function ExpandToPath (Pfad,Name,Ext : string) : string;
-begin
-  if (length(Ext)>0) and (Ext[1]=Punkt) then delete(Ext,1,1);
-  if (pos(Punkt,Name)=0) and (length(Ext)<>0) then Name:=Name+Punkt+Ext;
-  if (pos (DPunkt,Name)<>0) or (pos(BSlash,Name)=1)
-     or (length(Pfad)=0) then Result:=Name
-  else if Pfad[length(Pfad)]=BSlash then Result:=Pfad+Name
-         else Result:=Pfad+BSlash+Name;
-  end;
-
-function Erweiter (const Pfad,Name,Ext  : string) : string;
-begin
-  Result:=ExpandToPath (Pfad,Name,Ext);
-  end;
-
-{ ---------------------------------------------------------------- }
-// Add suffix and extension to filename
-function AddNameSuffix (FName,Suffix,Ext : string) : string;
-begin
-  if (length(Ext)>0) and (Ext[1]<>Punkt) then Ext:=Punkt+Ext;
-  Result:=DelExt(FName)+Suffix+Ext;
-  end;
-
-{ ---------------------------------------------------------------- }
-// Insert suffix between filename and extension
-function InsertNameSuffix (FName,Suffix : string) : string;
-begin
-  Result:=AddNameSuffix(FName,Suffix,GetExt(FName));
-  end;
-
-{ ---------------------------------------------------------------- }
-// Remove suffix of length CharCount from filename with extension
-function RemoveNameSuffix (FName : string; CharCount : integer) : string;
-var
-  s : string;
-begin
-  s:=DelExt(FName);
-  Result:=AnsiLeftStr(s,length(s)-CharCount)+ExtractFileExt(FName);
-  end;
-
-{ ---------------------------------------------------------------- }
-// Check if FName has prefix matching to Pref
-function HasPrefix(const Pref,FName : string) : boolean;
-begin
-  Result:=(length(Pref)>0) and MatchesMask(FName,Pref);
-  end;
-
-{ ---------------------------------------------------------------- }
-// Strip a path to a maximum length of Len characters
-// similar to MinimizeName in FileCtrl but chararter related
-function StripPath (Name : String;
-                    Len  : integer) : String;
-const
-  Punkte = '...';
-var
-  i,j,nl : integer;
-  ok     : boolean;
-begin
-  nl:=length(Name);
-  if nl>=Len then begin
-    i:=nl; ok:=true;
-    if IsPathDelimiter(Name,i) then dec(i);
-    while not IsPathDelimiter(Name,i) and (i>0) do dec(i);
-    if i=0 then Name:=Punkte+copy(Name,nl-Len+3,nl)
-    else begin
-      dec(i); j:=i;
-      repeat
-        while not IsPathDelimiter(Name,j) and (j>0) do dec(j);
-        dec(j);
-        if j<0 then Name:=Punkte+copy(Name,nl-Len+3,nl)
-        else begin
-          ok:=nl-i+j+4<=Len;
-          end;
-        until ok or (j<0);
-      if ok then begin
-        inc(j,2);
-        delete (Name,j,succ(i-j)); insert (Punkte,Name,j);
-        end;
-      end;
-    end;
-  Result:=Name;
-  end;
-
-{ ------------------------------------------------------------------- }
-// Extract parent path
-function ExtractParentPath (Dir : string) : string;
-var
-  i : integer;
-begin
-  Dir:=ExcludeTrailingPathDelimiter(Dir);
-  i:=length(Dir);
-  while not IsPathDelimiter(Dir,i) and (i>0) do dec(i);
-  if i<=1 then Result:=Dir
-  else Result:=copy(Dir,1,i-1);
-  end;
-
-// Extract last subdirectory from path
-function ExtractLastDir (const Path : string) : string;
-begin
-  Result:=ExtractFileName(ExcludeTrailingPathDelimiter(Path));
-  end;
-
-function RemoveFirstDir (const Dir : string) : string;
-var
-  n : integer;
-begin
-  Result:=Dir;
-  if not ContainsFullPath(Dir) then begin
-    n:=Pos(PathDelim,Dir);
-    if n>0 then delete(Result,1,n);
-    end;
-  end;
-
-// Get last existing parent path, set DefPath if not found
-function GetExistingParentPath (const Path,DefPath : string) : string;
-var
-  sd : string;
-begin
-  if (length(Path)=0) or not ContainsFullPath(Path) then Result:=DefPath
-  else begin
-    Result:=Path; sd:=ExtractFileDrive(Path);
-    if not DirectoryExists(Result) then begin
-      if (copy(Path,1,2)='\\') then Result:=''
-      else while (length(Result)>0) and not DirectoryExists(Result) do begin
-        if AnsiSameText(Result,sd) then Result:='' else Result:=ExtractParentPath(Result);
-        end;
-      if length(Result)=0 then Result:=DefPath;
-      end;
-    end;
-  end;
-
-{ ------------------------------------------------------------------- }
-// Check if Path2 is a subpath of Path1 (both are full paths)
-function IsSubPath (const Path1,Path2 : string) : boolean;
-begin
-  Result:=(length(Path1)>0) and AnsiStartsText(SetDirName(Path1),SetDirName(Path2));
-  end;
-
-// Check if Path is a root path (e.g. "C:\..")
-function IsRootPath (const Path : string) : boolean;
-begin
-  Result:=AnsiSameText(ExtractFileDrive(Path),ExcludeTrailingPathDelimiter(Path));
-  end;
-
-// Check if Path2 is identical to Path1 (both are full paths)
-function IsSamePath (const Path1,Path2 : string) : boolean;
-begin
-  Result:=(length(Path1)>0) and AnsiSameText(SetDirName(Path1),SetDirName(Path2));
-  end;
-
-// Check if Path is an absolute path (starting with \ or drive)
-function ContainsFullPath (const Path : string) : boolean;
-begin
-  if length(Path)>0 then Result:=(Path[1]=BSlash) or (pos(DPunkt,Path)>0)
-  else Result:=false;
-  end;
-
-// Convert absolute path to relative and and vice versa
-function MakeRelativePath (const BaseName,DestName: string) : string;
-begin
-  if AnsiSameText(SetDirName(Basename),SetDirName(DestName)) then Result:=''
-  else if IsSubPath(Basename,DestName) then Result:=ExtractRelativePath(SetDirName(BaseName),DestName)
-  else Result:=DestName
-  end;
-
-function MakeAbsolutePath (const BaseName,DestName: string) : string;
-begin
-  if ContainsFullPath(DestName) then Result:=DestName
-  else Result:=SetDirName(BaseName)+DestName;
-  end;
-
-// Expand relative path "DestName" to absolute path based on "BaseName"
-function ExpandRelativePath (const BaseName,DestName: string) : string;
-var
-  Dst: array[0..MAX_PATH-1] of char;
-begin
-  if ContainsFullPath(DestName) then Result:=DestName
-  else begin
-    if PathCanonicalize(@Dst[0],PChar(IncludeTrailingBackslash(BaseName)+DestName))
-      then Result:=Dst
-    else Result:=DestName;
-    end;
-  end;
-
-// Expand relative path "DestName" to absolute path based on "CurrentDir"
-function ExpandPath (const DestName: string) : string;
-begin
-  if ContainsFullPath(DestName) then Result:=DestName
-  else Result:=ExpandFileName(Destname);
-  end;
-
-// Extract identical leading path fragments
-function ExtractSamePath(const Path1,Path2 : string) : string;
-var
-  i,n1,n2     : integer;
-  s1,s2 : string;
-  ok    : boolean;
-begin
-  s1:=AnsiLowerCase(IncludeTrailingPathDelimiter(Path1));
-  s2:=AnsiLowerCase(IncludeTrailingPathDelimiter(Path2));
-  n2:=0;
-  repeat
-    n1:=PosEx('\',s1,n2+1);
-    ok:=(n1>0) and (n1=PosEx('\',s2,n2+1));
-    if ok then for i:=n2+1 to n1-1 do ok:=ok and (s1[i]=s2[i]);
-    if ok then n2:=n1;
-    until not ok or (n1>length(s1)) or (n1>length(s2));
-  if n2>0 then Result:=copy(Path1,1,n2) else Result:='';
-  end;
-
-// Replace drive letter in path
-function ReplaceDrive(const Path,Drive : string) : string;
-begin
-  Result:=Path;
-  if (length(Path)>0) and (length(Drive)>0) then Result[1]:=Drive[1];
-  end;
-
-// Remove drive
-function RemoveDrive (const Path : string) : string;
-var
-  dr : string;
-begin
-  dr:=ExtractFileDrive(Path);
-  if length(dr)>0 then Result:=MakeRelativePath(dr,Path)
-  else Result:=Path;
-  end;
-
-{ ---------------------------------------------------------------- }
-// Check for illegal characters in path
-function CheckPathChars (APath : string) : boolean;
-var
-  s : string;
-
-  function ReadNext (var s   : String) : string;
-  var
-    i : integer;
-  begin
-    if length(s)>0 then begin
-      i:=pos (BSlash,s);
-      if i=0 then i:=succ(length(s));
-      Result:=copy(s,1,pred(i));
-      delete(s,1,i);
-      end
-    else Result:='';
-    end;
-
-begin
-  Result:=true;
-  if length(APath)>0 then begin
-    if (copy(APath,1,2)='\\') then delete(APath,1,2);
-    APath:=ExcludeTrailingPathDelimiter(APath);
-    while Result and (length(APath)>0) do begin
-      s:=ReadNext(APath);
-      if (Length(s)>2) or not MatchesMask(s,'?:') then Result:=CheckFilename(s);
-      end;
-    end;
-  end;
-
-// Check for illegal characters in filename (without path)
-function CheckFilename (const Filename : string) : boolean;
-var
-  i : integer;
-begin
-  Result:=true; i:=1;
-  if length(Filename)>0 then while Result and (i<=length(Filename)) do begin
-    Result:=(Filename[i]>#255) or not CharInSet(AnsiChar(Filename[i]),IllegalFilenameChars);
-    inc(i);
-    end;
-  end;
-
-// Replace illegal characters by AChar
-function ReplaceIllegalChars (const Filename : string; AChar : char) : string;
-var
-  i : integer;
-begin
-  Result:=Filename;
-  for i:=1 to length(Filename) do if Result[i]<=#255 then begin
-    if CharInSet(AnsiChar(Result[i]),IllegalFilenameChars) then Result[i]:=AChar;
-    end
-  end;
-
-{ ------------------------------------------------------------------- }
 // Copy contents of file, no timestamp and no attributes
 // Returns error code from GetLastError
 function CopyFileData(const SrcFilename,DestFilename : string;
@@ -2131,24 +1562,6 @@ begin
   end;
 
 { ------------------------------------------------------------------- }
-// Check for special directories ('.'=self and '..'=one up )
-// or if directory starts with specified character
-function NotSpecialDir (const Name : string; StartChars : array of char) : boolean;
-var
-  i : integer;
-begin
-  Result:=(Name<>'.') and (Name<>'..');
-  if Result and (length(StartChars)>0) then begin
-    for i:=Low(StartChars) to High(StartChars) do Result:=Result and (Pos(StartChars[i],Name)<>1);
-    end;
-  end;
-
-function NotSpecialDir (const Name : string) : boolean;
-begin
-  Result:=NotSpecialDir(Name,[]);
-  end;
-
-{ ------------------------------------------------------------------- }
 // Get the path the link is pointing to
 function GetLinkPath (const FileName: string) : string;
 begin
@@ -2376,6 +1789,16 @@ begin
   FindClose(DirInfo);
   end;
 
+{ ------------------------------------------------------------------- }
+// Check if directory holds a specified file type
+function HasFileType (const Directory,Ext : string) : boolean;
+var
+  DirInfo    : TSearchRec;
+begin
+  Result:=FindFirst(ExpandToPath(Directory,'*',Ext),faAnyFile,DirInfo)=0;
+  FindClose(DirInfo);
+  end;
+
 { ---------------------------------------------------------------- }
 // Count files in directory and calculate the resulting volume
 procedure CountFiles (const Base,Dir,Ext : string; IncludeSubDir : boolean;
@@ -2502,32 +1925,56 @@ begin
   Result:=CanAccess(Directory,ec);
   end;
 
-{ ------------------------------------------------------------------- }
-// Stringlist with BOM detection
-constructor TUcStringList.Create;
-begin
-  inherited Create;
-  FHasBom:=false;
-end;
-
-procedure TUcStringList.LoadFromStream(Stream: TStream; Encoding: TEncoding);
+function FileNotFound (const FileName : string) : boolean;
 var
-  Size: Integer;
-  Buffer: TBytes;
+  SearchRec: TSearchRec;
 begin
-  BeginUpdate; FHasBom:=false;
-  try
-    Size := Stream.Size - Stream.Position;
-    SetLength(Buffer, Size);
-    Stream.Read(Buffer, 0, Size);
-    Size := TEncoding.GetBufferEncoding(Buffer, Encoding, DefaultEncoding);
-    SetEncoding(Encoding); // Keep Encoding in case the stream is saved
-    SetTextStr(Encoding.GetString(Buffer, Size, Length(Buffer) - Size));
-    FHasBom:=Size>0;
-  finally
-    EndUpdate;
+  Result:=FindFirst(FileName,faAnyFile,SearchRec)=ERROR_FILE_NOT_FOUND;
   end;
-end;
+
+// -----------------------------------------------------------------------------
+// Reset timestamps and file data
+procedure TFileTimestamps.Reset;
+begin
+  Valid:=false;
+  CreationTime:=ResetFileTime;
+  LastWriteTime:=ResetFileTime;
+  LastAccessTime:=ResetFileTime;
+  end;
+
+procedure TFileTimestamps.SetTimeStamps(CTime, MTime: TDateTime);
+begin
+  Valid:=True;
+  CreationTime:=LocalDateTimeToFileTime(CTime);
+  LastWriteTime:=LocalDateTimeToFileTime(MTime);
+  LastAccessTime:=LastWriteTime;
+  end;
+
+procedure TFileStreamData.Reset;
+begin
+  FileStream:=nil;
+  BufferSize:=0;
+  end;
+
+procedure TFileData.Reset;
+begin
+  FileName:='';
+  FullPath:='';
+  FileSize:=0;
+  FileAttr:=faArchive;
+  TimeStamps.Reset;
+  StreamData.Reset;
+  end;
+
+function TFileData.GetModTime: TDateTime;
+begin
+  Result:=FileTimeToLocalDateTime(TimeStamps.LastWriteTime);
+  end;
+
+function TFileData.GetCreateTime: TDateTime;
+begin
+  Result:=FileTimeToLocalDateTime(TimeStamps.CreationTime);
+  end;
 
 { ------------------------------------------------------------------- }
 {$IFDEF Trace}
