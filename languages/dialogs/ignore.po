@@ -1,6 +1,6 @@
 #  Doesn't have any letters
 #. ShellDirDialog..PopupMenu..N1..Caption
-#: ShellDirDlg.dfm:2283
+#: ShellDirDlg.dfm:2287
 #. ShellFileDialog..PopupMenu..N1..Caption
 #: ShellFileDlg.dfm:2325
 msgid "-"
@@ -25,20 +25,20 @@ msgid "&800x800"
 msgstr ""
 
 #  Doesn't have any letters
-#. AccountDialog..edtRepPwd..PasswordChar
-#: AccountDlg.dfm:273
 #. AccountDialog..edtPwd..PasswordChar
-#: AccountDlg.dfm:282
+#: AccountDlg.dfm:263
+#. AccountDialog..edtRepPwd..PasswordChar
+#: AccountDlg.dfm:275
 #. FtpDialog..pnSettings..edtFtpPwd..PasswordChar
 #: FtpDlg.dfm:328
 #. LogonDialog..PwdEdit..PasswordChar
-#: LogonDlg.dfm:209
+#: LogonDlg.dfm:301
 #. NewPwdDialog..paPwd..edtPwd..PasswordChar
-#: NewPwdDlg.dfm:46
+#: NewPwdDlg.dfm:38
 #. NewPwdDialog..paConfirm..edtRepPwd..PasswordChar
-#: NewPwdDlg.dfm:307
+#: NewPwdDlg.dfm:289
 #. PasswordDialog..pnInput..edtPwd..PasswordChar
-#: PwdDlg.dfm:105
+#: PwdDlg.dfm:109
 msgid "*"
 msgstr ""
 
@@ -301,17 +301,17 @@ msgstr ""
 #. InputNumberDialog..Descriptor2..Caption
 #: InpNumber.dfm:40
 #. InputTextDialog..Descriptor..Caption
-#: InpText.dfm:27
+#: InpText.dfm:229
 #. MemoDialog..paTop..Descriptor..Caption
-#: MemoDlg.dfm:182
+#: MemoDlg.dfm:184
 #. InputNumber..Descriptor1..Caption
 #: NumDlg.dfm:32
 #. InputNumber..Descriptor2..Caption
 #: NumDlg.dfm:39
 #. TextEingabe..Descriptor1..Caption
-#: Textdlg.dfm:32
+#: Textdlg.dfm:185
 #. TextEingabe..Descriptor2..Caption
-#: Textdlg.dfm:39
+#: Textdlg.dfm:194
 msgid "Descriptor"
 msgstr ""
 
@@ -329,7 +329,7 @@ msgid "DestLabel"
 msgstr ""
 
 #. AccountDialog..Caption
-#: AccountDlg.dfm:6
+#: AccountDlg.dfm:5
 #. WortListDialog..Caption
 #: DListDlg.dfm:6
 #. FileFilterDialog..Caption
@@ -519,14 +519,14 @@ msgstr ""
 #. ShellFileDialog..ShellListView..Root
 #: ShellFileDlg.dfm:2300
 #. ShowFilesDialog..lvFiles..Root
-#: ShowFilesDlg.dfm:174
+#: ShowFilesDlg.dfm:203
 msgid "rfDesktop"
 msgstr ""
 
 #. ShellDirDialog..PanelLeft..ShellTreeView..Root
 #: ShellDirDlg.dfm:48
 #. ShellDirDialog..PanelRight..ShellListView..Root
-#: ShellDirDlg.dfm:2260
+#: ShellDirDlg.dfm:2264
 msgid "rfMyComputer"
 msgstr ""
 
@@ -560,11 +560,7 @@ msgid "TabSheet2"
 msgstr ""
 
 #. AccountDialog..Font.Name
-#: AccountDlg.dfm:13
-#. AccountDialog..Label1..Font.Name
-#: AccountDlg.dfm:33
-#. AccountDialog..Label2..Font.Name
-#: AccountDlg.dfm:46
+#: AccountDlg.dfm:12
 #. AppListDialog..Font.Name
 #: AppListDlg.dfm:11
 #. CharTableDialog..Font.Name
@@ -644,9 +640,9 @@ msgstr ""
 #. LogonDialog..Font.Name
 #: LogonDlg.dfm:12
 #. LogonDialog..Label1..Font.Name
-#: LogonDlg.dfm:55
-#. LogonDialog..Label2..Font.Name
-#: LogonDlg.dfm:68
+#: LogonDlg.dfm:60
+#. LogonDialog..PwdEdit..EditLabel.Font.Name
+#: LogonDlg.dfm:298
 #. InputLptPortDialog..Font.Name
 #: LptSelect.dfm:12
 #. MemoDialog..Font.Name
@@ -655,10 +651,6 @@ msgstr ""
 #: MoveListDlg.dfm:13
 #. NewPwdDialog..Font.Name
 #: NewPwdDlg.dfm:12
-#. NewPwdDialog..paPwd..Label1..Font.Name
-#: NewPwdDlg.dfm:37
-#. NewPwdDialog..paConfirm..laRepeat..Font.Name
-#: NewPwdDlg.dfm:298
 #. InputNumber..Font.Name
 #: NumDlg.dfm:12
 #. OpenFilesDialog..Font.Name
@@ -670,21 +662,19 @@ msgstr ""
 #. PasswordDialog..Font.Name
 #: PwdDlg.dfm:12
 #. PasswordDialog..pnTop..lblPrompt..Font.Name
-#: PwdDlg.dfm:69
+#: PwdDlg.dfm:71
 #. PasswordDialog..pnInput..Label1..Font.Name
-#: PwdDlg.dfm:95
+#: PwdDlg.dfm:98
 #. RandDialog..Font.Name
 #: RandDlg.dfm:13
 #. SearchPathDialog..Font.Name
 #: SearchPathDlg.dfm:11
 #. SearchPathDialog..Liste..Font.Name
-#: SearchPathDlg.dfm:258
+#: SearchPathDlg.dfm:411
 #. SelectColorDialog..Font.Name
 #: SelectColorDlg.dfm:12
 #. SelectDialog..Font.Name
 #: SelectDlg.dfm:12
-#. SelectDialog..lbCaption..Font.Name
-#: SelectDlg.dfm:28
 #. SelectFilesDialog..Font.Name
 #: SelectFilesDlg.dfm:11
 #. SelectFontDialog..Font.Name
@@ -692,7 +682,9 @@ msgstr ""
 #. SelectFontDialog..edPreview..Font.Name
 #: SelectFontDlg.dfm:191
 #. SelectFromListDialog..Font.Name
-#: SelectFromListDlg.dfm:11
+#: SelectFromListDlg.dfm:12
+#. SelectListItemDialog..Font.Name
+#: SelectListItemDlg.dfm:13
 #. SelectListItemsDialog..Font.Name
 #: SelectListItems.dfm:11
 #. ShellDirDialog..Font.Name
@@ -713,6 +705,14 @@ msgstr ""
 #: ShowMemo.dfm:12
 #. ShowTextDialog..FontDialog..Font.Name
 #: ShowMemo.dfm:1326
+#. ShowMsgDialog..Font.Name
+#: ShowMessageDlg.dfm:13
+#. ShowMsgDialog..stInfo..Font.Name
+#: ShowMessageDlg.dfm:211
+#. ShowMsgDialog..Font.Name
+#: ShowMessageDlgST.dfm:14
+#. ShowMsgDialog..stInfo..Font.Name
+#: ShowMessageDlgST.dfm:213
 #. ShowStringListDialog..Font.Name
 #: ShowStringList.dfm:11
 #. ShowtextDialog..Font.Name
@@ -804,5 +804,12 @@ msgstr ""
 #. SelectDateDialog..paTop..pcMode..tsRelative..Caption
 #: SelectDateDlg.dfm:225
 msgid "x"
+msgstr ""
+
+#. SelectDialog..stCaption..Caption
+#: SelectDlg.dfm:172
+#. ShowMsgDialog..stInfo..Caption
+#: ShowMessageDlgST.dfm:209
+msgid "xxx"
 msgstr ""
 
