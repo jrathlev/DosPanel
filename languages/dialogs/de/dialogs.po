@@ -5,15 +5,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Delphi dialogs - German translation\n"
-"POT-Creation-Date: 2022-08-17 12:29\n"
-"PO-Revision-Date: 2022-08-15 17:33+0200\n"
+"POT-Creation-Date: 2023-06-19 13:47\n"
+"PO-Revision-Date: 2023-06-19 13:47+0200\n"
 "Last-Translator: J. Rathlev <kontakt@rathlev-home.de>\n"
 "Language-Team: J. Rathlev <info@rathlev-home.de>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.3.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #. AccountDialog..btnShow..Hint
@@ -23,7 +23,7 @@ msgstr ""
 #. MailDialog..Panel3..cbShowPwd..Caption
 #. NewPwdDialog..paBottom..btnShow..Hint
 #: AccountDlg.dfm:30 FtpDlg.dfm:37 FtpProxyDlg.dfm:172 HttpProxyDlg.dfm:52
-#: MailDlg.dfm:668 NewPwdDlg.dfm:59
+#: MailDlg.dfm:641 NewPwdDlg.dfm:59
 msgid "Show password"
 msgstr "Kennwort anzeigen"
 
@@ -64,6 +64,7 @@ msgstr "Kennwort anzeigen"
 #. InputNumber..OKBtn..Caption
 #. OpenFilesDialog..OKBtn..Caption
 #. PathDialog..OKBtn..Caption
+#. PrintPageDialog..OKBtn..Caption
 #. PasswordDialog..pnBottom..OKBtn..Caption
 #. RandDialog..OKBtn..Caption
 #. SearchPathDialog..OKBtn..Caption
@@ -83,22 +84,22 @@ msgstr "Kennwort anzeigen"
 #. PageFormatDialog..OKBtn..Caption
 #. TextEingabe..OKBtn..Caption
 #. TimeCompareDialog..pnBottom..OKBtn..Caption
-#: AccountDlg.dfm:124 AppListDlg.dfm:369 ColumnDlg.dfm:221 CsvDialog.dfm:51
+#: AccountDlg.dfm:124 AppListDlg.dfm:458 ColumnDlg.dfm:221 CsvImportDlg.dfm:51
 #: DateFormatDlg.dfm:35 DetailInfoDlg.dfm:72 DListDlg.dfm:491
-#: DStringListDlg.dfm:389 EditHistListDlg.dfm:31 EditStringListDlg.dfm:34
-#: EtikettDlg.dfm:31 ExportDlg.dfm:25 FileFilterDlg.dfm:491 FileListDlg.dfm:511
-#: FilterDlg.dfm:32 FtpDirDlg.dfm:38 FtpDlg.dfm:347 FtpProxyDlg.dfm:31
-#: GTCDlg.dfm:92 HttpProxyDlg.dfm:115 InpDFloat.dfm:50 InpFloat.dfm:37
+#: DStringListDlg.dfm:362 EditHistListDlg.dfm:31 EditStringListDlg.dfm:34
+#: EtikettDlg.dfm:31 ExportDlg.dfm:25 FileFilterDlg.dfm:491 FileListDlg.dfm:523
+#: FilterDlg.dfm:32 FtpDirDlg.dfm:38 FtpDlg.dfm:374 FtpProxyDlg.dfm:31
+#: GTCDlg.dfm:92 HttpProxyDlg.dfm:142 InpDFloat.dfm:50 InpFloat.dfm:37
 #: InpMaskedText.dfm:31 InpMath.dfm:36 InpNumber.dfm:54 InpText.dfm:30
 #: Kalender.dfm:227 LanguageDlg.dfm:96 Listdlg.dfm:477 LptSelect.dfm:24
 #: MailDlg.dfm:31 MemoDlg.dfm:48 MoveListDlg.dfm:30 NewPwdDlg.dfm:215
-#: NumDlg.dfm:46 OpenFilesDlg.dfm:34 PathDlg.dfm:49 PwdDlg.dfm:345
-#: RandDlg.dfm:43 SearchPathDlg.dfm:280 SelectColorDlg.dfm:46
+#: NumDlg.dfm:46 OpenFilesDlg.dfm:34 PathDlg.dfm:87 PrintPageDlg.dfm:43
+#: PwdDlg.dfm:346 RandDlg.dfm:43 SearchPathDlg.dfm:280 SelectColorDlg.dfm:46
 #: SelectFilesDlg.dfm:34 SelectFontDlg.dfm:29 SelectFromListDlg.dfm:601
 #: SelectListItemDlg.dfm:30 SelectListItems.dfm:39 ShellDirDlg.dfm:2180
-#: ShellFileDlg.dfm:2155 Show.dfm:65 ShowFilesDlg.dfm:48 ShowImage.dfm:53
+#: ShellFileDlg.dfm:2155 Show.dfm:63 ShowFilesDlg.dfm:48 ShowImage.dfm:52
 #: Sizedlg.dfm:25 SynEdKeyDlg.dfm:56 SynEdPageDlg.dfm:24 Textdlg.dfm:34
-#: TimeCompDlg.dfm:99 TransferStat.pas:277
+#: TimeCompDlg.dfm:99 ProgWind.pas:167 TransferStat.pas:277
 msgid "OK"
 msgstr "OK"
 
@@ -143,6 +144,7 @@ msgstr "OK"
 #. OpenFilesDialog..CancelBtn..Caption
 #. PathDialog..CancelBtn..Caption
 #. PrintPageDialog..CancelBtn..Caption
+#. ProgressWindow..Button..Caption
 #. PasswordDialog..pnBottom..CancelBtn..Caption
 #. RandDialog..CancelBtn..Caption
 #. SearchPathDialog..CancelBtn..Caption
@@ -166,23 +168,23 @@ msgstr "OK"
 #. WebBrowserWin..ActionList..ActionCancel..Caption
 #. Spalten in letzter Zeile
 #: AccountDlg.dfm:188 AppListDlg.dfm:33 CharTableDlg.dfm:91 ColumnDlg.dfm:284
-#: ConfirmCheckDlg.dfm:201 ConfirmReplDlg.dfm:34 CsvDialog.dfm:115
-#: DateFormatDlg.dfm:99 DListDlg.dfm:555 DStringListDlg.dfm:452
+#: ConfirmCheckDlg.dfm:233 ConfirmReplDlg.dfm:34 CsvImportDlg.dfm:115
+#: DateFormatDlg.dfm:99 DListDlg.dfm:555 DStringListDlg.dfm:425
 #: EditHistListDlg.dfm:95 EditStringListDlg.dfm:98 EtikettDlg.dfm:94
-#: ExportDlg.dfm:89 FileFilterDlg.dfm:554 FileListDlg.dfm:575 FilterDlg.dfm:96
-#: FtpDirDlg.dfm:102 FtpDlg.dfm:235 FtpProxyDlg.dfm:95 GTCDlg.dfm:154
-#: HttpProxyDlg.dfm:178 InpDFloat.dfm:113 InpFloat.dfm:100 InpMaskedText.dfm:94
+#: ExportDlg.dfm:89 FileFilterDlg.dfm:554 FileListDlg.dfm:587 FilterDlg.dfm:96
+#: FtpDirDlg.dfm:102 FtpDlg.dfm:262 FtpProxyDlg.dfm:95 GTCDlg.dfm:154
+#: HttpProxyDlg.dfm:205 InpDFloat.dfm:113 InpFloat.dfm:100 InpMaskedText.dfm:94
 #: InpMath.dfm:100 InpNumber.dfm:118 InpText.dfm:94 Kalender.dfm:292
 #: LanguageDlg.dfm:35 Listdlg.dfm:540 LogonDlg.dfm:134 LptSelect.dfm:87
 #: MailDlg.dfm:95 MemoDlg.dfm:113 MoveListDlg.dfm:93 NewPwdDlg.dfm:153
-#: NumDlg.dfm:111 OpenFilesDlg.dfm:98 PathDlg.dfm:96 PrintPageDlg.dfm:56
-#: PwdDlg.dfm:283 RandDlg.dfm:108 SearchPathDlg.dfm:344 SelectColorDlg.dfm:109
-#: SelectFilesDlg.dfm:98 SelectFontDlg.dfm:93 SelectFromListDlg.dfm:754
-#: SelectListItemDlg.dfm:93 SelectListItems.dfm:103 ShellDirDlg.dfm:2118
-#: ShellDirDlg.dfm:2294 ShellFileDlg.dfm:2227 ShellFileDlg.dfm:2332
-#: Sizedlg.dfm:90 StatWind.dfm:50 SynEdKeyDlg.dfm:126 SynEdPageDlg.dfm:87
-#: Textdlg.dfm:99 TimeCompDlg.dfm:37 TransferStat.dfm:91 WebBrowser.dfm:199
-#: SelectDlg.pas:201 TransferStat.pas:241
+#: NumDlg.dfm:111 OpenFilesDlg.dfm:98 PathDlg.dfm:151 PrintPageDlg.dfm:108
+#: ProgWind.dfm:53 PwdDlg.dfm:284 RandDlg.dfm:108 SearchPathDlg.dfm:344
+#: SelectColorDlg.dfm:109 SelectFilesDlg.dfm:98 SelectFontDlg.dfm:93
+#: SelectFromListDlg.dfm:754 SelectListItemDlg.dfm:93 SelectListItems.dfm:103
+#: ShellDirDlg.dfm:2118 ShellDirDlg.dfm:2301 ShellFileDlg.dfm:2227
+#: ShellFileDlg.dfm:2332 Sizedlg.dfm:90 StatWind.dfm:50 SynEdKeyDlg.dfm:126
+#: SynEdPageDlg.dfm:87 Textdlg.dfm:99 TimeCompDlg.dfm:37 TransferStat.dfm:91
+#: WebBrowser.dfm:196 ProgWind.pas:155 SelectDlg.pas:207 TransferStat.pas:241
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -190,7 +192,7 @@ msgstr "Abbrechen"
 #. ColumnDialog..Label1..Caption
 #. FileListDialog..laName..Caption
 #. FtpDialog..pnTitle..edName..EditLabel.Caption
-#: AccountDlg.dfm:251 ColumnDlg.dfm:212 FileListDlg.dfm:483 FtpDlg.dfm:543
+#: AccountDlg.dfm:251 ColumnDlg.dfm:212 FileListDlg.dfm:489 FtpDlg.dfm:570
 #: DStringListDlg.pas:306 DStringListDlg.pas:308 DStringListDlg.pas:327
 #: DStringListDlg.pas:329
 msgid "Name:"
@@ -199,7 +201,7 @@ msgstr "Name:"
 #. AccountDialog..edtName..TextHint
 #. FtpProxyDialog..edUser..TextHint
 #. LogonDialog..cbName..Hint
-#: AccountDlg.dfm:253 FtpProxyDlg.dfm:196 LogonDlg.dfm:272
+#: AccountDlg.dfm:253 FtpProxyDlg.dfm:196 LogonDlg.dfm:259
 msgid "User name"
 msgstr "Benutzername"
 
@@ -211,7 +213,7 @@ msgstr "Benutzername"
 #. MailDialog..Panel3..Label6..Caption
 #. PasswordDialog..pnInput..Label1..Caption
 #: AccountDlg.dfm:262 FtpDlg.dfm:144 FtpProxyDlg.dfm:205 HttpProxyDlg.dfm:38
-#: LogonDlg.dfm:294 MailDlg.dfm:521 PwdDlg.dfm:94
+#: LogonDlg.dfm:281 MailDlg.dfm:494 PwdDlg.dfm:94
 msgid "Password:"
 msgstr "Kennwort:"
 
@@ -251,7 +253,7 @@ msgstr "Anwendung"
 #. ColumnDialog..btnInsert..Caption
 #. EditStringListDialog..btnAdd..Caption
 #. SelectFromListDialog..paEdit..gbxEdit..btnInsert..Caption
-#: AppListDlg.dfm:101 ColumnDlg.dfm:489 EditStringListDlg.dfm:482
+#: AppListDlg.dfm:101 ColumnDlg.dfm:489 EditStringListDlg.dfm:536
 #: SelectFromListDlg.dfm:48
 msgid "Add"
 msgstr "Hinzufügen"
@@ -262,8 +264,8 @@ msgstr "Hinzufügen"
 #. EditHistListDialog..btnDelete..Caption
 #. EditStringListDialog..btnDelete..Caption
 #. SelectFromListDialog..paEdit..gbxEdit..btnDelete..Caption
-#: AppListDlg.dfm:190 ColumnDlg.dfm:399 DStringListDlg.dfm:288
-#: EditHistListDlg.dfm:167 EditStringListDlg.dfm:302 SelectFromListDlg.dfm:139
+#: AppListDlg.dfm:190 ColumnDlg.dfm:399 DStringListDlg.dfm:261
+#: EditHistListDlg.dfm:168 EditStringListDlg.dfm:356 SelectFromListDlg.dfm:139
 msgid "Remove"
 msgstr "Entfernen"
 
@@ -274,8 +276,13 @@ msgstr "Entfernen"
 msgid "Change"
 msgstr "Ändern"
 
+#. AppListDialog..paButtons..gbxEdit..btnRename..Caption
+#: AppListDlg.dfm:368
+msgid "Rename"
+msgstr "Umbenennen"
+
 #. AppListDialog..paButtons..gbxMove..Caption
-#: AppListDlg.dfm:431
+#: AppListDlg.dfm:520
 msgid "Change order"
 msgstr "Reihenfolge"
 
@@ -287,7 +294,7 @@ msgstr "Reihenfolge"
 #. MoveListDialog..gbxMove..UpBtn..Hint
 #. SearchPathDialog..UpBtn..Hint
 #. SelectFromListDialog..paEdit..gbxMove..UpBtn..Hint
-#: AppListDlg.dfm:440 ColumnDlg.dfm:120 EditHistListDlg.dfm:264
+#: AppListDlg.dfm:529 ColumnDlg.dfm:120 EditHistListDlg.dfm:265
 #: EditStringListDlg.dfm:176 Listdlg.dfm:32 MoveListDlg.dfm:169
 #: SearchPathDlg.dfm:26 SelectFromListDlg.dfm:419
 msgid "Move item up"
@@ -301,8 +308,8 @@ msgstr "Listenpunkt nach oben schieben"
 #. MoveListDialog..gbxMove..DownBtn..Hint
 #. SearchPathDialog..DownBtn..Hint
 #. SelectFromListDialog..paEdit..gbxMove..DownBtn..Hint
-#: AppListDlg.dfm:478 ColumnDlg.dfm:29 EditHistListDlg.dfm:354
-#: EditStringListDlg.dfm:238 Listdlg.dfm:121 MoveListDlg.dfm:258
+#: AppListDlg.dfm:567 ColumnDlg.dfm:29 EditHistListDlg.dfm:355
+#: EditStringListDlg.dfm:265 Listdlg.dfm:121 MoveListDlg.dfm:258
 #: SearchPathDlg.dfm:89 SelectFromListDlg.dfm:509
 msgid "Move item down"
 msgstr "Listenpunkt nach unten schiebn"
@@ -310,17 +317,17 @@ msgstr "Listenpunkt nach unten schiebn"
 #. AppListDialog..paBottom..edAppPath..EditLabel.Caption
 #. PathDialog..lePath..EditLabel.Caption
 #. SearchPathDialog..PathEdit..EditLabel.Caption
-#: AppListDlg.dfm:550 PathDlg.dfm:142 SearchPathDlg.dfm:519 PathDlg.pas:80
+#: AppListDlg.dfm:639 PathDlg.dfm:214 SearchPathDlg.dfm:519 PathDlg.pas:80
 msgid "Path:"
 msgstr "Pfad:"
 
 #. AppListDialog..OpenDialog..Filter
-#: AppListDlg.dfm:556
+#: AppListDlg.dfm:645
 msgid "Programs|*.exe|all|*.*"
 msgstr "Programme|*.exe|alle|*.*"
 
 #. AppListDialog..OpenDialog..Title
-#: AppListDlg.dfm:558
+#: AppListDlg.dfm:647
 msgid "Select application"
 msgstr "Anwendung auswählen"
 
@@ -391,7 +398,7 @@ msgstr "Bestätigen"
 #. FtpDialog..pnSettings..gbSecure..rbNone..Caption
 #. ShowMsgDialog..btLeft..Caption
 #. ShowMsgDialog..btLeft..Caption
-#: ConfirmCheckDlg.dfm:137 FtpDlg.dfm:449 ShowMessageDlg.dfm:196
+#: ConfirmCheckDlg.dfm:169 FtpDlg.dfm:476 ShowMessageDlg.dfm:196
 #: ShowMessageDlgST.dfm:197 ConfirmCheckDlg.pas:90
 msgid "No"
 msgstr "Nein"
@@ -419,113 +426,115 @@ msgid "&All"
 msgstr "&Alle"
 
 #. CsvImportDialog..Caption
-#: CsvDialog.dfm:5
+#: CsvImportDlg.dfm:5
 msgid "Import CSV data"
 msgstr "CSV-Daten importieren"
 
 #. CsvImportDialog..Panel1..Label3..Caption
-#: CsvDialog.dfm:33
+#: CsvImportDlg.dfm:33
 msgid "Import file:"
 msgstr "Datei importieren:"
 
 #. CsvImportDialog..gbDelim..Caption
-#: CsvDialog.dfm:191
+#: CsvImportDlg.dfm:191
 msgid "Column separator"
 msgstr "Spalten-Trenner"
 
 #. CsvImportDialog..gbDelim..rbSpace..Caption
 #. ExportDialog..DelimGroup....Items.Strings
-#: CsvDialog.dfm:198 ExportDlg.dfm:155
+#: CsvImportDlg.dfm:198 ExportDlg.dfm:155
 msgid "Space"
 msgstr "Leerzeichen"
 
 #. CsvImportDialog..gbDelim..rbTab..Caption
 #. ExportDialog..DelimGroup....Items.Strings
-#: CsvDialog.dfm:207 ExportDlg.dfm:159
+#: CsvImportDlg.dfm:207 ExportDlg.dfm:159
 msgid "Tab"
 msgstr "Tab"
 
 #. CsvImportDialog..gbDelim..rbSemi..Caption
 #. ExportDialog..DelimGroup....Items.Strings
-#: CsvDialog.dfm:218 ExportDlg.dfm:156
+#: CsvImportDlg.dfm:218 ExportDlg.dfm:156
 msgid "Semicolon"
 msgstr "Semikolon"
 
 #. CsvImportDialog..gbDelim..rbComma..Caption
 #. CsvImportDialog..rgDecimal....Items.Strings
 #. ExportDialog..DelimGroup....Items.Strings
-#: CsvDialog.dfm:227 CsvDialog.dfm:346 ExportDlg.dfm:158
+#: CsvImportDlg.dfm:227 CsvImportDlg.dfm:346 ExportDlg.dfm:158
 msgid "Comma"
 msgstr "Komma"
 
 #. CsvImportDialog..gbDelim..rbOtherDel..Caption
 #. CsvImportDialog..gbQuote..rbOtherQuote..Caption
-#: CsvDialog.dfm:236 CsvDialog.dfm:289
+#: CsvImportDlg.dfm:236 CsvImportDlg.dfm:289
 msgid "Other"
 msgstr "Andere"
 
 #. CsvImportDialog..gbDelim..rbSlash..Caption
-#: CsvDialog.dfm:252
+#: CsvImportDlg.dfm:252
 msgid "Slash"
 msgstr "Schrägstrich"
 
 #. CsvImportDialog..gbQuote..Caption
-#: CsvDialog.dfm:262
+#: CsvImportDlg.dfm:262
 msgid "Quote character"
 msgstr "Anführungszeichen"
 
 #. CsvImportDialog..gbQuote..rbNoQuote..Caption
-#: CsvDialog.dfm:269
+#. MailDialog..GroupBox1..cbSecure..Text
+#. MailDialog..GroupBox1..cbSecure....Items.Strings
+#: CsvImportDlg.dfm:269 MailDlg.dfm:671 MailDlg.dfm:674
 msgid "None"
 msgstr "Keine"
 
 #. CsvImportDialog..gbQuote..rbQuote..Caption
-#: CsvDialog.dfm:280
+#: CsvImportDlg.dfm:280
 msgid "Double quote"
 msgstr "Doppel-Anf.z."
 
 #. CsvImportDialog..gbLine..Caption
-#: CsvDialog.dfm:306
+#: CsvImportDlg.dfm:306
 msgid "Read data from"
 msgstr "Lese Daten ab"
 
 #. CsvImportDialog..gbLine..Label4..Caption
-#: CsvDialog.dfm:313
+#: CsvImportDlg.dfm:313
 msgid "Line:"
 msgstr "Zeile:"
 
 #. CsvImportDialog..rgDecimal..Caption
-#: CsvDialog.dfm:341
+#: CsvImportDlg.dfm:341
 msgid "Decimal separator"
 msgstr "Dezimaltrenner"
 
 #. CsvImportDialog..rgDecimal....Items.Strings
-#: CsvDialog.dfm:345
+#: CsvImportDlg.dfm:345
 msgid "Point"
 msgstr "Punkt"
 
 #. CsvImportDialog..GroupBox1..Caption
-#: CsvDialog.dfm:355
+#: CsvImportDlg.dfm:355
 msgid "Preview"
 msgstr "Vorschau"
 
 #. CsvImportDialog..GroupBox1..edCol1..EditLabel.Caption
-#: CsvDialog.dfm:364
+#: CsvImportDlg.dfm:364
 msgid "Column 1"
 msgstr "Spalte 1"
 
 #. CsvImportDialog..GroupBox1..edCol2..EditLabel.Caption
-#: CsvDialog.dfm:375
+#: CsvImportDlg.dfm:375
 msgid "Column 2"
 msgstr "Spalte 2"
 
 #. CsvImportDialog..GroupBox1..edCol3..EditLabel.Caption
-#: CsvDialog.dfm:386
+#: CsvImportDlg.dfm:386
 msgid "Column 3"
 msgstr "Spalte 3"
 
 #. CsvImportDialog..GroupBox1..edCol4..EditLabel.Caption
-#: CsvDialog.dfm:397
+#: CsvImportDlg.dfm:397
 msgid "Column 4"
 msgstr "Spalte 4"
 
@@ -616,22 +625,22 @@ msgstr "Aus Datei laden"
 #. DStringListDialog..spdEdit..Caption
 #. EditHistListDialog..btnEdit..Caption
 #. EditStringListDialog..btnEdit..Caption
-#: DStringListDlg.dfm:114 EditHistListDlg.dfm:446 EditStringListDlg.dfm:392
+#: DStringListDlg.dfm:87 EditHistListDlg.dfm:448 EditStringListDlg.dfm:446
 msgid "Edit"
 msgstr "Bearbeiten"
 
 #. DStringListDialog..spdNew..Caption
-#: DStringListDlg.dfm:201
+#: DStringListDlg.dfm:174
 msgid "New"
 msgstr "Neu"
 
 #. DStringListDialog..labGruppen..Caption
-#: DStringListDlg.dfm:375
+#: DStringListDlg.dfm:348
 msgid "Groups:"
 msgstr "Gruppen:"
 
 #. DStringListDialog..labItems..Caption
-#: DStringListDlg.dfm:382
+#: DStringListDlg.dfm:355
 msgid "Parts:"
 msgstr "Teile:"
 
@@ -640,10 +649,25 @@ msgstr "Teile:"
 msgid "Edit list entries"
 msgstr "Listeneinträge bearbeiten"
 
+#. EditHistListDialog..btnDelete..Hint
+#. ListenDialog..DeleteBtn..Hint
+#. SelectFromListDialog..paEdit..gbxEdit..btnDelete..Hint
+#: EditHistListDlg.dfm:166 Listdlg.dfm:210 SelectFromListDlg.dfm:137
+msgid "Remove item"
+msgstr "Eintrag entfernen"
+
 #. EditHistListDialog..gbxMove..Caption
-#: EditHistListDlg.dfm:257
+#: EditHistListDlg.dfm:258
 msgid "Move entry"
 msgstr "Eintrag verschieben"
+
+#. EditHistListDialog..btnEdit..Hint
+#. SelectFromListDialog..paEdit..gbxEdit..btnEdit..Hint
+#: EditHistListDlg.dfm:446 SelectFromListDlg.dfm:228 EditHistListDlg.pas:132
+#: EditStringListDlg.pas:120 SelectFromListDlg.pas:186
+#: SelectFromListDlg.pas:209
+msgid "Edit item"
+msgstr "Eintrag bearbeiten"
 
 #. EditStringListDialog..Caption
 #: EditStringListDlg.dfm:5
@@ -750,7 +774,8 @@ msgid "Use embrace characters  (\")"
 msgstr "Mit Umschließungszeichen (\")"
 
 #. FileFilterDialog..Label2..Caption
-#: FileFilterDlg.dfm:32 AppListDlg.pas:298 AppListDlg.pas:332
+#: FileFilterDlg.dfm:32 AppListDlg.pas:314 AppListDlg.pas:348
+#: AppListDlg.pas:368
 msgid "Description:"
 msgstr "Beschreibung:"
 
@@ -786,37 +811,37 @@ msgid "Replace in list"
 msgstr "In Liste ersetzen"
 
 #. FileListDialog..UpBtn..Hint
-#: FileListDlg.dfm:33
+#: FileListDlg.dfm:39
 msgid "Move file up"
 msgstr "Datei nach oben schieben"
 
 #. FileListDialog..DownBtn..Hint
-#: FileListDlg.dfm:123
+#: FileListDlg.dfm:129
 msgid "Move file down"
 msgstr "Datei nach unten schieben"
 
 #. FileListDialog..DeleteBtn..Hint
-#: FileListDlg.dfm:213
+#: FileListDlg.dfm:219
 msgid "Remove file"
 msgstr "Datei aus der Liste entfernen"
 
 #. FileListDialog..InsertBtn..Hint
-#: FileListDlg.dfm:303
+#: FileListDlg.dfm:309
 msgid "Insert file"
 msgstr "Datei einfügen"
 
 #. FileListDialog..btSaveAs..Hint
-#: FileListDlg.dfm:393
+#: FileListDlg.dfm:399
 msgid "Save as new file"
 msgstr "Als neue Datei speichern"
 
 #. FileListDialog..Label2..Caption
-#: FileListDlg.dfm:496
+#: FileListDlg.dfm:508
 msgid "List of files:"
 msgstr "Dateiliste:"
 
 #. FileListDialog..Label3..Caption
-#: FileListDlg.dfm:503
+#: FileListDlg.dfm:515
 msgid "Common path:"
 msgstr "Gemeinsamer Pfad:"
 
@@ -884,7 +909,7 @@ msgstr "Suche nach:"
 #. FindReplDialog..pnlControls..GroupBox1..Caption
 #. FtpDialog..pnSettings..gbOptions..Caption
 #. PageFormatDialog..GroupBox2..Caption
-#: FindReplDlg.dfm:62 FtpDlg.dfm:409 SynEdPageDlg.dfm:314
+#: FindReplDlg.dfm:62 FtpDlg.dfm:436 SynEdPageDlg.dfm:314
 msgid "Options"
 msgstr "Optionen"
 
@@ -947,19 +972,20 @@ msgstr "Markierter Text"
 #. ShowTextDialog..pnTop..EndeBtn..Caption
 #. ShowMsgDialog..btClose..Caption
 #. ShowMsgDialog..btClose..Caption
-#. ShowStringListDialog..CancelBtn..Caption
+#. ShowStringListDialog..paBottom..CancelBtn..Caption
 #. ShowtextDialog..Panel2..EndeBtn..Caption
 #. WebBrowserWin..ActionList..ActionCancel..Hint
-#: FindReplDlg.dfm:128 ShowMemo.dfm:1155 ShowMessageDlg.dfm:173
-#: ShowMessageDlgST.dfm:174 ShowStringList.dfm:34 ShowText.dfm:37
-#: WebBrowser.dfm:200
+#. frmWebView..paTop..bbClose..Hint
+#: FindReplDlg.dfm:128 ShowMemo.dfm:1210 ShowMessageDlg.dfm:173
+#: ShowMessageDlgST.dfm:174 ShowStringList.dfm:49 ShowText.dfm:37
+#: WebBrowser.dfm:197 WebView.dfm:276
 msgid "Close"
 msgstr "Schließen"
 
 #. FindReplDialog..pnlControls..btnSearch..Caption
 #. ShowTextDialog..pnTop..SearchBtn..Caption
 #. ShowtextDialog..Panel2..SearchBtn..Caption
-#: FindReplDlg.dfm:138 ShowMemo.dfm:348 ShowText.dfm:276 FindReplDlg.pas:351
+#: FindReplDlg.dfm:138 ShowMemo.dfm:403 ShowText.dfm:276 FindReplDlg.pas:351
 msgid "&Search"
 msgstr "&Suchen"
 
@@ -1001,23 +1027,23 @@ msgstr "Unterverzeichnisse:"
 
 #. FtpDirDialog..btnDirUp..Hint
 #. ShowFilesDialog..pnBottom..btnDirUp..Hint
-#: FtpDirDlg.dfm:177 ShowFilesDlg.dfm:110
+#: FtpDirDlg.dfm:176 ShowFilesDlg.dfm:110
 msgid "One directory up"
 msgstr "Ein Verzeichnis nach oben"
 
 #. FtpDirDialog..edBaseDir..EditLabel.Caption
-#: FtpDirDlg.dfm:244
+#: FtpDirDlg.dfm:243
 msgid "Root directory on FTP server"
 msgstr "Stammverzeichnis auf dem FTP-Server"
 
 #. FtpDirDialog..edSubDir..EditLabel.Caption
-#: FtpDirDlg.dfm:256
+#: FtpDirDlg.dfm:255
 msgid "Selected subdirectory:"
 msgstr "Ausgewähltes Unterverzeichnis:"
 
 #. FtpDialog..Caption
 #. Extract parent path
-#: FtpDlg.dfm:5 FtpDirDlg.pas:171 FtpDirDlg.pas:202
+#: FtpDlg.dfm:5 FtpDirDlg.pas:170 FtpDirDlg.pas:201
 msgid "FTP connection"
 msgstr "FTP-Verbindung"
 
@@ -1034,7 +1060,7 @@ msgstr "Servername:"
 #. LogonDialog..Label1..Caption
 #. MailDialog..Panel3..Label5..Caption
 #: FtpDlg.dfm:137 FtpProxyDlg.dfm:194 HttpProxyDlg.dfm:31 LogonDlg.dfm:56
-#: MailDlg.dfm:514
+#: MailDlg.dfm:487
 msgid "User name:"
 msgstr "Benutzername:"
 
@@ -1047,7 +1073,7 @@ msgstr "Verzeichnis auf dem Server:"
 #. FtpProxyDialog..edtPort..EditLabel.Caption
 #. HttpProxyDialog..Label5..Caption
 #. MailDialog..Panel3..Label7..Caption
-#: FtpDlg.dfm:158 FtpProxyDlg.dfm:216 HttpProxyDlg.dfm:45 MailDlg.dfm:528
+#: FtpDlg.dfm:158 FtpProxyDlg.dfm:216 HttpProxyDlg.dfm:45 MailDlg.dfm:501
 msgid "Port:"
 msgstr "Port:"
 
@@ -1063,74 +1089,75 @@ msgstr "Einstellungen für Proxy-Server"
 
 #. FtpDialog..pnSettings..cbProxy..Caption
 #. HttpProxyDialog..cbUseProxy..Caption
-#: FtpDlg.dfm:296 HttpProxyDlg.dfm:270
+#: FtpDlg.dfm:323 HttpProxyDlg.dfm:297
 msgid "Use proxy server"
 msgstr "Proxy-Server verwenden"
 
 #. FtpDialog..pnSettings..cbxCase..Text
 #. FtpDialog..pnSettings..cbxCase....Items.Strings
-#: FtpDlg.dfm:308 FtpDlg.dfm:310
+#: FtpDlg.dfm:335 FtpDlg.dfm:337
 msgid "do not change"
 msgstr "nicht verändern"
 
 #. FtpDialog..pnSettings..cbxCase....Items.Strings
-#: FtpDlg.dfm:311
+#: FtpDlg.dfm:338
 msgid "change to lower case"
 msgstr "Ändern auf alles klein"
 
 #. FtpDialog..pnSettings..cbxCase....Items.Strings
-#: FtpDlg.dfm:312
+#: FtpDlg.dfm:339
 msgid "change to UPPER CASE"
 msgstr "Ändern auf ALLES GROSS"
 
 #. FtpDialog..pnSettings..gbOptions..cbPassive..Caption
-#: FtpDlg.dfm:416
+#: FtpDlg.dfm:443
 msgid "Use passive mode"
 msgstr "Passiv-Modus verwenden"
 
 #. FtpDialog..pnSettings..gbOptions..cbUseHost..Caption
-#: FtpDlg.dfm:425
+#: FtpDlg.dfm:452
 msgid "Use HOST command"
 msgstr "Benutze HOST-Befehl"
 
 #. FtpDialog..pnSettings..gbOptions..cbUtf8..Caption
-#: FtpDlg.dfm:433
+#: FtpDlg.dfm:460
 msgid "Force UTF-8 encoding"
 msgstr "UTF-8-Kodierung erzwingen"
 
 #. FtpDialog..pnSettings..gbSecure..Caption
-#: FtpDlg.dfm:442
+#. MailDialog..GroupBox1..Caption
+#: FtpDlg.dfm:469 MailDlg.dfm:661
 msgid "Use secure data connection"
 msgstr "Sichere Verbindung verwenden"
 
 #. FtpDialog..pnSettings..gbSecure..rbAvail..Caption
-#: FtpDlg.dfm:460
+#: FtpDlg.dfm:487
 msgid "If available"
 msgstr "Wenn verfügbar"
 
 #. FtpDialog..pnSettings..gbSecure..rbAlways..Caption
-#: FtpDlg.dfm:469
+#: FtpDlg.dfm:496
 msgid "Always"
 msgstr "Immer"
 
 #. FtpDialog..pnSettings..gbSecure..rbRequired..Caption
-#: FtpDlg.dfm:478
+#: FtpDlg.dfm:505
 msgid "Require"
 msgstr "Anfordern"
 
 #. FtpDialog..pnSettings..cbFtpLog..Hint
-#: FtpDlg.dfm:488
+#: FtpDlg.dfm:515
 msgid "This option is only for debugging purposes"
 msgstr "Diese Option ist nur für Testzwecke gedacht"
 
 #. FtpDialog..pnSettings..cbFtpLog..Caption
 #. MailDialog..Panel1..cbMailLog..Caption
-#: FtpDlg.dfm:489 MailDlg.dfm:460
+#: FtpDlg.dfm:516 MailDlg.dfm:433
 msgid "Write communication log to file"
 msgstr "Schreibe Kommunikations-Protokoll in Datei"
 
 #. FtpDialog..pnSettings..cbQuotes..Caption
-#: FtpDlg.dfm:499
+#: FtpDlg.dfm:526
 msgid "Allow filenames to be enclosed in quotes"
 msgstr "Erlaube Dateinamen in Anführungszeichen"
 
@@ -1215,18 +1242,19 @@ msgid "Previous"
 msgstr "Zurück"
 
 #. HelpWindow..pnlTop..FwdBtn..Hint
-#: HelpWin.dfm:98
+#: HelpWin.dfm:99
 msgid "Next"
 msgstr "Weiter"
 
 #. HelpWindow..pnlTop..HomeBtn..Hint
 #. WebBrowserWin..ActionList..ActionHome..Hint
-#: HelpWin.dfm:161 WebBrowser.dfm:179
+#. frmWebView..paTop..bbHome..Hint
+#: HelpWin.dfm:163 WebBrowser.dfm:176 WebView.dfm:94
 msgid "Home"
 msgstr "An Anfang"
 
 #. HelpWindow..pnlTop..EndeBtn..Hint
-#: HelpWin.dfm:182
+#: HelpWin.dfm:227
 msgid "End"
 msgstr "Ende"
 
@@ -1371,12 +1399,6 @@ msgstr "Sprachen-Auswahl"
 msgid "New item:"
 msgstr "Neuer Eintrag:"
 
-#. ListenDialog..DeleteBtn..Hint
-#. SelectFromListDialog..paEdit..gbxEdit..btnDelete..Hint
-#: Listdlg.dfm:210 SelectFromListDlg.dfm:137
-msgid "Remove item"
-msgstr "Eintrag entfernen"
-
 #. ListenDialog..InsertBtn..Hint
 #. SelectFromListDialog..Hint
 #. SelectFromListDialog..paEdit..gbxEdit..btnInsert..Hint
@@ -1451,59 +1473,49 @@ msgid "Edit recipient"
 msgstr "Empfänger bearbeiten"
 
 #. MailDialog..Panel1..edSubject..EditLabel.Caption
-#: MailDlg.dfm:452
+#: MailDlg.dfm:425
 msgid "Subject:"
 msgstr "Betreff:"
 
 #. MailDialog..Panel2..Label2..Caption
-#: MailDlg.dfm:476
+#: MailDlg.dfm:449
 msgid "Sender:"
 msgstr "Absender:"
 
 #. MailDialog..Panel2..Label3..Caption
-#: MailDlg.dfm:483
+#: MailDlg.dfm:456
 msgid "Reply-To:"
 msgstr "Antwort-Adresse:"
 
 #. MailDialog..Panel3..Label1..Caption
-#: MailDlg.dfm:535
+#: MailDlg.dfm:508
 msgid "SMTP server:"
 msgstr "SMTP-Server:"
 
 #. MailDialog..Panel3..edSmtpPwd..Hint
-#: MailDlg.dfm:542
+#: MailDlg.dfm:515
 msgid "Click button to enter password"
 msgstr "Zur Eingabe des Kennworts auf die Schaltfläche klicken"
 
-#. MailDialog..gbSecure..Caption
-#: MailDlg.dfm:678
-msgid "Use secure connection"
-msgstr "Sichere Verbindung verwenden"
-
-#. MailDialog..gbSecure..rbNone..Caption
-#: MailDlg.dfm:685
-msgid "never"
-msgstr "nie"
-
-#. MailDialog..gbSecure..rbAvail..Caption
-#: MailDlg.dfm:696
-msgid "TLS, if available"
-msgstr "TLS, wenn möglich"
-
-#. MailDialog..gbSecure..rbTLS..Caption
-#: MailDlg.dfm:705
-msgid "TLS"
-msgstr "TLS"
-
-#. MailDialog..gbSecure..rbSSL..Caption
-#: MailDlg.dfm:714
-msgid "SSL"
-msgstr "SSL"
-
 #. MailDialog..cbMail..Caption
-#: MailDlg.dfm:725
+#: MailDlg.dfm:652
 msgid "Enable mail delivery"
 msgstr "Mailversand einschalten"
+
+#. MailDialog..GroupBox1..cbSecure....Items.Strings
+#: MailDlg.dfm:675
+msgid "If available (explicit)"
+msgstr "Wenn verfügbar (explizit)"
+
+#. MailDialog..GroupBox1..cbSecure....Items.Strings
+#: MailDlg.dfm:676
+msgid "Require (explicit)"
+msgstr "Anfordern (explizit)"
+
+#. MailDialog..GroupBox1..cbSecure....Items.Strings
+#: MailDlg.dfm:677
+msgid "Always (implicit)"
+msgstr "Immer (implizit)"
 
 #. MoveListDialog..Caption
 #. SelectListItemDialog..Caption
@@ -1554,55 +1566,61 @@ msgid "Feeder offset:"
 msgstr "Papiereinzug:"
 
 #. PrintPageDialog..GroupBox1..Caption
-#: PrintPageDlg.dfm:69
+#: PrintPageDlg.dfm:170
 msgid "Page margins"
 msgstr "Seitenränder"
 
 #. PrintPageDialog..GroupBox1..Label1..Caption
 #. RandDialog..GroupBox1..Label1..Caption
 #. PageFormatDialog..GroupBox1..Label2..Caption
-#: PrintPageDlg.dfm:76 RandDlg.dfm:177 SynEdPageDlg.dfm:162
+#: PrintPageDlg.dfm:177 RandDlg.dfm:177 SynEdPageDlg.dfm:162
 msgid "Top:"
 msgstr "Oben:"
 
 #. PrintPageDialog..GroupBox1..Label2..Caption
 #. RandDialog..GroupBox1..Label2..Caption
 #. PageFormatDialog..GroupBox1..Label4..Caption
-#: PrintPageDlg.dfm:90 RandDlg.dfm:191 SynEdPageDlg.dfm:176
+#: PrintPageDlg.dfm:191 RandDlg.dfm:191 SynEdPageDlg.dfm:176
 msgid "Bottom:"
 msgstr "Unten:"
 
 #. PrintPageDialog..GroupBox1..Label4..Caption
 #. RandDialog..GroupBox1..Label4..Caption
 #. PageFormatDialog..GroupBox1..Label1..Caption
-#: PrintPageDlg.dfm:118 RandDlg.dfm:219 SynEdPageDlg.dfm:155
+#: PrintPageDlg.dfm:219 RandDlg.dfm:219 SynEdPageDlg.dfm:155
 msgid "Left:"
 msgstr "Links:"
 
 #. PrintPageDialog..GroupBox1..Label6..Caption
 #. RandDialog..GroupBox1..Label6..Caption
 #. PageFormatDialog..GroupBox1..Label3..Caption
-#: PrintPageDlg.dfm:125 RandDlg.dfm:226 SynEdPageDlg.dfm:169
+#: PrintPageDlg.dfm:226 RandDlg.dfm:226 SynEdPageDlg.dfm:169
 msgid "Right:"
 msgstr "Rechts:"
 
 #. PrintPageDialog..rgOrientation..Caption
 #. PageFormatDialog..rgpOrientation..Caption
-#: PrintPageDlg.dfm:178 SynEdPageDlg.dfm:536
+#: PrintPageDlg.dfm:279 SynEdPageDlg.dfm:536
 msgid "Orientation"
 msgstr "Seitenausrichtung"
 
 #. PrintPageDialog..rgOrientation....Items.Strings
 #. PageFormatDialog..rgpOrientation....Items.Strings
-#: PrintPageDlg.dfm:182 SynEdPageDlg.dfm:540
+#: PrintPageDlg.dfm:283 SynEdPageDlg.dfm:540
 msgid "Portrait"
 msgstr "Hochformat"
 
 #. PrintPageDialog..rgOrientation....Items.Strings
 #. PageFormatDialog..rgpOrientation....Items.Strings
-#: PrintPageDlg.dfm:183 SynEdPageDlg.dfm:541
+#: PrintPageDlg.dfm:284 SynEdPageDlg.dfm:541
 msgid "Landscape"
 msgstr "Querformat"
+
+#. ProgressWindow..Caption
+#. StatusWindow..Caption
+#: ProgWind.dfm:6 StatWind.dfm:5
+msgid "Status"
+msgstr "Status"
 
 #. PasswordDialog..gbEncrypt..Caption
 #: PwdDlg.dfm:27
@@ -1630,7 +1648,7 @@ msgid "Paste from clipboard"
 msgstr "Einfügen aus der Zwischenablage"
 
 #. PasswordDialog..pnBottom..btnSkip..Caption
-#: PwdDlg.dfm:220
+#: PwdDlg.dfm:221
 msgid "Skip"
 msgstr "Überspringen"
 
@@ -1733,7 +1751,7 @@ msgstr "Größe"
 #. SelectFontDialog..Caption
 #. ShowTextDialog..pnTop..FontBtn..Hint
 #. PageFormatDialog..GroupBox2..PageControl..TabSheet2..btnFont..Caption
-#: SelectFontDlg.dfm:5 ShowMemo.dfm:1085 SynEdPageDlg.dfm:428
+#: SelectFontDlg.dfm:5 ShowMemo.dfm:1140 SynEdPageDlg.dfm:428
 msgid "Select font"
 msgstr "Schriftart auswählen"
 
@@ -1766,12 +1784,6 @@ msgstr "Eintrag aus der Liste auswählen"
 #: SelectFromListDlg.dfm:36
 msgid "Edit items"
 msgstr "Einträge bearbeiten"
-
-#. SelectFromListDialog..paEdit..gbxEdit..btnEdit..Hint
-#: SelectFromListDlg.dfm:228 EditHistListDlg.pas:132 EditStringListDlg.pas:120
-#: SelectFromListDlg.pas:186 SelectFromListDlg.pas:209
-msgid "Edit item"
-msgstr "Eintrag bearbeiten"
 
 #. SelectFromListDialog..paEdit..gbxEdit..btnDefault..Hint
 #: SelectFromListDlg.dfm:319 SelectFromListDlg.pas:196
@@ -1852,13 +1864,13 @@ msgstr "Verzeichnis"
 
 #. ShellDirDialog..PopupMenu..itmCreate..Caption
 #. ShellFileDialog..PopupMenu..itmCreate..Caption
-#: ShellDirDlg.dfm:2279 ShellFileDlg.dfm:2317
+#: ShellDirDlg.dfm:2286 ShellFileDlg.dfm:2317
 msgid "Create folder"
 msgstr "Verzeichnis erstellen"
 
 #. ShellDirDialog..PopupMenu..itmDelete..Caption
 #. ShellFileDialog..PopupMenu..itmDelete..Caption
-#: ShellDirDlg.dfm:2283 ShellFileDlg.dfm:2321
+#: ShellDirDlg.dfm:2290 ShellFileDlg.dfm:2321
 msgid "Delete folder"
 msgstr "Verzeichnis löschen"
 
@@ -1866,7 +1878,8 @@ msgstr "Verzeichnis löschen"
 #. ShellFileDialog..PopupMenu..itmUpdate..Caption
 #. ShowTextDialog..pnTop..UpdateBtn..Hint
 #. ShowtextDialog..Panel2..UpdateBtn..Hint
-#: ShellDirDlg.dfm:2290 ShellFileDlg.dfm:2328 ShowMemo.dfm:962 ShowText.dfm:452
+#: ShellDirDlg.dfm:2297 ShellFileDlg.dfm:2328 ShowMemo.dfm:1017
+#: ShowText.dfm:452
 msgid "Update"
 msgstr "Aktualisieren"
 
@@ -1907,32 +1920,32 @@ msgstr "&Öffnen"
 
 #. ShowTextDialog..pnTop..PrintBtn..Caption
 #. ShowtextDialog..Panel2..PrintBtn..Caption
-#: ShowMemo.dfm:106 ShowText.dfm:100
+#: ShowMemo.dfm:161 ShowText.dfm:100
 msgid "&Print"
 msgstr "&Drucken"
 
 #. ShowTextDialog..pnTop..DeleteBtn..Caption
-#: ShowMemo.dfm:227
+#: ShowMemo.dfm:282
 msgid "&Delete"
 msgstr "&Löschen"
 
 #. ShowTextDialog..pnTop..PrevErrBtn..Hint
-#: ShowMemo.dfm:469
+#: ShowMemo.dfm:524
 msgid "Go to previous error"
 msgstr "Zum vorherigen Fehler"
 
 #. ShowTextDialog..pnTop..PrevSectBtn..Hint
-#: ShowMemo.dfm:592
+#: ShowMemo.dfm:647
 msgid "Go to previous section"
 msgstr "Zum vorherigen Abschnitt"
 
 #. ShowTextDialog..pnTop..NextErrBtn..Hint
-#: ShowMemo.dfm:715
+#: ShowMemo.dfm:770
 msgid "Go to next error"
 msgstr "Zum nächsten Fehler"
 
 #. ShowTextDialog..pnTop..NextSectBtn..Hint
-#: ShowMemo.dfm:838
+#: ShowMemo.dfm:893
 msgid "Go to next section"
 msgstr "Zum nächsten Abschnitt"
 
@@ -1955,11 +1968,6 @@ msgstr "Papiergröße:"
 #: Sizedlg.dfm:160
 msgid "Length:"
 msgstr "Länge:"
-
-#. StatusWindow..Caption
-#: StatWind.dfm:5
-msgid "Status"
-msgstr "Status"
 
 #. KeyboardDialog..Caption
 #: SynEdKeyDlg.dfm:6
@@ -1987,12 +1995,12 @@ msgid "Key code"
 msgstr "Tastencode"
 
 #. KeyboardDialog..BitBtn1..Caption
-#: SynEdKeyDlg.dfm:239
+#: SynEdKeyDlg.dfm:238
 msgid "Remove key code"
 msgstr "Tastencode löschen"
 
 #. KeyboardDialog..BitBtn2..Caption
-#: SynEdKeyDlg.dfm:306
+#: SynEdKeyDlg.dfm:305
 msgid "Change key code"
 msgstr "Tastencode ändern"
 
@@ -2068,8 +2076,7 @@ msgstr "Toleranz beim Zeitvergleich in s:"
 
 #. TimeCompareDialog..paMain..cbDstIgnore....Caption
 #: TimeCompDlg.dfm:181
-msgid ""
-"Ignore 1 hour time difference from daylight saving time (winter - summer)"
+msgid "Ignore 1 hour time difference from daylight saving time (winter - summer)"
 msgstr "1 Std. Zeitunterschied wegen Zeitumstellung Winter/Sommer ignorieren"
 
 #. TransferStatus..Caption
@@ -2085,19 +2092,19 @@ msgstr "Protokoll:"
 #. WebBrowserWin..paTop..paTopLeft..btnSize1..Hint
 #. WebBrowserWin..paTop..paTopLeft..btnSize2..Hint
 #. WebBrowserWin..paTop..paTopLeft..btnSize3..Hint
-#: WebBrowser.dfm:45 WebBrowser.dfm:58 WebBrowser.dfm:71
+#: WebBrowser.dfm:44 WebBrowser.dfm:57 WebBrowser.dfm:70
 msgid "Window size"
 msgstr "Fenstergröße"
 
 #. WebBrowserWin..ActionList..ActionEdit..Category
 #. WebBrowserWin..ActionList..ActionCancel..Category
 #. WebBrowserWin..ActionList..ActionExit..Category
-#: WebBrowser.dfm:163 WebBrowser.dfm:198 WebBrowser.dfm:205
+#: WebBrowser.dfm:160 WebBrowser.dfm:195 WebBrowser.dfm:202
 msgid "Global"
 msgstr "Global"
 
 #. WebBrowserWin..ActionList..ActionEdit..Hint
-#: WebBrowser.dfm:164
+#: WebBrowser.dfm:161
 msgid "Edit source txt"
 msgstr "Quelltext bearbeiten"
 
@@ -2105,32 +2112,35 @@ msgstr "Quelltext bearbeiten"
 #. WebBrowserWin..ActionList..ActionHome..Category
 #. WebBrowserWin..ActionList..ActionBack..Category
 #. WebBrowserWin..ActionList..ActionFwd..Category
-#: WebBrowser.dfm:170 WebBrowser.dfm:177 WebBrowser.dfm:184 WebBrowser.dfm:191
+#: WebBrowser.dfm:167 WebBrowser.dfm:174 WebBrowser.dfm:181 WebBrowser.dfm:188
 msgid "Navigation"
 msgstr "Navigation"
 
 #. WebBrowserWin..ActionList..ActionRefresh..Hint
-#: WebBrowser.dfm:172
+#. frmWebView..paTop..bbRefresh..Hint
+#: WebBrowser.dfm:169 WebView.dfm:432
 msgid "Reload"
 msgstr "Neu laden"
 
 #. WebBrowserWin..ActionList..ActionBack..Hint
-#: WebBrowser.dfm:186
+#. frmWebView..paTop..bbBack..Hint
+#: WebBrowser.dfm:183 WebView.dfm:341
 msgid "Previous page"
 msgstr "Vorherige Seite"
 
 #. WebBrowserWin..ActionList..ActionFwd..Hint
-#: WebBrowser.dfm:193
+#. frmWebView..paTop..bbFwd..Hint
+#: WebBrowser.dfm:190 WebView.dfm:185
 msgid "Next page"
 msgstr "Nächste Seite"
 
 #. WebBrowserWin..ActionList..ActionExit..Caption
-#: WebBrowser.dfm:206
+#: WebBrowser.dfm:203
 msgid "Exit"
 msgstr "Beenden"
 
 #. WebBrowserWin..ActionList..ActionExit..Hint
-#: WebBrowser.dfm:207
+#: WebBrowser.dfm:204
 msgid "OK and close"
 msgstr "OK und schließen"
 
@@ -2138,6 +2148,11 @@ msgstr "OK und schließen"
 #: WebUpdateDlg.dfm:43
 msgid "Save as:"
 msgstr "Sichern als:"
+
+#. frmWebView..paTop..bbGo..Hint
+#: WebView.dfm:496
+msgid "Open site"
+msgstr "Öffne Website"
 
 #: AccountDlg.pas:102 NewPwdDlg.pas:139
 msgid "Minimum length of password is %u characters"
@@ -2147,11 +2162,11 @@ msgstr "Das Kennwort muss mindestens %u Zeichen lang sein"
 msgid "Passwords do not match!"
 msgstr "Die Kennwortangaben stimmen nicht überein!"
 
-#: AppListDlg.pas:297 AppListDlg.pas:331
+#: AppListDlg.pas:313 AppListDlg.pas:347 AppListDlg.pas:367
 msgid "Application (%s)"
 msgstr "Anwendung (%s)"
 
-#: AppListDlg.pas:313
+#: AppListDlg.pas:329
 msgid "Remove application: \"%s\"?"
 msgstr "Anwendung entfernen: \"%s\"?"
 
@@ -2197,7 +2212,7 @@ msgstr "Filtername"
 msgid "Filter"
 msgstr "Filter"
 
-#: FilterDlg.pas:163 FilterDlg.pas:166
+#: FilterDlg.pas:164 FilterDlg.pas:167
 msgid ""
 "Invalid filter mask!\n"
 "Should resemble %s or %s"
@@ -2217,11 +2232,11 @@ msgstr "&Ersetzen"
 msgid "Search for text"
 msgstr "Text suchen"
 
-#: FtpDirDlg.pas:172 FtpDirDlg.pas:222
+#: FtpDirDlg.pas:171 FtpDirDlg.pas:224
 msgid "Searching for directories"
 msgstr "Suche nach Verzeichnissen"
 
-#: FtpDirDlg.pas:205
+#: FtpDirDlg.pas:204
 msgid ""
 "Connection to FTP server: %s:%u\n"
 "for user: %s\n"
@@ -2231,11 +2246,11 @@ msgstr ""
 "für den Benutzer: %s\n"
 "erfordert ein Kennwort!"
 
-#: FtpDirDlg.pas:211
+#: FtpDirDlg.pas:213
 msgid "Trying to connect to FTP server"
 msgstr "Verbindung zu FTP-Server wird aufgebaut"
 
-#: FtpDirDlg.pas:232
+#: FtpDirDlg.pas:234
 msgid "Connection to FTP server failed"
 msgstr "Die FTP-Verbindung zum Server ist fehlgeschlagen"
 
@@ -2283,23 +2298,23 @@ msgstr "Fehler: Ungültige Port-Adresse (%s)"
 msgid "Error: Invalid interrupt (%s)"
 msgstr "Fehler: Ungültige Interruptadresse (%s)"
 
-#: MailDlg.pas:160
+#: MailDlg.pas:155
 msgid "Please specify an SMTP server!"
 msgstr "Geben Sie bitte einen SMTP-Server an!"
 
-#: MailDlg.pas:165
+#: MailDlg.pas:160
 msgid "Please specify at least one recipient!"
 msgstr "Geben Sie bitte mindestens einen Empfänger an!"
 
-#: MailDlg.pas:197
+#: MailDlg.pas:192
 msgid "New mail recipient"
 msgstr "Neuer Mail-Empfänger"
 
-#: MailDlg.pas:198 MailDlg.pas:224
+#: MailDlg.pas:193 MailDlg.pas:219
 msgid "Address:"
 msgstr "Adresse:"
 
-#: MailDlg.pas:209
+#: MailDlg.pas:204
 msgid ""
 "Remove recipient:\n"
 "%s\n"
@@ -2309,9 +2324,13 @@ msgstr ""
 "%s\n"
 "aus der Liste entfernen?"
 
-#: MailDlg.pas:223
+#: MailDlg.pas:218
 msgid "Edit mail recipient"
 msgstr "Mail-Empfänger bearbeiten"
+
+#: ProgWind.pas:163
+msgid "Canceled by user"
+msgstr "Vom Benutzer abgebrochen"
 
 #: SearchPathDlg.pas:154
 msgid "Clear search path list?"
@@ -2337,11 +2356,11 @@ msgstr "Alle ausgewählten Einträge löschen?"
 msgid "Remove item: \"%s\"?"
 msgstr "Eintrag löschen: \"%s\"?"
 
-#: ShellDirDlg.pas:280
+#: ShellDirDlg.pas:282
 msgid "Default: "
 msgstr "Standard: "
 
-#: ShellDirDlg.pas:343 ShellFileDlg.pas:278 ShowFilesDlg.pas:141
+#: ShellDirDlg.pas:345 ShellFileDlg.pas:278 ShowFilesDlg.pas:141
 msgid ""
 "Directory not found:\n"
 "%s!"
@@ -2349,11 +2368,11 @@ msgstr ""
 "Verzeichnis nicht gefunden:\n"
 "%s!"
 
-#: ShellDirDlg.pas:364 ShellFileDlg.pas:349
+#: ShellDirDlg.pas:366 ShellFileDlg.pas:349
 msgid "New subdirectory:"
 msgstr "Neues Unterverzeichnis:"
 
-#: ShellDirDlg.pas:367 ShellFileDlg.pas:352
+#: ShellDirDlg.pas:369 ShellFileDlg.pas:352
 msgid ""
 "Could not create directory:\n"
 "%s!"
@@ -2362,32 +2381,32 @@ msgstr ""
 "%s\n"
 "konnte nicht erstellt werden!"
 
-#: ShellDirDlg.pas:386
+#: ShellDirDlg.pas:434
 msgid "Delete directory"
 msgstr "Verzeichnis löschen"
 
-#: ShellDirDlg.pas:387
+#: ShellDirDlg.pas:435
 msgid "Delete \"%s\""
 msgstr "Lösche \"%s\""
 
-#: ShellDirDlg.pas:388
+#: ShellDirDlg.pas:436
 msgid "Definitely"
 msgstr "Endgültig"
 
-#: ShellDirDlg.pas:388
+#: ShellDirDlg.pas:436
 msgid "To recycle bin"
 msgstr "In Papierkorb"
 
-#: ShellDirDlg.pas:395
+#: ShellDirDlg.pas:443
 msgid "%u directories with %u files deleted!"
 msgstr "%u Verzeichnisse mit %u Dateien gelöscht!"
 
 #. IsVista or newer
-#: ShellDirDlg.pas:401
+#: ShellDirDlg.pas:449
 msgid "%s moved to Recycle Bin!"
 msgstr "%s wurde in den Papierkorb verschoben!"
 
-#: ShellDirDlg.pas:403 ShellFileDlg.pas:366
+#: ShellDirDlg.pas:451 ShellFileDlg.pas:366
 msgid ""
 "Error deleting directory:\n"
 "%s!"
@@ -2395,55 +2414,63 @@ msgstr ""
 "Fehler beim Löschen des Verzeichnisses:\n"
 "%s!"
 
+#: ShellDirDlg.pas:563
+msgid " free of "
+msgstr " frei von "
+
 #: ShellFileDlg.pas:363
 msgid "Directory is not empty, delete anyway?"
 msgstr "Das Verzeichnis ist nicht leer, trotzdem löschen?"
 
 #. if LineNr=Lines.Count then SelLength:=0 else SelLength:=Perform(EM_LINEINDEX,LineNr+1,0)-SelStart;
-#: ShowMemo.pas:335 ShowMemo.pas:355 ShowText.pas:218 ShowText.pas:237
+#: ShowMemo.pas:336 ShowMemo.pas:356 ShowText.pas:219 ShowText.pas:238
 msgid " Line: %u of %u"
 msgstr " Zeile: %u von %u"
 
-#: ShowMemo.pas:378 ShowMemo.pas:561
+#: ShowMemo.pas:362
+msgid "Error loading file: \"%s\""
+msgstr "Fehler beim Laden der Datei: \"%s\""
+
+#: ShowMemo.pas:384 ShowMemo.pas:567
 msgid "Delete selected text?"
 msgstr "Markierten Text löschen?"
 
 #. Kopfzeile erzeugen
-#: ShowMemo.pas:427
+#: ShowMemo.pas:433
 msgid "Page: %u"
 msgstr "Seite: %u"
 
 #. textout(PrinterSettings.Margins.Left,y,StripPath(Caption,72));
-#: ShowMemo.pas:432 ShowMemo.pas:859
+#: ShowMemo.pas:438 ShowMemo.pas:858
 msgid "File: "
 msgstr "Datei: "
 
-#: ShowMemo.pas:538 ShowText.pas:300
+#: ShowMemo.pas:544 ShowText.pas:301
 msgid "Print selected lines?"
 msgstr "Ausgewählte Zeilen drucken?"
 
-#: ShowMemo.pas:571 ShowText.pas:369
+#: ShowMemo.pas:577 ShowText.pas:370
 msgid "Delete file \"%s\"?"
 msgstr "Datei \"%s\" löschen?"
 
-#: ShowMemo.pas:589 ShowMemo.pas:859 ShowText.pas:385
+#: ShowMemo.pas:595 ShowMemo.pas:858 ShowText.pas:386
 msgid "\"%s\" not found!"
 msgstr "\"%s\" nicht gefunden!"
 
-#: ShowMemo.pas:622 ShowMemo.pas:638
+#: ShowMemo.pas:628 ShowMemo.pas:644
 msgid "No further sections!"
 msgstr "Keine weiteren Abschnitte!"
 
-#: ShowMemo.pas:719 ShowMemo.pas:734
+#: ShowMemo.pas:718 ShowMemo.pas:733
 msgid "No further errors!"
 msgstr "Keine weiteren Fehler!"
 
 #. Kopfzeile erzeugen
-#: ShowText.pas:287
+#: ShowText.pas:288
 msgid "Page: "
 msgstr "Seite: "
 
-#: ShowText.pas:406 ShowText.pas:470
+#: ShowText.pas:407 ShowText.pas:471
 msgid "File: \"%s\" not found!"
 msgstr "Datei: \"%s\" nicht gefunden!"
 
@@ -2518,7 +2545,7 @@ msgid "Nothing to do!"
 msgstr "Nichts zu tun!"
 
 #. FreeAndNil(WebBrowser);
-#: WebBrowser.pas:405
+#: WebBrowser.pas:414
 msgid ""
 "The integrated web browser is not available on your system\n"
 "You need to install Internet Explorer Vers. 4 or newer."
@@ -2526,13 +2553,36 @@ msgstr ""
 "Der integrierte Web-Browser ist auf diesem System nicht verfügbar.\n"
 "Es ist mindestens ein Internet Explorer der Vers. 4 oder neuer erforderlich."
 
-#: WebDownloadDlg.pas:261 WebUpdateDlg.pas:472
+#: WebDownloadDlg.pas:262 WebUpdateDlg.pas:475
 msgid "%s verification failed!"
 msgstr "%s-Überprüfung fehlgeschlagen!"
 
-#: WebDownloadDlg.pas:263 WebUpdateDlg.pas:474
+#: WebDownloadDlg.pas:264 WebUpdateDlg.pas:477
 msgid "%s hash file not found!"
 msgstr "%s-Hashdatei nicht gefunden!"
+
+#: WebView.pas:170
+msgid "Classic Browser"
+msgstr "Klassischer Browser"
+
+#: WebView.pas:171
+msgid "Edge Browser"
+msgstr "Edge-Browser"
+
+#~ msgid "Use secure connection"
+#~ msgstr "Sichere Verbindung verwenden"
+
+#~ msgid "never"
+#~ msgstr "nie"
+
+#~ msgid "TLS, if available"
+#~ msgstr "TLS, wenn möglich"
+
+#~ msgid "TLS"
+#~ msgstr "TLS"
+
+#~ msgid "SSL"
+#~ msgstr "SSL"
 
 #~ msgid "Move entry up"
 #~ msgstr "Eintrag nach oben schieben"
@@ -2547,9 +2597,7 @@ msgstr "%s-Hashdatei nicht gefunden!"
 #~ msgstr "Nach unten"
 
 #~ msgid "Browsing the network is not supported on this system!"
-#~ msgstr ""
-#~ "Das Durchsuchen der Netzwerkumgebung wird von diesem System nicht "
-#~ "unterstützt!"
+#~ msgstr "Das Durchsuchen der Netzwerkumgebung wird von diesem System nicht unterstützt!"
 
 #~ msgid "Edit dates"
 #~ msgstr "Termine bearbeiten"
@@ -2574,9 +2622,6 @@ msgstr "%s-Hashdatei nicht gefunden!"
 
 #~ msgid "Delete"
 #~ msgstr "Löschen"
-
-#~ msgid "Rename"
-#~ msgstr "Umbenennen"
 
 #~ msgid "Show as"
 #~ msgstr "Anzeige als"
@@ -2695,9 +2740,6 @@ msgstr "%s-Hashdatei nicht gefunden!"
 
 #~ msgid "days"
 #~ msgstr "Tage"
-
-#~ msgid "Canceled by user"
-#~ msgstr "Vom Benutzer abgebrochen"
 
 #~ msgid "Text patterns:"
 #~ msgstr "Textmuster:"

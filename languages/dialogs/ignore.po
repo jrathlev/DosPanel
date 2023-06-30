@@ -1,6 +1,6 @@
 #  Doesn't have any letters
 #. ShellDirDialog..PopupMenu..N1..Caption
-#: ShellDirDlg.dfm:2287
+#: ShellDirDlg.dfm:2294
 #. ShellFileDialog..PopupMenu..N1..Caption
 #: ShellFileDlg.dfm:2325
 msgid "-"
@@ -30,9 +30,9 @@ msgstr ""
 #. AccountDialog..edtRepPwd..PasswordChar
 #: AccountDlg.dfm:275
 #. FtpDialog..pnSettings..edtFtpPwd..PasswordChar
-#: FtpDlg.dfm:328
+#: FtpDlg.dfm:355
 #. LogonDialog..PwdEdit..PasswordChar
-#: LogonDlg.dfm:301
+#: LogonDlg.dfm:288
 #. NewPwdDialog..paPwd..edtPwd..PasswordChar
 #: NewPwdDlg.dfm:38
 #. NewPwdDialog..paConfirm..edtRepPwd..PasswordChar
@@ -62,10 +62,24 @@ msgstr ""
 
 #  Doesn't look like text
 #. HelpWindow..pnlTop..btnSize3..Caption
-#: HelpWin.dfm:276
+#: HelpWin.dfm:321
 #. WebBrowserWin..paTop..paTopLeft..btnSize3..Caption
-#: WebBrowser.dfm:73
+#: WebBrowser.dfm:72
+#. frmWebView..paTop..cbSize....Items.Strings
+#: WebView.dfm:86
 msgid "1024x768"
+msgstr ""
+
+#  Doesn't have any letters
+#. frmWebView..WVBrowser..TargetCompatibleBrowserVersion
+#: WebView.dfm:567
+msgid "104.0.1293.44"
+msgstr ""
+
+#  Doesn't look like text
+#. frmWebView..paTop..cbSize....Items.Strings
+#: WebView.dfm:87
+msgid "1280x960"
 msgstr ""
 
 #  Doesn't look like text
@@ -88,17 +102,21 @@ msgstr ""
 
 #  Doesn't look like text
 #. HelpWindow..pnlTop..btnSize1..Caption
-#: HelpWin.dfm:256
+#: HelpWin.dfm:301
 #. WebBrowserWin..paTop..paTopLeft..btnSize1..Caption
-#: WebBrowser.dfm:47
+#: WebBrowser.dfm:46
+#. frmWebView..paTop..cbSize....Items.Strings
+#: WebView.dfm:84
 msgid "640x480"
 msgstr ""
 
 #  Doesn't look like text
 #. HelpWindow..pnlTop..btnSize2..Caption
-#: HelpWin.dfm:266
+#: HelpWin.dfm:311
 #. WebBrowserWin..paTop..paTopLeft..btnSize2..Caption
-#: WebBrowser.dfm:60
+#: WebBrowser.dfm:59
+#. frmWebView..paTop..cbSize....Items.Strings
+#: WebView.dfm:85
 msgid "800x600"
 msgstr ""
 
@@ -109,7 +127,7 @@ msgid "90°"
 msgstr ""
 
 #. WebBrowserWin..ActionList..ActionBack..Caption
-#: WebBrowser.dfm:185
+#: WebBrowser.dfm:182
 msgid "ActionBack"
 msgstr ""
 
@@ -119,35 +137,37 @@ msgid "ActionExit"
 msgstr ""
 
 #. WebBrowserWin..ActionList..ActionFwd..Caption
-#: WebBrowser.dfm:192
+#: WebBrowser.dfm:189
 msgid "ActionFwd"
 msgstr ""
 
 #. WebBrowserWin..ActionList..ActionHome..Caption
-#: WebBrowser.dfm:178
+#: WebBrowser.dfm:175
 msgid "ActionHome"
 msgstr ""
 
+#. ProgressWindow..ActionLabel..Caption
+#: ProgWind.dfm:33
 #. TransferStatus..Panel1..ActionLabel..Caption
 #: TransferStat.dfm:32
 msgid "ActionLabel"
 msgstr ""
 
 #. WebBrowserWin..ActionList..ActionRefresh..Caption
-#: WebBrowser.dfm:171
+#: WebBrowser.dfm:168
 msgid "ActionRefresh"
 msgstr ""
 
 #. PrintPageDialog..EinzugEinheit..Caption
 #: PrintPageDlg.dfm:35
 #. PrintPageDialog..GroupBox1..Label8..Caption
-#: PrintPageDlg.dfm:83
+#: PrintPageDlg.dfm:184
 #. PrintPageDialog..GroupBox1..Label3..Caption
-#: PrintPageDlg.dfm:97
+#: PrintPageDlg.dfm:198
 #. PrintPageDialog..GroupBox1..Label5..Caption
-#: PrintPageDlg.dfm:104
+#: PrintPageDlg.dfm:205
 #. PrintPageDialog..GroupBox1..Label7..Caption
-#: PrintPageDlg.dfm:111
+#: PrintPageDlg.dfm:212
 #. RandDialog..EinzugEinheit..Caption
 #: RandDlg.dfm:35
 #. RandDialog..GroupBox1..Label8..Caption
@@ -263,9 +283,9 @@ msgstr ""
 
 #  Seems like a Font.Name extract
 #. ShowTextDialog..Memo..Font.Name
-#: ShowMemo.dfm:1296
+#: ShowMemo.dfm:1351
 #. ShowtextDialog..Memo..Font.Name
-#: ShowText.dfm:550
+#: ShowText.dfm:523
 msgid "Courier New"
 msgstr ""
 
@@ -519,14 +539,14 @@ msgstr ""
 #. ShellFileDialog..ShellListView..Root
 #: ShellFileDlg.dfm:2300
 #. ShowFilesDialog..lvFiles..Root
-#: ShowFilesDlg.dfm:203
+#: ShowFilesDlg.dfm:176
 msgid "rfDesktop"
 msgstr ""
 
 #. ShellDirDialog..PanelLeft..ShellTreeView..Root
 #: ShellDirDlg.dfm:48
 #. ShellDirDialog..PanelRight..ShellListView..Root
-#: ShellDirDlg.dfm:2264
+#: ShellDirDlg.dfm:2271
 msgid "rfMyComputer"
 msgstr ""
 
@@ -535,6 +555,8 @@ msgstr ""
 msgid "ShowTextDialog"
 msgstr ""
 
+#. ProgressWindow..StatusLabel..Caption
+#: ProgWind.dfm:26
 #. StatusWindow..StatusLabel..Caption
 #: StatWind.dfm:29
 #. TransferStatus..Panel2..StatusLabel..Caption
@@ -543,7 +565,7 @@ msgid "StatusLabel"
 msgstr ""
 
 #. KeyboardDialog..stxCommand..Caption
-#: SynEdKeyDlg.dfm:225
+#: SynEdKeyDlg.dfm:224
 msgid "stxCommand"
 msgstr ""
 
@@ -576,9 +598,9 @@ msgstr ""
 #. ConfirmReplDialog..Font.Name
 #: ConfirmReplDlg.dfm:12
 #. CsvImportDialog..Font.Name
-#: CsvDialog.dfm:12
+#: CsvImportDlg.dfm:12
 #. CsvImportDialog..CancelBtn..Font.Name
-#: CsvDialog.dfm:119
+#: CsvImportDlg.dfm:119
 #. DateFormatDialog..Font.Name
 #: DateFormatDlg.dfm:12
 #. DetailInfoDialog..Font.Name
@@ -601,6 +623,10 @@ msgstr ""
 #: FileFilterDlg.dfm:13
 #. FileListDialog..Font.Name
 #: FileListDlg.dfm:12
+#. FileListDialog..lblPath..Font.Name
+#: FileListDlg.dfm:30
+#. FileListDialog..lblListfile..Font.Name
+#: FileListDlg.dfm:499
 #. FilterDialog..Font.Name
 #: FilterDlg.dfm:11
 #. FindReplDialog..Font.Name
@@ -642,7 +668,7 @@ msgstr ""
 #. LogonDialog..Label1..Font.Name
 #: LogonDlg.dfm:60
 #. LogonDialog..PwdEdit..EditLabel.Font.Name
-#: LogonDlg.dfm:298
+#: LogonDlg.dfm:285
 #. InputLptPortDialog..Font.Name
 #: LptSelect.dfm:12
 #. MemoDialog..Font.Name
@@ -659,6 +685,10 @@ msgstr ""
 #: PathDlg.dfm:11
 #. PrintPageDialog..Font.Name
 #: PrintPageDlg.dfm:13
+#. ProgressWindow..Font.Name
+#: ProgWind.dfm:13
+#. ProgressWindow..ActionLabel..Font.Name
+#: ProgWind.dfm:37
 #. PasswordDialog..Font.Name
 #: PwdDlg.dfm:12
 #. PasswordDialog..pnTop..lblPrompt..Font.Name
@@ -696,7 +726,7 @@ msgstr ""
 #. frmShow..Font.Name
 #: Show.dfm:12
 #. frmShow..panButtons..Font.Name
-#: Show.dfm:46
+#: Show.dfm:45
 #. ShowFilesDialog..Font.Name
 #: ShowFilesDlg.dfm:11
 #. ShowImageDialog..Font.Name
@@ -704,7 +734,7 @@ msgstr ""
 #. ShowTextDialog..Font.Name
 #: ShowMemo.dfm:12
 #. ShowTextDialog..FontDialog..Font.Name
-#: ShowMemo.dfm:1326
+#: ShowMemo.dfm:1381
 #. ShowMsgDialog..Font.Name
 #: ShowMessageDlg.dfm:13
 #. ShowMsgDialog..stInfo..Font.Name
@@ -738,11 +768,11 @@ msgstr ""
 #. KeyboardDialog..KeyCmdList..Font.Name
 #: SynEdKeyDlg.dfm:207
 #. KeyboardDialog..stxCommand..Font.Name
-#: SynEdKeyDlg.dfm:229
+#: SynEdKeyDlg.dfm:228
 #. KeyboardDialog..BitBtn1..Font.Name
-#: SynEdKeyDlg.dfm:243
+#: SynEdKeyDlg.dfm:242
 #. KeyboardDialog..BitBtn2..Font.Name
-#: SynEdKeyDlg.dfm:310
+#: SynEdKeyDlg.dfm:309
 #. PageFormatDialog..Font.Name
 #: SynEdPageDlg.dfm:12
 #. PageFormatDialog..FontDialog..Font.Name
@@ -763,6 +793,8 @@ msgstr ""
 #: WebDownloadDlg.dfm:12
 #. Download..Font.Name
 #: WebUpdateDlg.dfm:12
+#. frmWebView..Font.Name
+#: WebView.dfm:11
 msgid "Tahoma"
 msgstr ""
 
@@ -773,7 +805,7 @@ msgstr ""
 
 #  Doesn't look like text
 #. WebBrowserWin..paTop..paTopRight..tbButtons..ToolButton7..Caption
-#: WebBrowser.dfm:136
+#: WebBrowser.dfm:133
 msgid "ToolButton7"
 msgstr ""
 
@@ -807,7 +839,7 @@ msgid "x"
 msgstr ""
 
 #. SelectDialog..stCaption..Caption
-#: SelectDlg.dfm:172
+#: SelectDlg.dfm:173
 #. ShowMsgDialog..stInfo..Caption
 #: ShowMessageDlgST.dfm:209
 msgid "xxx"
