@@ -40,7 +40,8 @@ procedure InitVersion (const ProgName,Vers,CopRgt : string; VersLevel,ShowLevel 
 procedure InitVersion (const ProgName,Vers,CopRgt : string; VersLevel,ShowLevel : integer;
                        var ProgVersName,ProgVers,ProgVersDate : string); overload;
 
-function GetVersion (ShowLevel : integer) : string;
+function GetVersion (const VersionString : string; ShowLevel : integer) : string; overload;
+function GetVersion (ShowLevel : integer) : string; overload;
 function GetCopyRight (const Year : string) : string;
 function GetLongCopyRight (const Year : string) : string;
 
@@ -105,14 +106,19 @@ begin
   InitPaths (AppPath,t,s);
   end;
 
-function GetVersion (ShowLevel : integer) : string;
+function GetVersion (const VersionString : string; ShowLevel : integer) : string;
 var
   i : integer;
 begin
-  Result:=VersInfo.Version;
+  Result:=VersionString;
   // Versionsnr. anpassen
   for i:=3 downto ShowLevel do Result:=ChangeFileExt(Result,'');
   Result:=rsVersion+' '+Result;
+  end;
+
+function GetVersion (ShowLevel : integer) : string;
+begin
+  Result:=GetVersion(VersInfo.Version,ShowLevel);
   end;
 
 procedure InitVersion (const ProgName,Vers,CopRgt : string; VersLevel,ShowLevel : integer;

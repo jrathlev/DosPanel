@@ -178,17 +178,23 @@ function GetLink (const LinkObj : string; var ProgName,Arg,WorkDir,Desc: string)
 
 { ---------------------------------------------------------------- }
 // Icon in Taskbar aufnehmen
-function TaskBarAddIcon (WinHandle  : HWnd;
-                         UserId,MessageID  : integer;
+function TaskBarAddIcon (WinHandle : HWnd;
+                         UserId,MessageID : integer;
+                         IconHandle,BalloonIconHandle : HIcon;
+                         const Title,Text,Tip : string;
+                         PlaySound : boolean = true) : boolean; overload;
+
+function TaskBarAddIcon (WinHandle : HWnd;
+                         UserId,MessageID : integer;
                          IconHandle : HIcon;
                          const Title,Text,Tip : string;
-                         PlaySound  : boolean = true) : boolean;
+                         PlaySound : boolean = true) : boolean; overload;
 
 // Standard-Tip ändern
-function TaskBarChangeTip (WinHandle  : HWnd;
-                           UserId     : integer;
+function TaskBarChangeTip (WinHandle : HWnd;
+                           UserId    : integer;
                            const Tip : string;
-                           PlaySound  : boolean = true) : boolean;
+                           PlaySound : boolean = true) : boolean;
 
 // Balloon-Tipp löschen
 function TaskBarChangeBalloonTip (WinHandle  : HWnd;
@@ -454,7 +460,7 @@ begin
     Result:=SetPath(pChar(ProgName));
     if SUCCEEDED(Result) then begin
       SetArguments(PChar(Arg));
-      if length(ProgName)>0 then SetIconLocation(PChar(IconLocation),IconIndex);
+      if length(IconLocation)>0 then SetIconLocation(PChar(IconLocation),IconIndex);
       if length(WorkDir)>0 then SetWorkingDirectory(PChar(WorkDir));
       if length(Desc)>0 then SetDescription(PChar(Desc));
       Result:=QueryInterface(IID_IPersistFile,ppf);
@@ -541,10 +547,19 @@ begin
 
 { ---------------------------------------------------------------- }
 (* Windows-Taskbar *)
+function DoNotifyIcon (NiMsg : cardinal; var tnid : TNOTIFYICONDATA; Version4 : boolean = false) : boolean;
+begin
+  Result:=Shell_NotifyIcon(NiMsg,@tnid);       // Registrieren ...
+  if Result and Version4 then begin
+    tnid.uVersion:=NOTIFYICON_VERSION_4;
+    Result:=Shell_NotifyIcon(NIM_SETVERSION,@tnid);
+    end;
+  end;
+
 (* Icon in Taskleiste aufnehmen *)
 function TaskBarAddIcon (WinHandle  : HWnd;
                          UserId,MessageID  : integer;
-                         IconHandle : HIcon;
+                         IconHandle,BalloonIconHandle : HIcon;
                          const Title,Text,Tip : string;
                          PlaySound : boolean = true) : boolean;
 var
@@ -558,12 +573,13 @@ begin
     uFlags := 0;                       // siehe Tabelle
     if MessageID>0 then uFlags:=NIF_MESSAGE;
     uCallbackMessage := MessageID;     // Message Identifier
+    if IconHandle<>0 then uFlags:=uFlags or NIF_ICON;
     hIcon := Iconhandle;               // Iconhandle
-    if IconHandle<>0 then begin
-      uFlags:=uFlags or NIF_ICON;
-      dwInfoFlags:=NIIF_USER;
-      end
+    if BalloonIconHandle<>0 then hBalloonIcon:=BalloonIconHandle
+    else hBalloonIcon:=IconHandle;
+    if hBalloonIcon<>0 then dwInfoFlags:=NIIF_USER or NIIF_LARGE_ICON
     else dwInfoFlags:=NIIF_INFO;
+    hBalloonIcon:=BalloonIconHandle;
     if not PlaySound then dwInfoFlags:=dwInfoFlags or NIIF_NOSOUND;
     if length(Title)>0 then begin         // Balloon tooltip
       uFlags:=uFlags or NIF_INFO;
@@ -575,7 +591,16 @@ begin
       strpcopy(szTip,pchar(Tip));         // Tooltiptext max 127 Zeichen
       end;
     end;
-  Result:=Shell_NotifyIcon(NIM_ADD,@tnid);       // Registrieren ...
+  Result:=Shell_NotifyIcon(NIM_ADD,@tnid);        // Registrieren ...
+  end;
+
+function TaskBarAddIcon (WinHandle : HWnd;
+                         UserId,MessageID : integer;
+                         IconHandle : HIcon;
+                         const Title,Text,Tip : string;
+                         PlaySound : boolean = true) : boolean; overload;
+begin
+  Result:=TaskBarAddIcon (WinHandle,UserId,MessageID,IconHandle,0,Title,Text,Tip,PlaySound);
   end;
 
 function TaskBarChangeTip (WinHandle  : HWnd;

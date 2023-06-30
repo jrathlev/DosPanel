@@ -2891,6 +2891,7 @@ var
 begin
   for i:=0 to list.Count-1 do begin
     item:=TObject(list.items[i]) as TTP_RetranslatorItem;
+    if not assigned(item.obj) then Continue;     // JR 20223-04-18 to avoid protection faults
     if item.obj is TComponent then begin
       comp:=TComponent(item.obj).FindComponent('GNUgettextMarker') as TGnuGettextComponentMarker;
       if Assigned(comp) and (self<>comp.Retranslator) then begin

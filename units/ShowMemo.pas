@@ -177,6 +177,7 @@ procedure ShowTextFile (const Title,TextDatei : string;
                      DlgType   : TShowDlgType;
                      Buttons   : TShowDlgButtons;
                      PrtSettings : TPrinterSettings;
+                     AtEnd     : boolean = false;
                      CodePage  : integer = 0); overload;
 var
   ShowTextDialog : TShowTextDialog;
@@ -339,22 +340,27 @@ procedure TShowTextDialog.InitView (const FName : string);
 var
   LineNr : integer;
 begin
-  LoadText(FName);
-  with Memo do begin
-    if (LPos<=0) or (LPos>=Lines.Count) then begin
-      LineNr:=Lines.Count;
-      Perform(WM_VSCROLL,SB_BOTTOM,0);
-      end
-    else begin
-      LineNr:=LPos-1;
-      Perform(EM_SCROLLCARET,0,0);
+  if LoadText(FName) then begin
+    with Memo do begin
+      if (LPos<=0) or (LPos>=Lines.Count) then begin
+        LineNr:=Lines.Count;
+        Perform(WM_VSCROLL,SB_BOTTOM,0);
+        end
+      else begin
+        LineNr:=LPos-1;
+        Perform(EM_SCROLLCARET,0,0);
+        end;
+      SelStart:=Perform(EM_LINEINDEX,LineNr,0);
+      SelLength:=0;
+  //    if LineNr=Lines.Count then SelLength:=0 else SelLength:=Perform(EM_LINEINDEX,LineNr+1,0)-SelStart;
+      StatusBar.Panels[0].Text:=SafeFormat(dgettext('dialogs',' Line: %u of %u'),[LineNr+1,Lines.Count+1]);
       end;
-    SelStart:=Perform(EM_LINEINDEX,LineNr,0);
-    SelLength:=0;
-//    if LineNr=Lines.Count then SelLength:=0 else SelLength:=Perform(EM_LINEINDEX,LineNr+1,0)-SelStart;
-    StatusBar.Panels[0].Text:=SafeFormat(dgettext('dialogs',' Line: %u of %u'),[LineNr+1,Lines.Count+1]);
+    with FindDialog do Options:=Options -[frDown];
+    end
+  else with Memo do begin
+    Clear;
+    Lines.Add('*** '+SafeFormat(dgettext('dialogs','Error loading file: "%s"'),[FName]));
     end;
-  with FindDialog do Options:=Options -[frDown];
   end;
 
 procedure TShowTextDialog.FormPaint(Sender: TObject);
@@ -644,20 +650,22 @@ begin
 
 function TShowTextDialog.LoadText (const FName : string) : boolean;
 var
-  fs : TStream;
-
-  procedure LoadFromStream;
-  var
-    Size,i,j: Integer;
-    Buffer: TBytes;
-    Enc: TEncoding;
-  begin
-    with Memo.Lines do begin
+  fs     : TStream;
+  Size   : int64;
+  i,j    : integer;
+  Buffer : TBytes;
+  Enc    : TEncoding;
+begin
+  TextName:=FName;
+  Result:=false;
+  fs:= TFileStream.Create(FName,fmOpenRead or fmShareDenyNone);
+  try
+    Size:=fs.Size-fs.Position;
+    if Size<=MaxInt then with Memo.Lines do begin
       BeginUpdate;
       try
-        Size := fs.Size - fs.Position;
-        SetLength(Buffer, Size);
-        fs.Read(Buffer, 0, Size);
+        SetLength(Buffer,Size);
+        fs.Read(Buffer,0,Size);
         // remove zero bytes
         i:=0; j:=0;
         while i<Size do begin
@@ -667,31 +675,22 @@ var
           end;
         SetLength(Buffer,j);
         if FCodePage>0 then Enc:=TEncoding.GetEncoding(FCodePage) else Enc:=nil;
-        Size := TEncoding.GetBufferEncoding(Buffer, Enc, DefaultEncoding);
+        Size:=TEncoding.GetBufferEncoding(Buffer,Enc,DefaultEncoding);
         try
-          Text:=Enc.GetString(Buffer, Size, Length(Buffer) - Size);
+          Text:=Enc.GetString(Buffer,Size,Length(Buffer)-Size);
         except
-          on EEncodingError do Text:=TEncoding.ANSI.GetString(Buffer, Size, Length(Buffer) - Size);
+          on EEncodingError do Text:=TEncoding.ANSI.GetString(Buffer,Size,Length(Buffer)-Size);
           end;
       finally
         EndUpdate;
         end;
+      Result:=true;
       end;
-    end;
-
-begin
-  TextName:=FName;
-  Result:=false;
-  with Memo do begin
-    fs:= TFileStream.Create(FName,fmOpenRead or fmShareDenyNone);
-    try
-      LoadFromStream;
+//  LoadFromStream;
 //      if FCodePage>0 then Lines.LoadFromStream(fs,TEncoding.GetEncoding(FCodePage))
 //      else Lines.LoadFromStream(fs);
-      Result:=true;
-    finally
-      fs.Free;
-      end;
+  finally
+    fs.Free;
     end;
   end;
 
@@ -980,9 +979,13 @@ procedure ShowTextFile (const Title,TextDatei : string;
                      DlgType   : TShowDlgType;
                      Buttons   : TShowDlgButtons;
                      PrtSettings : TPrinterSettings;
-                     CodePage  : integer = 0);
+                     AtEnd     : boolean;
+                     CodePage  : integer);
+var
+  n : integer;
 begin
-  ShowTextFile(Title,TextDatei,'','','','','','','',APos,1,DlgType,Buttons,PrtSettings,CodePage);
+  if AtEnd then n:=-1 else n:=1;
+  ShowTextFile(Title,TextDatei,'','','','','','','',APos,n,DlgType,Buttons,PrtSettings,CodePage);
   end;
 
 procedure PrintTextFile (const TextDatei : string; PrtSettings : TPrinterSettings; CodePage : integer = 0);

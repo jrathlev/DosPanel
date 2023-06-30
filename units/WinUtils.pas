@@ -14,7 +14,7 @@
 
    New compilation: April 2015
    language dependend strings in UnitConsts
-   last modified: July 2022
+   last modified: July 2023
    *)
 
 unit WinUtils;
@@ -138,8 +138,11 @@ procedure ScaleImageList (imgList: TImageList; OldDPI,NewDPI : integer);
 procedure SetGlyphFromImagelist (SpdBtn : TSpeedButton; ImgLst : TImageList; AIndex : integer);
 procedure SetSpeedButtonGlyphs (AControl : TWinControl; BaseIndex : integer; ImgList: TImageList);
 
-// scale Screen fonts - only to called from main form
+// scale Screen fonts - only to be called from main form
 procedure ScaleScreenFonts (OldDPI,NewDPI : integer);
+
+// Scale absolute pixel value
+function PixelScale (Value : integer; AForm : TForm) : integer;
 
 // adjust Itemheight of owner drawn comboboxes
 procedure AdjustComboBoxes(AControl : TWinControl; OldDPI,NewDPI : integer);
@@ -645,51 +648,54 @@ begin
   if MulDiv(100,NewDPI,OldDPI)<120 then Exit;
   with imgList do OldSize.Create(Width,Height);
   til:=TImageList.Create(nil);  //create temporary list
-  til.Assign(imgList);
-  with NewSize do begin
-    Create(MulDiv(OldSize.cx,NewDPI,OldDPI),MulDiv(OldSize.cy,NewDPI,OldDPI));
-    imgList.SetSize(cx,cy);
-    end;
-  for i:=0 to til.Count-1 do begin
-    ib:=TBitmap.Create; mb:=TBitmap.Create;
-    try
-      with ib do begin
-        Width:=OldSize.cx; Height:=OldSize.cy;
-        with Canvas do begin
-          FillRect(ClipRect);
-          ImageList_Draw(til.Handle,i,Handle,0,0,ILD_NORMAL);  // original size
-          end;
-        end;
-      with mb do begin
-        Width:=OldSize.cx; Height:=OldSize.cy;
-        with Canvas do begin
-          FillRect(ClipRect);
-          ImageList_Draw(til.Handle,i,Handle,0,0,ILD_MASK);    // original size
-          end;
-        end;
-      sib := TBitmap.Create; smb := TBitmap.Create; //stretched images
-      try
-        with sib do begin
-          Width:=NewSize.cx; Height:=NewSize.cy;
-          with Canvas do begin
-            FillRect(ClipRect);
-            StretchDraw(Rect(0,0,Width,Height),ib);
-            end;
-          end;
-        with smb do begin
-          Width:=NewSize.cx; Height:=NewSize.cy;
-          with Canvas do begin
-            FillRect(ClipRect);
-            StretchDraw(Rect(0,0,Width,Height),mb);
-            end;
-          end;
-        imgList.Add(sib,smb);
-      finally
-        sib.Free; smb.Free;
-        end;
-    finally
-      ib.Free; mb.Free;
+  try
+    til.Assign(imgList);
+    with NewSize do begin
+      Create(MulDiv(OldSize.cx,NewDPI,OldDPI),MulDiv(OldSize.cy,NewDPI,OldDPI));
+      imgList.SetSize(cx,cy);
       end;
+    for i:=0 to til.Count-1 do begin
+      ib:=TBitmap.Create; mb:=TBitmap.Create;
+      try
+        with ib do begin
+          Width:=OldSize.cx; Height:=OldSize.cy;
+          with Canvas do begin
+            FillRect(ClipRect);
+            ImageList_Draw(til.Handle,i,Handle,0,0,ILD_NORMAL);  // original size
+            end;
+          end;
+        with mb do begin
+          Width:=OldSize.cx; Height:=OldSize.cy;
+          with Canvas do begin
+            FillRect(ClipRect);
+            ImageList_Draw(til.Handle,i,Handle,0,0,ILD_MASK);    // original size
+            end;
+          end;
+        sib := TBitmap.Create; smb := TBitmap.Create; //stretched images
+        try
+          with sib do begin
+            Width:=NewSize.cx; Height:=NewSize.cy;
+            with Canvas do begin
+              FillRect(ClipRect);
+              StretchDraw(Rect(0,0,Width,Height),ib);
+              end;
+            end;
+          with smb do begin
+            Width:=NewSize.cx; Height:=NewSize.cy;
+            with Canvas do begin
+              FillRect(ClipRect);
+              StretchDraw(Rect(0,0,Width,Height),mb);
+              end;
+            end;
+          imgList.Add(sib,smb);
+        finally
+          sib.Free; smb.Free;
+          end;
+      finally
+        ib.Free; mb.Free;
+        end;
+      end;
+  except    // ignore errors
     end;
   til.Free;
   end;
@@ -756,6 +762,11 @@ begin
     with HintFont do Height:=MulDiv(Height,NewDPI,OldDPI);
     with IconFont do Height:=2*Height; //MulDiv(Height,NewDPI,OldDPI);
     end;
+  end;
+
+function PixelScale (Value : integer; AForm : TForm) : integer;
+begin
+  Result:=MulDiv(Value,AForm.Monitor.PixelsPerInch,PixelsPerInchOnDesign);
   end;
 
 { --------------------------------------------------------------- }
@@ -1069,7 +1080,10 @@ begin
       if Count>=MaxCount then Delete (Count-1);
       Insert (0,hs);
       end
-    else if n>0 then Move (n,0);
+    else begin
+      if n>0 then Move (n,0);
+      Strings[0]:=hs;  // update string anyway, e.g. if case was changed
+      end;
     end;
   end;
 
@@ -1086,7 +1100,7 @@ begin
     end;
   end;
 
-procedure AddToHistory (Combo : TComboBox); overload;
+procedure AddToHistory (Combo : TComboBox);
 begin
   AddToHistory(Combo,Combo.Text);
   end;

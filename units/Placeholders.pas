@@ -26,6 +26,7 @@ const
   VolPh = '%volume%';
   ProgPh = '%progpath%';
   ModePh = '%mode%';
+  DevPh = '%device%';
 
   dphCount = 14;
   DaPlaceHolder : array [0..dphCount-1] of string =
@@ -53,11 +54,17 @@ const
     ('%taskname%','%username%','%computername%','%start%','%end%','%duration%',
      '%status%','%computer%');
 
+  pdphCount = 13;
+  PortablePlaceHolder : array [0..pdphCount-1] of string =
+    (DevPh,'%date%','%yaw%','%dow%','%ldow%','%dnw%','%day%','%week%','%dom%',
+     '%wom%', '%month%','%lmonth%','%year%');
+
 function ReplaceTimePlaceHolder (const ps : string; Count : integer = 0) : string;
 function ReplacePathPlaceHolder (const ps : string) : string;
 function RemovePlaceHolderSubdirs(ADir : string) : string;
 
 function CheckForTimePlaceholder (const ps : string) : boolean;
+function RemoveDot (const s : string) : string;
 
 implementation
 
@@ -115,7 +122,7 @@ begin
     for i:=3 to 6 do begin  // spez. Platzhalter für wechselnde Tage, Wochen und Monate
       sv:=copy(TmPlaceHolder[i],1,3);
       if AnsiContainsText(Result,sv) then begin
-        n1:=Pos(sv,Result); n2:=PosEx('%',Result,n1+1);
+        n1:=TextPos(sv,Result); n2:=TextPosEx('%',Result,n1+1);
         if (n1>0) and (n2>n1+3) and TryStrToInt(copy(Result,n1+3,n2-n1-3),y) then begin
           if y>99 then d:=3 else if y>9 then d:=2 else d:=1;
           case i of

@@ -107,7 +107,7 @@ implementation
 
 {$R *.DFM}
 
-uses Vcl.Dialogs, InpText, GnuGetText, ExtSysUtils, WinUtils,
+uses Vcl.Dialogs, GnuGetText, WinUtils, InputString,
    {$IFDEF ACCESSIBLE} ShowMessageDlg {$ELSE} MsgDialogs {$ENDIF};
 
 {------------------------------------------------------------------- }
@@ -149,10 +149,10 @@ var
   ok : boolean;
 begin
   s:='';
-  if InputText(DialogPos(Sender),dgettext('dialogs','Add item'),lbDesc.Caption,false,'',nil,false,s) then begin
+  if InputText(DialogPos(Sender),dgettext('dialogs','Add item'),lbDesc.Caption,s) then begin
     if assigned(FCheckEntry) then ok:=FCheckEntry(s) else ok:=true;
     if ok then with lbxStringList do ItemIndex:=Items.Add(s)
-    else ErrorDialog(CursorPos,TryFormat(dgettext('dialogs','Invalid entry: "%s"'),[s]));
+    else ErrorDialog(CursorPos,SafeFormat(dgettext('dialogs','Invalid entry: "%s"'),[s]));
     end;
   end;
 
@@ -168,7 +168,7 @@ begin
     end
   else if ItemIndex>=0 then begin
     s:=Items[ItemIndex];
-    if ConfirmDialog (DialogPos(Sender),TryFormat(dgettext('dialogs','Remove item: "%s"?'),[s])) then begin
+    if ConfirmDialog (DialogPos(Sender),SafeFormat(dgettext('dialogs','Remove item: "%s"?'),[s])) then begin
       n:=ItemIndex;
       Items.Delete(ItemIndex);
       if n>Items.Count then ItemIndex:=Items.Count-1 else ItemIndex:=n;
@@ -183,10 +183,10 @@ var
 begin
   with lbxStringList do if ItemIndex>=0 then begin
     s:=Items[ItemIndex];
-    if InputText(DialogPos(Sender),dgettext('dialogs','Edit item'),lbDesc.Caption,false,'',nil,false,s) then begin
+    if InputText(DialogPos(Sender),dgettext('dialogs','Edit item'),lbDesc.Caption,s) then begin
       if assigned(FCheckEntry) then ok:=FCheckEntry(s) else ok:=true;
       if ok then Items[ItemIndex]:=s
-      else ErrorDialog(CursorPos,TryFormat(dgettext('dialogs','Invalid entry: "%s"'),[s]));
+      else ErrorDialog(CursorPos,SafeFormat(dgettext('dialogs','Invalid entry: "%s"'),[s]));
       end;
     end;
   end;
@@ -206,7 +206,7 @@ begin
   if FEdit then begin
     with lbxStringList do if ItemIndex>=0 then begin
       s:=Items[ItemIndex];
-      if InputText(CursorPos(Point(-20,20)),dgettext('dialogs','Edit item'),lbDesc.Caption,false,'',nil,false,s) then Items[ItemIndex]:=s;
+      if InputText(CursorPos(Point(-20,20)),dgettext('dialogs','Edit item'),lbDesc.Caption,s) then Items[ItemIndex]:=s;
       end
     end
   else ModalResult:=mrOK;
@@ -217,11 +217,6 @@ procedure TSelectFromListDialog.btnPromptClick(Sender: TObject);
 //  ok : boolean;
 begin
   ModalResult:=mrYes;
-//  if InputText(DialogPos(Sender),dgettext('dialogs','Edit item'),lbDesc.Caption,false,'',nil,false,FText) then begin
-//    if assigned(FCheckEntry) then ok:=FCheckEntry(FText) else ok:=true;
-//    if ok then ModalResult:=mrYes
-//    else ErrorDialog(CursorPos,TryFormat(dgettext('dialogs','Invalid entry: "%s"'),[FText]));
-//    end;
   end;
 
 {------------------------------------------------------------------- }

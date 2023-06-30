@@ -216,6 +216,9 @@ function CheckPath (const Path : string) : TPathType;
 // Removable oder Fixed
 function IsLocalDrive (const Path : string) : boolean;
 
+// Fixed
+function IsFixedDrive (const Path : string) : boolean;
+
 // check if system drive
 function IsSystemDrive (const Path : string) : boolean;
 
@@ -352,6 +355,11 @@ begin
   Result:=(pt=ptFixed) or (pt=ptRemovable);
   end;
 
+function IsFixedDrive (const Path : string) : boolean;
+begin
+  Result:=CheckPath(Path)=ptFixed;
+  end;
+
 function IsSystemDrive (const Path : string) : boolean;
 var
   p : pchar;
@@ -359,7 +367,7 @@ begin
   p:=StrAlloc(MAX_PATH+1);
   GetSystemDirectory (p,MAX_PATH+1);
   Result:=AnsiSameText(ExtractFileDrive(Path),ExtractFileDrive(p));
-  Strdispose(p);
+  StrDispose(p);
   end;
 
 // Prüfe Laufwerk auf Verfügbarkeit

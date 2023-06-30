@@ -4,7 +4,7 @@ object SelectFromListDialog: TSelectFromListDialog
   Hint = 'Add item'
   Caption = 'Select item from list'
   ClientHeight = 391
-  ClientWidth = 336
+  ClientWidth = 346
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,30 +18,30 @@ object SelectFromListDialog: TSelectFromListDialog
   PixelsPerInch = 96
   TextHeight = 13
   object paEdit: TPanel
-    Left = 223
+    Left = 225
     Top = 0
-    Width = 113
+    Width = 121
     Height = 391
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 1
     DesignSize = (
-      113
+      121
       391)
     object gbxEdit: TGroupBox
       Left = 3
       Top = 5
-      Width = 103
+      Width = 111
       Height = 163
       Caption = 'Edit items'
       TabOrder = 0
       DesignSize = (
-        103
+        111
         163)
       object btnInsert: TBitBtn
         Left = 5
         Top = 20
-        Width = 91
+        Width = 101
         Height = 31
         Hint = 'Add item'
         Anchors = [akTop, akRight]
@@ -132,7 +132,7 @@ object SelectFromListDialog: TSelectFromListDialog
       object btnDelete: TBitBtn
         Left = 5
         Top = 55
-        Width = 91
+        Width = 101
         Height = 31
         Hint = 'Remove item'
         Anchors = [akTop, akRight]
@@ -223,7 +223,7 @@ object SelectFromListDialog: TSelectFromListDialog
       object btnEdit: TBitBtn
         Left = 5
         Top = 90
-        Width = 91
+        Width = 101
         Height = 31
         Hint = 'Edit item'
         Anchors = [akTop, akRight]
@@ -314,7 +314,7 @@ object SelectFromListDialog: TSelectFromListDialog
       object btnDefault: TBitBtn
         Left = 5
         Top = 125
-        Width = 91
+        Width = 101
         Height = 31
         Hint = 'Reset to default values'
         Anchors = [akTop, akRight]
@@ -406,13 +406,12 @@ object SelectFromListDialog: TSelectFromListDialog
     object gbxMove: TGroupBox
       Left = 3
       Top = 175
-      Width = 103
+      Width = 111
       Height = 61
-      Anchors = [akTop, akRight]
       Caption = 'Move item'
       TabOrder = 1
       object UpBtn: TBitBtn
-        Left = 15
+        Left = 20
         Top = 20
         Width = 31
         Height = 31
@@ -502,7 +501,7 @@ object SelectFromListDialog: TSelectFromListDialog
         OnClick = UpBtnClick
       end
       object DownBtn: TBitBtn
-        Left = 55
+        Left = 60
         Top = 20
         Width = 31
         Height = 31
@@ -595,7 +594,7 @@ object SelectFromListDialog: TSelectFromListDialog
     object OKBtn: TBitBtn
       Left = 5
       Top = 320
-      Width = 101
+      Width = 109
       Height = 31
       Anchors = [akRight, akBottom]
       Caption = 'OK'
@@ -658,7 +657,7 @@ object SelectFromListDialog: TSelectFromListDialog
     object btnPrompt: TBitBtn
       Left = 5
       Top = 285
-      Width = 101
+      Width = 109
       Height = 31
       Anchors = [akRight, akBottom]
       Caption = 'Prompt'
@@ -747,7 +746,7 @@ object SelectFromListDialog: TSelectFromListDialog
     object CancelBtn: TBitBtn
       Left = 5
       Top = 355
-      Width = 101
+      Width = 109
       Height = 31
       Anchors = [akRight, akBottom]
       Cancel = True
@@ -810,7 +809,7 @@ object SelectFromListDialog: TSelectFromListDialog
     object lbHint: TStaticText
       Left = 3
       Top = 245
-      Width = 103
+      Width = 113
       Height = 31
       AutoSize = False
       TabOrder = 2
@@ -820,23 +819,25 @@ object SelectFromListDialog: TSelectFromListDialog
   object paList: TPanel
     Left = 0
     Top = 0
-    Width = 223
+    Width = 225
     Height = 391
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 223
     DesignSize = (
-      223
+      225
       391)
     object lbxStringList: TListBox
       Left = 5
       Top = 25
-      Width = 211
+      Width = 213
       Height = 362
       Anchors = [akLeft, akTop, akRight, akBottom]
       ItemHeight = 13
       TabOrder = 1
       OnDblClick = lbxStringListDblClick
+      ExplicitWidth = 211
     end
     object lbDesc: TStaticText
       Left = 5

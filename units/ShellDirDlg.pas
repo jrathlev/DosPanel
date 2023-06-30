@@ -68,6 +68,7 @@ type
     itmCreate: TMenuItem;
     itmUpdate: TMenuItem;
     Splitter: TSplitter;
+    laVolHint: TStaticText;
     procedure ShellTreeViewChange(Sender: TObject; Node: TTreeNode);
     procedure spbDesktopClick(Sender: TObject);
     procedure spbMyFilesClick(Sender: TObject);
@@ -96,6 +97,7 @@ type
   private
     { Private declarations }
     FDefaultDir,FIniName,FIniSection : string;
+    function GetDiskInfo (const APath : string) : string;
     procedure ShowFiles (AShow : boolean);
     procedure AddHistory (ADir : string);
     procedure DeleteHistory (ADir : string);
@@ -128,7 +130,7 @@ implementation
 
 uses System.IniFiles, Vcl.Dialogs, System.StrUtils, Winapi.ShlObj, Winapi.Shellapi,
   Winapi.ActiveX, WinShell, WinUtils, {$IFDEF ACCESSIBLE} ShowMessageDlg {$ELSE} MsgDialogs {$ENDIF},
-  PathUtils, GnuGetText, SelectDlg;
+  PathUtils, NumberUtils, GnuGetText, SelectDlg;
 
 const
   FMaxLen = 15;
@@ -485,10 +487,11 @@ begin
 procedure TShellDirDialog.ShellTreeViewChange(Sender: TObject;
   Node: TTreeNode);
 var
-  s,s1,s2,s3,s4 : string;
+  s,s1,s2,s3,s4,sh : string;
   sf : TShellFolder;
 begin
   if Active then with ShellTreeView do begin
+    sh:='';
     sf:=SelectedFolder;
     if assigned(sf) then with sf do begin
       btbOk.Enabled:=fpFileSystem in Properties;
@@ -500,7 +503,9 @@ begin
           cbxSelectedDir.Text:=s1;
           end
         end;
+      sh:=GetDiskInfo(cbxSelectedDir.Text);
       end;
+    laVolHint.Caption:=sh;
     end;
   end;
 
@@ -549,6 +554,16 @@ begin
   else if Key=VK_Return then ModalResult:=mrOK;
   end;
 
+{ ------------------------------------------------------------------- }
+function TShellDirDialog.GetDiskInfo (const APath : string) : string;
+var
+  na,nf : int64;
+begin
+  if GetDiskFreeSpaceEx(pchar(IncludeTrailingPathDelimiter(APath)),na,nf,nil) then
+    Result:=SizeToStr(na)+dgettext('dialogs',' free of ')+SizeToStr(nf)
+  else Result:='';
+  end;
+
 procedure TShellDirDialog.ShowFiles (AShow : boolean);
 var
   d : integer;
@@ -567,9 +582,11 @@ begin
     end;
   ClientWidth:=d;
   cbxSelectedDir.Text:=ShellTreeView.Path;
+  laVolHint.Caption:=GetDiskInfo(cbxSelectedDir.Text);
   btbOk.Enabled:=DirectoryExists(cbxSelectedDir.Text);
   end;
 
+{ ------------------------------------------------------------------- }
 procedure TShellDirDialog.cbxFilesClick(Sender: TObject);
 begin
   if Visible then ShowFiles(cbxFiles.Checked);
@@ -641,6 +658,7 @@ begin
     ShowZip:=ZipAsFiles;
     end;
   cbxSelectedDir.Text:=ShellTreeView.Path;
+  laVolHint.Caption:=GetDiskInfo(cbxSelectedDir.Text);
   cbxFiles.Visible:=FileView;
   if FileView then ShowFiles(cbxFiles.Checked)
   else ShowFiles(false);

@@ -85,13 +85,13 @@ resourcestring
 
   rsUserBreak    = 'Terminated by user';
   rsUnknownErrCode  = 'Unknown error code ($%.8x)';
-  rsCopy         = ' (Copy)';
-  rsGZip         = ' (gzip)';
-  rsGUnzip       = ' (gunzip)';
-  rsZip          = ' (Zip)';
-  rsUnzip        = ' (Unzip)';
-  rsEnCrypt      = ' (Encrypt)';
-  rsDeCrypt      = ' (Decrypt)';
+  rsCopy         = 'Copy';
+  rsGZip         = 'gzip';
+  rsGUnzip       = 'gunzip';
+  rsZip          = 'Zip';
+  rsUnzip        = 'Unzip';
+  rsEnCrypt      = 'Encrypt';
+  rsDeCrypt      = 'Decrypt';
 
   rsNoFileInfo   = 'File information not available';
   rsDescription  = 'Description: ';

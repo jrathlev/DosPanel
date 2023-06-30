@@ -2246,6 +2246,13 @@ object ShellDirDialog: TShellDirDialog
         OnChange = cbxSelectedDirChange
         OnCloseUp = cbxSelectedDirCloseUp
       end
+      object laVolHint: TStaticText
+        Left = 10
+        Top = 60
+        Width = 4
+        Height = 4
+        TabOrder = 4
+      end
     end
   end
   object PanelRight: TPanel
