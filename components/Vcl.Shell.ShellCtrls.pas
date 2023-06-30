@@ -867,21 +867,23 @@ var
   ppf : IPersistFile;
   hr  : HResult;
   sb  : PChar;
+  P   : PWideChar;
 begin
   Result:=false;
   if FileExists(LinkObj) then begin
     if succeeded(CoInitialize(nil)) then begin
       hr:=CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER, IID_IShellLinkA, psl);
-      sb:=StrAlloc(max_path);
+      sb:=StrAlloc(max_path); P:=StringToOLEStr(LinkObj);
       if succeeded(hr) then with psl do begin
          // Get a pointer to the IPersistFile interface.
         if SUCCEEDED(psl.QueryInterface(IID_IPersistFile,ppf)) then begin
-          ppf.Load(StringToOLEStr(LinkObj),STGM_READ);
+          ppf.Load(P,STGM_READ);
           Result:=succeeded(GetIDList(pidl));
           ppf:=nil;
           end;
         end;
       psl:=nil;
+      SysFreeString(P);
       StrDispose(sb);
       CoUninitialize;
       end;
@@ -1008,7 +1010,7 @@ PathName of standard folders)}
     Result := GetDisplayName(ParentFolder, PIDL, SHGDN_NORMAL);
 end;
 
-function ObjectFlags(ObjectTypes: TShellObjectTypes): Integer;
+function ObjectFlags(ObjectTypes: TShellObjectTypes): cardinal;
 begin
   Result := 0;
   if otFolders in ObjectTypes then Inc(Result, SHCONTF_FOLDERS);
@@ -1191,6 +1193,7 @@ begin
     Flags := 0;
     P := StringToOleStr(NewRoot);
     HR := DesktopShellFolder.ParseDisplayName(0, nil, P, NumChars, NewPIDL, Flags);
+    SysFreeString(P);
   end;
 
   if HR <> S_OK then
@@ -2318,17 +2321,17 @@ end;
 
 procedure TCustomShellTreeView.SetPath(const Value: string);
 var
-//  P: PWideChar;
   NewPIDL: PItemIDList;
   Flags,
   NumChars: LongWord;
+  P : PWideChar;
 begin
   NumChars := Length(Value);
   Flags := 0;
-//  P := StringToOleStr(Value);
+  P := StringToOleStr(Value);
   if assigned(Selected) then Refresh(Selected);          // JR Apr. 2008/2010
   try
-    OLECheck(DesktopShellFolder.ParseDisplayName(0, nil, StringToOleStr(Value), NumChars,  // Jr Dec. 2013
+    OLECheck(DesktopShellFolder.ParseDisplayName(0, nil, P, NumChars,  // Jr Dec. 2013
 //    OLECheck(DesktopShellFolder.ParseDisplayName(0, nil, POleStr(Value), NumChars,   // JR Oct. 2012
       NewPIDL, Flags));
     SetPathFromID(NewPIDL);
@@ -2337,7 +2340,7 @@ begin
     on E:EOleSysError do
       raise EInvalidPath.Create(Format(SErrorSettingPath,[Value])+sLineBreak+'('+E.Message+')');
   end;
-//  StrDispose(P);
+  SysFreeString(P);
 end;
 
 procedure TCustomShellTreeView.SetPathFromID(ID: PItemIDList);
@@ -2874,6 +2877,7 @@ begin
   except on E:EOleSysError do
     raise EInvalidPath.Create(Format(SErrorSettingPath,[Value])+sLineBreak+'('+E.Message+')');
   end;
+  SysFreeString(P);
   Change; //JR
 end;
 
@@ -3189,7 +3193,7 @@ var
   Count: Integer;
   AFolder: TShellFolder;
 
-  function ObjectFlags(ObjectTypes: TShellObjectTypes): Integer;  // JR Oct. 2017
+  function ObjectFlags(ObjectTypes: TShellObjectTypes): cardinal;  // JR Oct. 2017
   begin
     Result := 0;
     if (otFolders in ObjectTypes) or FShowZip then Inc(Result, SHCONTF_FOLDERS);
@@ -3443,8 +3447,7 @@ begin
   if csLoading in ComponentState then
     inherited Loaded;
   SetAutoRefresh(FAutoRefresh);
-
-end;
+  end;
 
 procedure TCustomShellListView.DoContextPopup(MousePos: TPoint;
   var Handled: Boolean);
@@ -3542,14 +3545,16 @@ var
       if Result then
         with Columns.Add do
         begin
+          AutoSize:=true;
           Caption := ColName;
           case SD.fmt of
             LVCFMT_CENTER: Alignment := taCenter;
             LVCFMT_LEFT: Alignment := taLeftJustify;
             LVCFMT_RIGHT: Alignment := taRightJustify;
           end;
-          if (Length(FColWidths)>=Columns.Count) and (FColWidths[Columns.Count-1]>0) then
-            n:=FColWidths[Columns.Count-1]
+          if (Length(FColWidths)>0) and (FColWidths[Index]>0) then n:=FColWidths[Index]
+//          if (Length(FColWidths)>=Columns.Count) and (FColWidths[Columns.Count-1]>0) then
+//            n:=FColWidths[Columns.Count-1]
           else n:=SD.cxChar;
           Width := n * GetParentForm(self).Canvas.TextWidth('X');
           ColNames.Add(ColName);
