@@ -11,6 +11,7 @@
 ;  the specific language governing rights and limitations under the License.
 
 #define ApplicationVersion GetFileVersion('..\Release\Win32\DosPanel.exe')
+#define Year GetDateTimeString('yyyy','','')
 
 [Setup]
 PrivilegesRequired=admin
@@ -21,7 +22,7 @@ AppPublisher=Dr. J. Rathlev
 AppPublisherURL=http://www.rathlev-home.de/?tools/othertools.html
 AppSupportURL=http://www.rathlev-home.de/?tools/othertools.html
 AppUpdatesURL=http://www.rathlev-home.de/?tools/othertools.html
-AppCopyright=Copyright © 2011-2023 Dr. J. Rathlev
+AppCopyright=Copyright © 2011-[#Year] Dr. J. Rathlev
 VersionInfoVersion={#ApplicationVersion}
 DefaultDirName={commonpf}\DosPanel
 DefaultGroupName=Dos Panel
