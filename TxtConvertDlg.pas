@@ -55,7 +55,7 @@ implementation
 
 {$R *.dfm}
 
-uses GnuGetText, WinUtils, NumberUtils, FileUtils, Settings;
+uses GnuGetText, WinUtils, MsgDialogs, NumberUtils, PathUtils, Settings;
 
 procedure TTxtConvertDialog.FormCreate(Sender: TObject);
 var

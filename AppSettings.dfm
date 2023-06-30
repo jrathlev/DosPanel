@@ -633,7 +633,7 @@ object AppSettingsDialog: TAppSettingsDialog
       Width = 56
       Height = 21
       TabOrder = 3
-      Text = '1.000'
+      Text = '1000'
     end
     object udCycles: TUpDown
       Left = 151

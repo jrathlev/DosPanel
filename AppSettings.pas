@@ -14,7 +14,7 @@
    the specific language governing rights and limitations under the License.
 
    J. Rathlev, Dec. 2011
-   last modified: Dec. 2017
+   last modified: Dec. 2023
    *)
 
 unit AppSettings;
@@ -161,8 +161,8 @@ implementation
 
 {$R *.dfm}
 
-uses DosPanelMain, GnuGetText, WinUtils, FileUtils, ShellDirDlg, Winapi.ShellApi,
-  SelectFromListDlg, System.StrUtils, WinDevUtils, StringUtils;
+uses Winapi.ShellApi, System.StrUtils, DosPanelMain, GnuGetText, WinUtils, MsgDialogs,
+  PathUtils, ShellDirDlg, SelectFromListDlg, WinDevUtils, StringUtils;
 
 const
   MemSizeList : array [0..4] of word = (8,16,32,48,64);

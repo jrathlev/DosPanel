@@ -25,13 +25,13 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.ActnList,
   Vcl.ComCtrls, Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls, System.Contnrs,
-  Vcl.CategoryButtons, LangUtils, Vcl.ImgList, Settings, AppSettings, Vcl.Imaging.pngimage,
-  Vcl.ExtCtrls, WebBrowser, System.ImageList, System.Actions;
+  Vcl.CategoryButtons, LangUtils, Vcl.ImgList, Vcl.Imaging.pngimage, System.ImageList,
+  Vcl.ExtCtrls, System.Actions, Settings, AppSettings, WebBrowser;
 
 const
   ProgName = 'DOS Panel';
   Vers = ' - Vers. 1.6';
-  CopRgt = '© 2018-2020 - Dr. J. Rathlev, D-24222 Schwentinental';
+  CopRgt = '© 2018-2023 - Dr. J. Rathlev, D-24222 Schwentinental';
   EMailAdr = 'kontakt(a)rathlev-home.de';
 
   ConfName = 'dospanel.conf';
@@ -136,6 +136,9 @@ type
     itmDuplicate: TMenuItem;
     piDuplicate: TMenuItem;
     actDuplicate: TAction;
+    itmHelpFile: TMenuItem;
+    N5: TMenuItem;
+    actHelpFile: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actExitExecute(Sender: TObject);
@@ -168,6 +171,7 @@ type
     procedure piDrawItem(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
       Selected: Boolean);
     procedure actDuplicateExecute(Sender: TObject);
+    procedure actHelpFileExecute(Sender: TObject);
   private
     { Private-Deklarationen }
     ProgVersName,
@@ -196,8 +200,9 @@ implementation
 
 {$R *.dfm}
 
-uses GnuGetText, InitProg, WinUtils, StringUtils, FileUtils, WinShell, WinExecute,
-  NumberUtils, ShowMemo, TxtConvertDlg, Winapi.ShellApi, Winapi.ShlObj;
+uses Winapi.ShellApi, Winapi.ShlObj, GnuGetText, InitProg, IniFileUtils, WinUtils,
+  FileCopy, MsgDialogs, StringUtils, PathUtils, WinShell, WinExecute, NumberUtils,
+  ShowMemo, TxtConvertDlg;
 
 { ------------------------------------------------------------------- }
 const
@@ -612,6 +617,21 @@ begin
            VersInfo.CopyRight+#13+'E-Mail: '+EmailAdr);
   end;
 
+procedure TfrmMain.actHelpFileExecute(Sender: TObject);
+var
+  s : string;
+begin
+  s:=PrgPath+_('dospanel-en.chm');
+  if FileExists(s) then begin
+    try
+      HtmlHelp(GetDesktopWindow,pchar(s),HH_DISPLAY_TOPIC,0);
+    except
+      ErrorDialog (CursorPos,_('Help not available on this system!'));
+      end;
+    end
+  else ErrorDialog (CursorPos,_('Help file not found!'));
+  end;
+
 procedure TfrmMain.actSettingsExecute(Sender: TObject);
 begin
   if DosBoxSetDialog.Execute(BasicSettings) then UpdateAutoStart;
@@ -769,56 +789,58 @@ begin
     with BasicSettings do if not FileExists(ConfFile) and not
       ConfirmDialog(_('Basic configuration file not found! Start application anyway?')) then Exit;
   // write conf file
-    sc:=SetDirname(AppPath)+ConfName;
-    AssignFile(fc,sc); Rewrite(fc);
-    writeln(fc,secSdl);
-    writeln(fc,cfgFull,LowerCase((BoolToStr(FullScreen,true))));
-    with BasicSettings do begin
-      if FileExists(AppMapper) then writeln(fc,cfgMapF,MakeQuotedStr(AppMapper,[' ']))
-      else begin
-        if length(AppMapper)>0 then AppMapper:='';
-        if FileExists(MapperFile) then writeln(fc,cfgMapF,MakeQuotedStr(MapperFile,[' ']));
+    if DirectoryExists(AppPath) then begin
+      sc:=SetDirname(AppPath)+ConfName;
+      AssignFile(fc,sc); Rewrite(fc);
+      writeln(fc,secSdl);
+      writeln(fc,cfgFull,LowerCase((BoolToStr(FullScreen,true))));
+      with BasicSettings do begin
+        if FileExists(AppMapper) then writeln(fc,cfgMapF,MakeQuotedStr(AppMapper,[' ']))
+        else begin
+          if length(AppMapper)>0 then AppMapper:='';
+          if FileExists(MapperFile) then writeln(fc,cfgMapF,MakeQuotedStr(MapperFile,[' ']));
+          end;
+        writeln(fc,secDBox);
+        if FileExists(LangFile) then writeln(fc,cfgLang,MakeQuotedStr(LangFile,[' ']));
+        if MemSize<>0 then writeln(fc,cfgMSz,MemSize);
+        writeln(fc,secCPU);
+        if Speed=0 then s:='auto'
+        else if Speed=maxCycles then s:='max'
+        else s:=IntToStr(Speed);
+        writeln(fc,cfgCycl,s);
+        writeln(fc,secDos);
+        if length(KeyLayout)=0 then s:='auto' else s:=KeyLayout;
+        writeln(fc,cfgKeyb,s);
         end;
-      writeln(fc,secDBox);
-      if FileExists(LangFile) then writeln(fc,cfgLang,MakeQuotedStr(LangFile,[' ']));
-      if MemSize<>0 then writeln(fc,cfgMSz,MemSize);
-      writeln(fc,secCPU);
-      if Speed=0 then s:='auto'
-      else if Speed=maxCycles then s:='max'
-      else s:=IntToStr(Speed);
-      writeln(fc,cfgCycl,s);
-      writeln(fc,secDos);
-      if length(KeyLayout)=0 then s:='auto' else s:=KeyLayout;
-      writeln(fc,cfgKeyb,s);
-      end;
-    writeln(fc,secExec);
-    if DirectoryExists(AppPath) then writeln(fc,cfgMount,' ',HardDrv,
-         ' ',MakeQuotedStr(AppPath,[' ']));
-    if IsoImage then begin
-      if FileExists(CdPath) then writeln(fc,CfgImgMt,' ',CdDrv,' ',
-           MakeQuotedStr(CdPath,[' ']),' -t cdrom');
+      writeln(fc,secExec);
+      writeln(fc,cfgMount,' ',HardDrv,' ',MakeQuotedStr(AppPath,[' ']));
+      if IsoImage then begin
+        if FileExists(CdPath) then writeln(fc,CfgImgMt,' ',CdDrv,' ',
+             MakeQuotedStr(CdPath,[' ']),' -t cdrom');
+        end
+      else writeln(fc,CfgMount,' ',CdDrv,' ',CdPath,' -t cdrom');
+      s:=Commands;
+      while length(s)>0 do writeln(fc,ReadNxtQuotedStr(s,Semicolon,Quote));
+      if length(AppFile)>0 then begin
+        if AnsiSameText(GetExt(AppFile),'bat') then s:='CALL '+AppFile else s:=AppFile;
+        writeln(fc,s,' ',Parameters);
+        end;
+      if AutoEnd then writeln(fc,cfgExit);
+      CloseFile(fc);
+    // start DosBox
+      sa:=SetDirName(BasicSettings.DosBoxPath)+'DosBox.exe';
+      if FileExists(sa) then begin
+        s:=MakeQuotedStr(sa,[' ']);
+        if BasicSettings.HideCon then s:=s+' -noconsole';
+        if FileExists(BasicSettings.ConfFile) then s:=s+' -conf '+MakeQuotedStr(BasicSettings.ConfFile,[' ']);
+        if not UseDefault then s:=s+' -conf '+MakeQuotedStr(sc,[' ']);
+  //    if length(AppFile)>0 then s:=s+' '+SetDirName(RootPath)+AppFile;
+  //    if AutoEnd then s:=s+' -exit';
+        StartProcess(s,AppPath);
+        end
+      else ErrorDialog(_('DosBox.exe not found! Please adjust your global settings!'));
       end
-    else writeln(fc,CfgMount,' ',CdDrv,' ',CdPath,' -t cdrom');
-    s:=Commands;
-    while length(s)>0 do writeln(fc,ReadNxtQuotedStr(s,Semicolon,Quote));
-    if length(AppFile)>0 then begin
-      if AnsiSameText(GetExt(AppFile),'bat') then s:='CALL '+AppFile else s:=AppFile;
-      writeln(fc,s,' ',Parameters);
-      end;
-    if AutoEnd then writeln(fc,cfgExit);
-    CloseFile(fc);
-  // start DosBox
-    sa:=SetDirName(BasicSettings.DosBoxPath)+'DosBox.exe';
-    if FileExists(sa) then begin
-      s:=MakeQuotedStr(sa,[' ']);
-      if BasicSettings.HideCon then s:=s+' -noconsole';
-      if FileExists(BasicSettings.ConfFile) then s:=s+' -conf '+MakeQuotedStr(BasicSettings.ConfFile,[' ']);
-      if not UseDefault then s:=s+' -conf '+MakeQuotedStr(sc,[' ']);
-//    if length(AppFile)>0 then s:=s+' '+SetDirName(RootPath)+AppFile;
-//    if AutoEnd then s:=s+' -exit';
-      StartProcess(s,AppPath);
-      end
-    else ErrorDialog(_('DosBox.exe not found! Please adjust your global settings!'));
+    else ErrorDialog(SafeFormat(_('Application path not found:'+sLineBreak+'%s'),[AppPath]));
     end;
   end;
 
@@ -841,7 +863,7 @@ begin
           Point(Left+20,Top+20),1,stShow,[sbPrint,sbSearch],BasicSettings.Codepage)
       else ShellExecute(0,'open',pchar(ManFile),nil,pchar(ExtractFilePath(ManFile)),SW_SHOWNORMAL)
       end
-    else ErrorDialog('',_('Manual not found!'));
+    else ErrorDialog(SafeFormat(_('Manual not found (%s)!'),[AppName]));
     end;
   end;
 

@@ -15,6 +15,7 @@ object DosBoxSetDialog: TDosBoxSetDialog
   Position = poScreenCenter
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  ExplicitWidth = 320
   DesignSize = (
     407
     392)

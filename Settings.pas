@@ -110,7 +110,7 @@ implementation
 
 {$R *.dfm}
 
-uses DosPanelMain, GnuGetText, FileUtils, WinUtils, ShellDirDlg;
+uses DosPanelMain, GnuGetText, PathUtils, WinUtils, MsgDialogs, ShellDirDlg;
 
 { ------------------------------------------------------------------- }
 function GetKeyboardLayoutDosName : string;
