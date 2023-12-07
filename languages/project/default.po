@@ -1,0 +1,813 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2023-12-05 14:01+0100\n"
+"PO-Revision-Date: 2023-12-05 14:01+0100\n"
+"Last-Translator: Somebody <your.email@address.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: GgtTranslate 3.1.0\n"
+
+#. AppSettingsDialog.Caption
+#: AppSettings.dfm:4
+msgid "Edit settings for DOS application"
+msgstr ""
+
+#. AppSettingsDialog.Label1.Caption
+#: AppSettings.dfm:27
+msgid "Category:"
+msgstr ""
+
+#. AppSettingsDialog.btbCancel.Caption
+#: AppSettings.dfm:44
+#. DosBoxSetDialog.CancelBtn.Caption
+#: Settings.dfm:160
+msgid "Cancel"
+msgstr ""
+
+#. AppSettingsDialog.btbOK.Caption
+#: AppSettings.dfm:106
+#. DosBoxSetDialog.OKBtn.Caption
+#: Settings.dfm:94
+msgid "OK"
+msgstr ""
+
+#. AppSettingsDialog.edAppName.EditLabel.Caption
+#: AppSettings.dfm:180
+msgid "Name:"
+msgstr ""
+
+#. AppSettingsDialog.gbOptions.Caption
+#: AppSettings.dfm:189
+msgid "Options:"
+msgstr ""
+
+#. AppSettingsDialog.gbOptions.Label6.Caption
+#: AppSettings.dfm:196
+msgid "Memory size:"
+msgstr ""
+
+#. AppSettingsDialog.gbOptions.Label2.Caption
+#: AppSettings.dfm:203
+msgid "Instructions per ms:"
+msgstr ""
+
+#. AppSettingsDialog.gbOptions.cxFullScreen.Caption
+#: AppSettings.dfm:210
+msgid "Full screen"
+msgstr ""
+
+#. AppSettingsDialog.gbOptions.cxAutoEnd.Caption
+#: AppSettings.dfm:218
+msgid "Close DOSBox automatically at end of "
+"execution"
+msgstr ""
+
+#. AppSettingsDialog.gbOptions.cbMemSize.Text
+#: AppSettings.dfm:230
+#. AppSettingsDialog.gbOptions.cbMemSize.Items.Strings
+#: AppSettings.dfm:233
+msgid "16 MB"
+msgstr ""
+
+#. AppSettingsDialog.gbOptions.cbMemSize.Items.Strings
+#: AppSettings.dfm:232
+msgid "8 MB"
+msgstr ""
+
+#. AppSettingsDialog.gbOptions.cbMemSize.Items.Strings
+#: AppSettings.dfm:234
+msgid "32 MB"
+msgstr ""
+
+#. AppSettingsDialog.gbOptions.cbMemSize.Items.Strings
+#: AppSettings.dfm:235
+msgid "48 MB"
+msgstr ""
+
+#. AppSettingsDialog.gbOptions.cbMemSize.Items.Strings
+#: AppSettings.dfm:236
+msgid "64 MB"
+msgstr ""
+
+#. AppSettingsDialog.gbOptions.cbCycles.Text
+#: AppSettings.dfm:246
+#. AppSettingsDialog.gbOptions.cbCycles.Items.Strings
+#: AppSettings.dfm:248
+msgid "Set automatically"
+msgstr ""
+
+#. AppSettingsDialog.gbOptions.cbCycles.Items.Strings
+#: AppSettings.dfm:249
+msgid "Set to maximum"
+msgstr ""
+
+#. AppSettingsDialog.gbOptions.cbCycles.Items.Strings
+#: AppSettings.dfm:250
+msgid "Use preset"
+msgstr ""
+
+#. AppSettingsDialog.gbHardDrive.Caption
+#: AppSettings.dfm:259
+msgid "Mount drive to path:"
+msgstr ""
+
+#. AppSettingsDialog.rgConfig.Caption
+#: AppSettings.dfm:383
+#. DosBoxSetDialog.gbDosBox.btConf.Hint
+#: Settings.dfm:235
+msgid "Select configuration"
+msgstr ""
+
+#. AppSettingsDialog.rgConfig.Items.Strings
+#: AppSettings.dfm:386
+#. frmMain.ActionList.actExit.Category
+#: DosPanelMain.dfm:505
+#. frmMain.ActionList.actSettings.Category
+#: DosPanelMain.dfm:575
+#. frmMain.ActionList.actInfo.Category
+#: DosPanelMain.dfm:606
+#. frmMain.ActionList.actHelpFile.Category
+#: DosPanelMain.dfm:633
+msgid "Global"
+msgstr ""
+
+#. AppSettingsDialog.rgConfig.Items.Strings
+#: AppSettings.dfm:387
+msgid "Application specific"
+msgstr ""
+
+#. AppSettingsDialog.paSettings.btCommands.Hint
+#: AppSettings.dfm:406
+#. AppSettingsDialog.paSettings.btIconFile.Hint
+#: AppSettings.dfm:534
+msgid "Select icon"
+msgstr ""
+
+#. AppSettingsDialog.paSettings.btExeFile.Hint
+#: AppSettings.dfm:470
+msgid "Select executable to run on startup"
+msgstr ""
+
+#. AppSettingsDialog.paSettings.btManFile.Hint
+#: AppSettings.dfm:598
+msgid "Select manual"
+msgstr ""
+
+#. AppSettingsDialog.paSettings.btMapper.Hint
+#: AppSettings.dfm:662
+#. DosBoxSetDialog.btEditor.Hint
+#: Settings.dfm:28
+#. DosBoxSetDialog.gbDosBox.btMapper.Hint
+#: Settings.dfm:487
+msgid "Select mapper file"
+msgstr ""
+
+#. AppSettingsDialog.paSettings.edCommands.EditLabel.Caption
+#: AppSettings.dfm:729
+msgid "Additional commands on startup:"
+msgstr ""
+
+#. AppSettingsDialog.paSettings.edDescription.EditLabel.Caption
+#: AppSettings.dfm:740
+msgid "Description:"
+msgstr ""
+
+#. AppSettingsDialog.paSettings.edExeFile.EditLabel.Caption
+#: AppSettings.dfm:751
+msgid "Application to be started:"
+msgstr ""
+
+#. AppSettingsDialog.paSettings.edIconFile.EditLabel.Caption
+#: AppSettings.dfm:762
+msgid "Icon file:"
+msgstr ""
+
+#. AppSettingsDialog.paSettings.edManFile.EditLabel.Caption
+#: AppSettings.dfm:773
+msgid "Manual:"
+msgstr ""
+
+#. AppSettingsDialog.paSettings.edMapperFile.EditLabel.Caption
+#: AppSettings.dfm:784
+msgid "Mapper file:"
+msgstr ""
+
+#. AppSettingsDialog.paSettings.edParam.EditLabel.Caption
+#: AppSettings.dfm:795
+msgid "Parameters:"
+msgstr ""
+
+#. AppSettingsDialog.gbCdDrive.Caption
+#: AppSettings.dfm:804
+msgid "Mount CD drive:"
+msgstr ""
+
+#. AppSettingsDialog.gbCdDrive.pnIsoFile.btIsoFile.Hint
+#: AppSettings.dfm:880
+msgid "Select ISO image"
+msgstr ""
+
+#. AppSettingsDialog.gbCdDrive.rbDrive.Caption
+#: AppSettings.dfm:953
+msgid "to physical drive"
+msgstr ""
+
+#. AppSettingsDialog.gbCdDrive.rbIsoIMage.Caption
+#: AppSettings.dfm:963
+msgid "to ISO image"
+msgstr ""
+
+#. AppSettingsDialog.bbEditConfig.Caption
+#: AppSettings.dfm:977
+#. DosBoxSetDialog.gbDosBox.btEditConf.Hint
+#: Settings.dfm:551
+msgid "Edit configuration"
+msgstr ""
+
+#. AppSettingsDialog.bbReset.Caption
+#: AppSettings.dfm:1065
+msgid "Default options"
+msgstr ""
+
+#. frmMain.Caption
+#: DosPanelMain.dfm:4
+msgid "Manage DOSBox applications"
+msgstr ""
+
+#. frmMain.lvApps.Caption
+#: DosPanelMain.dfm:226
+msgid "Name"
+msgstr ""
+
+#. frmMain.lvApps.Caption
+#: DosPanelMain.dfm:230
+msgid "Path"
+msgstr ""
+
+#. frmMain.lvApps.Caption
+#: DosPanelMain.dfm:234
+msgid "Application"
+msgstr ""
+
+#. frmMain.lvApps.Caption
+#: DosPanelMain.dfm:238
+msgid "Parameters"
+msgstr ""
+
+#. frmMain.lvApps.Caption
+#: DosPanelMain.dfm:242
+msgid "ISO image"
+msgstr ""
+
+#. frmMain.lvApps.Caption
+#: DosPanelMain.dfm:246
+msgid "Manual"
+msgstr ""
+
+#. frmMain.lvApps.Caption
+#: DosPanelMain.dfm:250
+msgid "Description"
+msgstr ""
+
+#. frmMain.MainMenu.itmGlobal.Caption
+#: DosPanelMain.dfm:403
+msgid "&Global"
+msgstr ""
+
+#. frmMain.MainMenu.itmGlobal.itmLanguage.Caption
+#: DosPanelMain.dfm:409
+msgid "&Language"
+msgstr ""
+
+#. frmMain.MainMenu.itmEntries.Caption
+#: DosPanelMain.dfm:419
+msgid "A&pplication"
+msgstr ""
+
+#. frmMain.MainMenu.View1.Caption
+#: DosPanelMain.dfm:447
+msgid "&View"
+msgstr ""
+
+#. frmMain.MainMenu.itmRun.Caption
+#: DosPanelMain.dfm:474
+msgid "&Action"
+msgstr ""
+
+#. frmMain.MainMenu.itmHelp.Caption
+#: DosPanelMain.dfm:490
+msgid "&Help"
+msgstr ""
+
+#. frmMain.ActionList.actExit.Caption
+#: DosPanelMain.dfm:506
+msgid "&Exit"
+msgstr ""
+
+#. frmMain.ActionList.actExit.Hint
+#: DosPanelMain.dfm:507
+msgid "Close DOSPanel"
+msgstr ""
+
+#. frmMain.ActionList.actNewProgram.Category
+#: DosPanelMain.dfm:513
+#. frmMain.ActionList.actEditProgram.Category
+#: DosPanelMain.dfm:520
+#. frmMain.ActionList.actRemProgram.Category
+#: DosPanelMain.dfm:527
+#. frmMain.ActionList.actDuplicate.Category
+#: DosPanelMain.dfm:626
+msgid "Program"
+msgstr ""
+
+#. frmMain.ActionList.actNewProgram.Caption
+#: DosPanelMain.dfm:514
+msgid "&New"
+msgstr ""
+
+#. frmMain.ActionList.actNewProgram.Hint
+#: DosPanelMain.dfm:515
+msgid "Add new application"
+msgstr ""
+
+#. frmMain.ActionList.actEditProgram.Caption
+#: DosPanelMain.dfm:521
+msgid "&Edit"
+msgstr ""
+
+#. frmMain.ActionList.actEditProgram.Hint
+#: DosPanelMain.dfm:522
+msgid "Edit settings of selected application"
+msgstr ""
+
+#. frmMain.ActionList.actRemProgram.Caption
+#: DosPanelMain.dfm:528
+msgid "&Remove"
+msgstr ""
+
+#. frmMain.ActionList.actRemProgram.Hint
+#: DosPanelMain.dfm:529
+msgid "Remove selected application"
+msgstr ""
+
+#. frmMain.ActionList.actLargeIcons.Category
+#: DosPanelMain.dfm:534
+#. frmMain.ActionList.actSmallIcons.Category
+#: DosPanelMain.dfm:545
+#. frmMain.ActionList.actList.Category
+#: DosPanelMain.dfm:555
+#. frmMain.ActionList.actDetails.Category
+#: DosPanelMain.dfm:565
+msgid "View"
+msgstr ""
+
+#. frmMain.ActionList.actLargeIcons.Caption
+#: DosPanelMain.dfm:536
+msgid "&Large icons"
+msgstr ""
+
+#. frmMain.ActionList.actLargeIcons.Hint
+#: DosPanelMain.dfm:539
+msgid "Show large icons"
+msgstr ""
+
+#. frmMain.ActionList.actSmallIcons.Caption
+#: DosPanelMain.dfm:547
+msgid "&Small icons"
+msgstr ""
+
+#. frmMain.ActionList.actSmallIcons.Hint
+#: DosPanelMain.dfm:549
+msgid "Show small icons"
+msgstr ""
+
+#. frmMain.ActionList.actList.Caption
+#: DosPanelMain.dfm:557
+msgid "&List"
+msgstr ""
+
+#. frmMain.ActionList.actList.Hint
+#: DosPanelMain.dfm:559
+msgid "Show list"
+msgstr ""
+
+#. frmMain.ActionList.actDetails.Caption
+#: DosPanelMain.dfm:567
+msgid "&Details"
+msgstr ""
+
+#. frmMain.ActionList.actDetails.Hint
+#: DosPanelMain.dfm:569
+msgid "Show details"
+msgstr ""
+
+#. frmMain.ActionList.actSettings.Caption
+#: DosPanelMain.dfm:576
+msgid "&Settings"
+msgstr ""
+
+#. frmMain.ActionList.actSettings.Hint
+#: DosPanelMain.dfm:577
+#. DosBoxSetDialog.Caption
+#: Settings.dfm:5
+msgid "Global settings"
+msgstr ""
+
+#. frmMain.ActionList.actRun.Category
+#: DosPanelMain.dfm:582
+#. frmMain.ActionList.actShowMan.Category
+#: DosPanelMain.dfm:590
+#. frmMain.ActionList.actDosBox.Category
+#: DosPanelMain.dfm:598
+#. frmMain.ActionList.actConvertText.Category
+#: DosPanelMain.dfm:612
+#. frmMain.ActionList.actMapper.Category
+#: DosPanelMain.dfm:620
+msgid "Action"
+msgstr ""
+
+#. frmMain.ActionList.actRun.Caption
+#: DosPanelMain.dfm:583
+msgid "&Run"
+msgstr ""
+
+#. frmMain.ActionList.actRun.Hint
+#: DosPanelMain.dfm:584
+msgid "Run selected DOS application"
+msgstr ""
+
+#. frmMain.ActionList.actShowMan.Caption
+#: DosPanelMain.dfm:591
+msgid "Show &manual"
+msgstr ""
+
+#. frmMain.ActionList.actShowMan.Hint
+#: DosPanelMain.dfm:592
+msgid "Show manual of selected application"
+msgstr ""
+
+#. frmMain.ActionList.actDosBox.Caption
+#: DosPanelMain.dfm:599
+msgid "Run &DOSbox"
+msgstr ""
+
+#. frmMain.ActionList.actDosBox.Hint
+#: DosPanelMain.dfm:600
+msgid "Start DOSBox without application"
+msgstr ""
+
+#. frmMain.ActionList.actInfo.Caption
+#: DosPanelMain.dfm:607
+msgid "&About"
+msgstr ""
+
+#. frmMain.ActionList.actConvertText.Caption
+#: DosPanelMain.dfm:613
+msgid "&Convert text"
+msgstr ""
+
+#. frmMain.ActionList.actConvertText.Hint
+#: DosPanelMain.dfm:614
+msgid "Convert Unicode text to OEM"
+msgstr ""
+
+#. frmMain.ActionList.actMapper.Caption
+#: DosPanelMain.dfm:621
+msgid "Adjust &keymapper"
+msgstr ""
+
+#. frmMain.ActionList.actDuplicate.Caption
+#: DosPanelMain.dfm:627
+msgid "&Duplicate"
+msgstr ""
+
+#. frmMain.ActionList.actDuplicate.Hint
+#: DosPanelMain.dfm:628
+msgid "Duplicate current application"
+msgstr ""
+
+#. frmMain.ActionList.actHelpFile.Caption
+#: DosPanelMain.dfm:634
+msgid "&Documentation"
+msgstr ""
+
+#. frmMain.ActionList.actHelpFile.Hint
+#: DosPanelMain.dfm:635
+msgid "Show program help"
+msgstr ""
+
+#. DosBoxSetDialog.gbDosBox.Caption
+#: Settings.dfm:224
+msgid "Settings for DOSBox"
+msgstr ""
+
+#. DosBoxSetDialog.gbDosBox.btLang.Hint
+#: Settings.dfm:299
+#: Settings.pas:222
+msgid "Select language file"
+msgstr ""
+
+#. DosBoxSetDialog.gbDosBox.btEditMapper.Hint
+#: Settings.dfm:615
+msgid "Edit mapper file"
+msgstr ""
+
+#. DosBoxSetDialog.gbDosBox.cbConsole.Caption
+#: Settings.dfm:679
+msgid "Hide console"
+msgstr ""
+
+#. DosBoxSetDialog.gbDosBox.edConfFile.EditLabel.Caption
+#: Settings.dfm:690
+msgid "Global configuration file:"
+msgstr ""
+
+#. DosBoxSetDialog.gbDosBox.edLangFile.EditLabel.Caption
+#: Settings.dfm:701
+msgid "Language file:"
+msgstr ""
+
+#. DosBoxSetDialog.gbDosBox.edMapperFile.EditLabel.Caption
+#: Settings.dfm:712
+msgid "Default key mapper file:"
+msgstr ""
+
+#. DosBoxSetDialog.gbDosBox.edPath.EditLabel.Caption
+#: Settings.dfm:723
+msgid "Path to DOSBox:"
+msgstr ""
+
+#. DosBoxSetDialog.gbDosBox.edRootPath.EditLabel.Caption
+#: Settings.dfm:735
+msgid "Root path to DOS applications:"
+msgstr ""
+
+#. DosBoxSetDialog.gbDosBox.gbCodePage.Caption
+#: Settings.dfm:744
+msgid "Code page used in DOSBox"
+msgstr ""
+
+#. DosBoxSetDialog.gbDosBox.gbKeyLayout.Caption
+#: Settings.dfm:760
+msgid "Keyboard layout"
+msgstr ""
+
+#. DosBoxSetDialog.gbDosBox.gbKeyLayout.rbAutoKey.Caption
+#: Settings.dfm:767
+msgid "Detect automatically"
+msgstr ""
+
+#. DosBoxSetDialog.gbDosBox.gbKeyLayout.rbKeyLayout.Caption
+#: Settings.dfm:777
+msgid "Set to"
+msgstr ""
+
+#. DosBoxSetDialog.edEditor.EditLabel.Caption
+#: Settings.dfm:816
+msgid "Text editor:"
+msgstr ""
+
+#. DosBoxSetDialog.cbAutoStart.Caption
+#: Settings.dfm:825
+msgid "Start DosPanel automatically"
+msgstr ""
+
+#. TxtConvertDialog.Caption
+#: TxtConvertDlg.dfm:4
+msgid "Convert Unicode text"
+msgstr ""
+
+#. TxtConvertDialog.btTextFile.Hint
+#: TxtConvertDlg.dfm:26
+#: TxtConvertDlg.pas:80
+msgid "Select text file to be converted"
+msgstr ""
+
+#. TxtConvertDialog.btbCancel.Caption
+#: TxtConvertDlg.dfm:92
+msgid "Close"
+msgstr ""
+
+#. TxtConvertDialog.btbConvert.Caption
+#: TxtConvertDlg.dfm:154
+msgid "Convert"
+msgstr ""
+
+#. TxtConvertDialog.rgCodePages.Caption
+#: TxtConvertDlg.dfm:215
+msgid "Convert to code page"
+msgstr ""
+
+#. TxtConvertDialog.edTextfile.EditLabel.Caption
+#: TxtConvertDlg.dfm:231
+msgid "Filename:"
+msgstr ""
+
+#: AppSettings.pas:211
+msgid "Miscellaneous"
+msgstr ""
+
+#: AppSettings.pas:499
+msgid "No physical CD drives available!"
+msgstr ""
+
+#: AppSettings.pas:569
+msgid "Image"
+msgstr ""
+
+#: AppSettings.pas:569
+#: AppSettings.pas:685
+msgid "Executables"
+msgstr ""
+
+#: AppSettings.pas:569
+#: AppSettings.pas:600
+#: AppSettings.pas:617
+#: AppSettings.pas:685
+#: DosPanelMain.pas:936
+#: Settings.pas:208
+#: Settings.pas:221
+#: Settings.pas:234
+#: Settings.pas:279
+#: TxtConvertDlg.pas:79
+#: TxtConvertDlg.pas:107
+msgid "All"
+msgstr ""
+
+#: AppSettings.pas:570
+msgid "Select file with icon for this application"
+msgstr ""
+
+#: AppSettings.pas:586
+msgid "ISO images"
+msgstr ""
+
+#: AppSettings.pas:587
+msgid "Select iso image to be mounted as drive "
+"%s"
+msgstr ""
+
+#: AppSettings.pas:599
+msgid "Text files"
+msgstr ""
+
+#: AppSettings.pas:599
+msgid "HTML files"
+msgstr ""
+
+#: AppSettings.pas:600
+msgid "PDF files"
+msgstr ""
+
+#: AppSettings.pas:601
+msgid "Select manual for this application"
+msgstr ""
+
+#: AppSettings.pas:617
+#: Settings.pas:234
+msgid "DOSBox key mapper files"
+msgstr ""
+
+#: AppSettings.pas:618
+#: Settings.pas:235
+msgid "Select key mapper file"
+msgstr ""
+
+#: AppSettings.pas:635
+msgid "No application specific configuration found!\n"
+"Copy global configuration to application "
+"path?"
+msgstr ""
+
+#: AppSettings.pas:672
+msgid "Edit startup commands"
+msgstr ""
+
+#: AppSettings.pas:672
+msgid "List of commands"
+msgstr ""
+
+#: AppSettings.pas:685
+msgid "Batch files"
+msgstr ""
+
+#: AppSettings.pas:686
+msgid "Select executable for startup"
+msgstr ""
+
+#: AppSettings.pas:691
+msgid "The executable file must be located beneath the root path:\n"
+"%s\n"
+"Please try again!"
+msgstr ""
+
+#: AppSettings.pas:702
+msgid "Select path to be mounted as drive %s"
+msgstr ""
+
+#: DosPanelMain.pas:422
+#: DosPanelMain.pas:625
+msgid "Run DOSBox applications"
+msgstr ""
+
+#: DosPanelMain.pas:693
+msgid "dospanel-en.chm"
+msgstr ""
+
+#: DosPanelMain.pas:698
+msgid "Help not available on this system!"
+msgstr ""
+
+#: DosPanelMain.pas:701
+msgid "Help file not found!"
+msgstr ""
+
+#: DosPanelMain.pas:807
+msgid "Remove application \"%s\" from panel?"
+msgstr ""
+
+#. check for basic configuration (local or global)
+#: DosPanelMain.pas:858
+#. check for basic configuration (local or global)
+#: DosPanelMain.pas:961
+msgid "Basic configuration file not found! Start application "
+"anyway?"
+msgstr ""
+
+#. if AutoEnd then s:=s+' -exit';
+#: DosPanelMain.pas:915
+#. start DosBox and enter keymapper
+#: DosPanelMain.pas:994
+#. start DosBox
+#: DosPanelMain.pas:1012
+msgid "%s not found! Please adjust your global "
+"settings!"
+msgstr ""
+
+#: DosPanelMain.pas:917
+msgid "Application path not found:\n"
+"%s"
+msgstr ""
+
+#: DosPanelMain.pas:930
+msgid "Manual for "
+msgstr ""
+
+#: DosPanelMain.pas:940
+msgid "Manual not found (%s)!"
+msgstr ""
+
+#: Settings.pas:194
+msgid "DosBox.exe not found in the specified directory!\n"
+"Adjust setting?"
+msgstr ""
+
+#: Settings.pas:197
+msgid "Root path to DOS applications not found!\n"
+"Adjust setting?"
+msgstr ""
+
+#: Settings.pas:208
+msgid "DOSBox configuration files"
+msgstr ""
+
+#: Settings.pas:209
+msgid "Select basic configuration file"
+msgstr ""
+
+#: Settings.pas:221
+msgid "DOSBox language files"
+msgstr ""
+
+#: Settings.pas:246
+msgid "Select DOSBox program directory"
+msgstr ""
+
+#: Settings.pas:256
+msgid "Select root path to DOS applications"
+msgstr ""
+
+#: Settings.pas:279
+msgid "Programs"
+msgstr ""
+
+#: Settings.pas:280
+msgid "Select text editor"
+msgstr ""
+
+#: TxtConvertDlg.pas:108
+msgid "Save converted text as"
+msgstr ""
+
+#: TxtConvertDlg.pas:113
+msgid "File not found: %s"
+msgstr ""
+
