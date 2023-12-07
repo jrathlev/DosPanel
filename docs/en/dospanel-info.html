@@ -2,9 +2,8 @@
 <html>
 <head>
 <title>DosPanel - Info</title>
-<meta name="description" content="(c) 2012-2018, J. Rathlev, D-24222 Schwentinental">
+<meta name="description" content="(c) 2012-2023, J. Rathlev, D-24222 Schwentinental">
 <meta name="author" content="J. Rathlev">
-<meta name="date" content="2018-08-03">
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
 <link rel=stylesheet type="text/css" href="styles.css">
 </head>
@@ -16,7 +15,7 @@
   <td align="Left"><h2 style="margin-top:2pt;margin-bottom:2pt;">DosPanel - Windows-Desktop for DosBox</h2></td>
 </tr>
 <tr valign="top"">
-    <td><b>&copy; 2014-2022, J. Rathlev</a>, 24222 Schwentinental, Germany</b></td>
+    <td><b>&copy; 2014-2023, J. Rathlev</a>, 24222 Schwentinental, Germany</b></td>
 </tr>
 </table>
 <p>
@@ -40,20 +39,22 @@
 <h2><a name="intro">Overview:</a></h2>
 <map name="dospanel">
   <area shape="rect" coords="9,30,384,48" href="#menu" alt="Main menu" title="Main menu">
-  <area shape="rect" coords="12,53,40,83" href="#add" alt="Add a DOS application" title="Add a DOS application">
-  <area shape="rect" coords="42,53,68,82" href="#edit" alt="Edit settings of DOS application" title="Edit settings of DOS application">
-  <area shape="rect" coords="70,52,98,83" href="#delete" alt="Remove DOS application" title="Remove DOS application">
-  <area shape="rect" coords="106,53,133,84" href="#start" alt="Run DOS application" title="Run DOS application">
-  <area shape="rect" coords="145,53,261,88" href="#view" alt="Display options" title="Display options">
-  <area shape="rect" coords="267,55,296,87" href="#manual" alt="Show manual" title="Show manual">
-  <area shape="rect" coords="299,54,326,87" href="#dosbox" alt="Run DOSBox without application" title="Run DOSBox without application">
-  <area shape="rect" coords="5,90,385,113" href="#cats" alt="Categories" title="Categories">
-  <area shape="rect" coords="10,116,385,230" href="#apps" alt="Application of a category" title="Application of a category">
+  <area shape="rect" coords="6,53,34,83" href="#add" alt="Add a DOS application" title="Add a DOS application">
+  <area shape="rect" coords="36,53,62,82" href="#edit" alt="Edit settings of DOS application" title="Edit settings of DOS application">
+  <area shape="rect" coords="63,52,91,83" href="#delete" alt="Remove DOS application" title="Remove DOS application">
+  <area shape="rect" coords="133,52,160,83" href="#start" alt="Run DOS application" title="Run DOS application">
+  <area shape="rect" coords="165,53,280,86" href="#view" alt="Display options" title="Display options">
+  <area shape="rect" coords="289,54,318,86" href="#manual" alt="Show manual" title="Show manual">
+  <area shape="rect" coords="99,52,126,85" href="#dosbox" alt="Run DOSBox without application" title="Run DOSBox without application">
+  <area shape="rect" coords="5,91,385,114" href="#cats" alt="Categories" title="Categories">
+  <area shape="rect" coords="4,121,393,262" href="#apps" alt="Application of a category" title="Application of a category">
+  <area shape="rect" coords="321,56,350,88" href="#basic" alt="Basic settings" title="Basic settings">
 </map>
-<img src="images/dospanel.png" width="459" height="300" align="right" border="0" hspace="5" usemap="#dospanel">
+<img src="images/dospanel.png" width="431" height="289" align="right" border="0" hspace="5" usemap="#dospanel">
 <p>The program is a Windows frontend to the DOS emulator
   <i><a href="http://www.dosbox.com/news.php" target="_blank">DOSBox</a></i>
-  to manage and run DOS applications. The user can configure all
+  to manage and run DOS applications and runs runs on all current Windows systems. 
+  The user can configure all
   settings required by <em>DOSBox</em> without having to concern himself with the
   rather complex syntax of <em>DOSBox</em> configuration files. The settings are saved
   for each DOS application separately.<br>
@@ -90,14 +91,16 @@
   
 <hr>
 <h2><a name="install">Installing the program</a></h2>
-<p>The program runs on all current Windows systems. Start the executable setup file
-  to install the program. On <em>Windows 7, 8, 10 and 11</em> the rights of an administrator
-  are required.<b> Before starting DosPanel for the first time</b> it 
+<p>On <em>Windows 7, 8, 10 and 11</em> just start the executable setup file
+  to install the program. To do so the rights of an administrator
+  are required. For older Windows versions (XP and Vista), the installation must be
+  carried out by unpacking the zip archive provided.<br>
+  <b> Before starting <strong>DosPanel</strong> for the first time</b> it 
   is necessary to <b>install the current version of <em>DOSBox</em> and run it once</b>.
 </p>
 
 <hr>
-<h2><a name="options">Command line option</a></h2>
+<h2><a name="options">Command line options</a></h2>
 <dl>
 <dt><b>/ini:[<em>IniFile</em>]</b></b></dt>
 <dd>The user configuration is saved in the file <em>DosPanel.ini</em>. This file 
@@ -110,6 +113,8 @@
   (e.g. <tt>E:\DosBox\DosPanel-1.ini)</tt>.<br>
   If there is no path specified in <i>[IniFile]</i>, the path of the program
   installation will be used.
+<dt><b>/lang:[<em>LangId</em>]</b></dt>
+<dd>Use the specified GUI language (<i>LangId</i> = <i>en</i> or <i>de</i>)</dd>
 </dl>
 
 <hr>
@@ -118,9 +123,9 @@
 <dl>
   <dt><b>Global</b></dt>
     <dd><a href="#basic"><i>Settings</i></a> - Basic settings</dd>
-    <dd><em>Language</em> - Selection of the destop language for <strong>DosPanel</strong>
-      (currently Englisch and German)</dd>
-    <dd><em>Exit</em> - Close <strong>DosPanel</strong></dd>
+    <dd><b><i>Language</i></b> - Selection of the desktop language for <strong>DosPanel</strong>
+      (currently English and German)</dd>
+    <dd><b><i>Exit</i></b> - Close <strong>DosPanel</strong></dd>
   <dt><b>Application</b></dt>
     <dd><a href="#add"><i>New</i></a> - Add a DOS application to <strong>DosPanel</strong></dd>
     <dd><a href="#edit"><i>Edit</i></a> - Edit the configuration of DOS application</dd>
@@ -142,7 +147,7 @@
        DOS application</dd>
      <dd><a href="#dosbox"><i>Run DOSBox</i></a> - Run <em>DOSBox</em> without any
        DOS application</dd>
-     <dd><em>Convert text</em> - Convert text files to several code pages
+     <dd><b><i>Convert text</i></b> - Convert text files to several code pages
        (e.g. 437 or 858)</dd>
   <dt><b>Help</b> - About the program</dt>
 </dl>
@@ -165,7 +170,7 @@
 <br clear="all">
   
 <hr style="text-align:left;width:400px;color:#FF0000;">
-<img src="images/basic-options.png" width="409" height="424" align="right" border="0" hspace="5">
+<img src="images/basic-options.png" width="439" height="439" align="right" border="0" hspace="5">
 <h3><a name="basic">Basic settings</a></h3>
 <p>When starting <strong>DosPanel</strong> for the first time after the installation,
   the program searches for an installed <em>DOSBox</em> and will adjust most
@@ -176,16 +181,17 @@
     <li><b>Root path to DOS applications:</b> Select the root directory of 
     your DOS applications.</li>
     <li><b>Path to DOSBox:</b> This entry is made by the program automatically.</li>
-    <li><b>Basic configuration file:</b> This is the file with the basic configuration
+    <li><b>Global configuration file:</b> This is the file with the basic configuration
     created from <em>DOSBox</em>. The entry is made by the program automatically. 
-    If required, the configuration file can be changed with any text editor. 
+    If required, the configuration file can be changed with any text editor.
+    It is automatically adopted for each <a href="#add">new application added</a>. 
     Notes about the format you will find in the <em>DOSBox</em> documentation.</li>
-    <li><b>Language file:</b> This entry is made by the program automatically and is
-    only needed for other languages than English.</li>
-    <li><b>Default mapper file:</b> This is the file with settings for redirection of 
+    <li><b>Default key mapper file:</b> This is the file with settings for redirection of 
     keys and joystick buttons used by certain DOS applications in <em>DOSBox</em>. 
     This entry is made by the program automatically. <a href="#appmapper">Application specific</a>
     adjustments are possible.</li>
+    <li><b>Language file:</b> This entry is made by the program automatically and is
+    only needed for other languages than English.</li>
     <li><b>Keyboard layout:</b> If the automatic detection in <em>DOSBox</em> fails,
     you can specify your keyboard layout (e.g. <i>GR</i> for a German
     keyboard) manually.</li>
@@ -194,16 +200,20 @@
     <li><b>Hide console:</b> Starting <em>DOSBox</em> will open a <em>DOSBox console</em>
     in a second window. If you wish, you can hide this window.</li>
   </ul> 
-<h4>Settings for DosPanel</h4>
+<h4>Other settings</h4>
   <ul>
-    <li><b>Start automatically:</b> If this option is selected, <strong>DosPanel</strong>
+    <li><b>Text editor:</b> The <em>DOSBox</em> configurations can be edited using any text editor. 
+    When <strong>DosPanel</strong> is started for the first time, it searches the Windows registry 
+    for the application entered there for <i>txt</i> files and displays the corresponding path. 
+    If desired, the user can also select a different text editor by clicking on the button to the right.</li>
+    <li><b>Start DosPanel automatically:</b> If this option is selected, <strong>DosPanel</strong>
     will be loaded automatically on each Windows start (see <i>Startup</i> folder).</li>
   </ul>
 <br clear="all">
 
 <hr style="text-align:left;width:400px;color:#FF0000;">
 <h3><a name="add">Configuration of a DOS application</a></h3>
-<img src="images/app-options.png" width="541" height="509" align="right" border="0" hspace="5">
+<img src="images/app-options.png" width="541" height="539" align="right" border="0" hspace="5">
 <h4><img src="images/app-add.png" width="20" height="20" border="0"> 
   Add a new application</h4>
 <p>Clicking this button will add a new DOS application to <strong>DosPanel</strong>.
@@ -215,14 +225,14 @@
 <p>All possible settings are shown in the screenshot at right:</p>  
 <ul>
   <li><b>Name:</b> The name for the application that is shown in <strong>DosPanel</strong>.</li>
-  <li><b>Category:</b> The name of the page where the application ist displayed.
+  <li><b>Category:</b> The name of the page where the application is displayed.
     If no category is specified, the application will be assigned to 
     <i>Miscellaneous</i>.</li>
   <li><b>Mount drive to path:</b> Select a directory on the host system that will
     be used as main drive in <em>DOSBox</em> (e.g <b>C:</b>).</li>
-  <li><b>Mount CD drive:</b> Select, whether you want to connect the <em>DOSBox</em>
-    CD drive to a physical drive of your host system or to an ISO image on your
-    host system (e.g. <b>D:</b>.</li>
+  <li><b>Mount CD drive:</b> If this option is activated, a virtual
+    CD drive is connected to a physical drive of your host system or to an ISO image on your
+    host system (e.g. <b>D:</b>) when <em>DOSBox</em> is started.</li>
   <li><b>Application to be started:</b> Select the DOS application or the batch file
     on your main drive (e.g <b>C:</b>) or any subdirectory that will be started 
     automatically in <em>DOSBox</em>.</li>
@@ -241,6 +251,11 @@
   <li><b>Description:</b> This is a short description for the selected DOS application
     that will be displayed in <strong>DosPanel</strong> when moving the mouse over
     the assigned icon.</li>   
+  <li><b>Select configuration:</b> The configuration provided by <em>DOSBox</em> is 
+    always selected by default. If special settings are required for the respective 
+    application, you can switch to <i>Application specific</i>. The basic configuration 
+    is then copied to the application directory and can be edited there individually 
+    (click on <i>Edit configuration</i>).</li>
   <li><b>Options:</b> You can make here some more settings for <em>DOSBox</em>.
     Usually this is only necessary in those cases the default settings do not work.
     More information about this you will find in the <em>DOSBox</em> documentation.
@@ -250,12 +265,17 @@
       DOS application also <em>DOSBox</em> will close automatically.</li>
     <li><b>Memory size:</b> If necessary you can adjust the size of <em>DOSBox</em>
       memory.</li>
-    <li><b>Instruction cycles per ms:</b> This settings affects the speed of the
+    <li><b>Instruction per ms:</b> This settings affects the speed of the
       <em>DOSBox</em> emulation. In most cases the automatic mode will work.
-      Some DOS games may require an individual setting to a lower value. You will
-      find more information about this topic in the <em>DOSBox</em> documentation.</li>
-  </ul>
-  </li>
+      Some DOS games may require an individual setting to a lower value. 
+      (<i>Use preset</i>). In this case the setting from the <i>conf</i> will be used. 
+      You will find more information about this topic in the <em>DOSBox</em> documentation.</li>
+  </ul></li>
+  <li><b>Default options:</b> By clicking on this button, the options displayed above
+    are reset to the values as they are saved in the respective configuration file.</li>
+  <li><b>Edit configuration:</b> Click on this button to open the text editor selected 
+    in the <a href="#basic">basic settings</a> with the application configuration 
+    file in order to customize it.</li>
 </ul>
 
 <h4><a name="dup"><img src="images/app-dup.png" width="20" height="20" border="0">
@@ -300,7 +320,7 @@
 <p><em>DOSBox</em> will be opened without starting a special DOS application.</p>
 
 <hr>
-<img src="images/tp-e.png" width="541" height="509" align="right" border="0" hspace="5">
+<img src="images/tp-e.png" width="541" height="539" align="right" border="0" hspace="5">
 <h3><a name="sample">Configuration example to run Turbo-Pascal</a></h3>
 <p>Everybody wishing to use the popular Turbo Pascal IDE with 64-bit versions
   of Windows, can realize this very simply using DosPanel and DOSBox. The
@@ -330,6 +350,7 @@
 <p>Then create a new DOS application in <strong>DosPanel</strong> for each
   project using the settings shown on the right. The entries for <i>Name</i> and
   <i>Parameter</i> specify the particular project subdirectory.</p>
+<br clear="all">
 
 <hr>
 <dl>
@@ -342,8 +363,8 @@
 
 <dl>
   <dt><h3><a name="hints">Notes:</a></h3></dt>
-  <dd>The program was written in <b>Codegear Delphi 10</b>&reg;.</dd>
-  <dd><a href="http://www.dosbox.com/news.php" target="_blank">DOSBox</a> is 
+  <dd>The program was written in <b>Embarcadero Delphi 10 Seattle</b>&nbsp;&reg;.</dd>
+  <dd><a href="https://www.dosbox.com/news.php?show_news=1" target="_blank">DOSBox</a> is 
     an OpenSource project.</dd>
 </dl>
 
@@ -370,6 +391,6 @@
 </dl>
 
 <hr>
-<i>J. Rathlev, 24222 Schwentinental, Germany, February 2022</i>
+<i>J. Rathlev, 24222 Schwentinental, Germany, December 2023</i>
 </body>
 </html>
