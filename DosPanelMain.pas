@@ -41,27 +41,18 @@ const
   defLang = 'german-%s.lang';
   defMap  = 'mapper-%s.map';
 
-  // Conf file parameter
-  secSdl  = '[sdl]';
-  cfgFull = 'fullscreen=';
-  cfgMapF = 'mapperfile=';
-
-  secDBox = '[dosbox]';
-  cfgLang = 'language=';
-  cfgMSz  = 'memsize=';
-
-  secCPU  = '[cpu]';
-  cfgCycl = 'cycles=';
-
-  secDos  = '[dos]';
-  cfgKeyb = 'keyboardlayout=';
-
-  secExec  = '[autoexec]';
-  cfgMount = 'MOUNT';
-  cfgImgMt = 'IMGMOUNT';
-  cfgExit  = 'EXIT';
-
 type
+  TConfigList = class(TStringList)
+  private
+    FFilename : string;
+  public
+    constructor Create (const AFilename : string);
+    procedure AddSection (const ASection : string);
+    procedure AddValue (const AKey,AValue : string); overload;
+    procedure AddValue (const AKey : string; AValue : integer); overload;
+    procedure Save;
+    end;
+
   TfrmMain = class(TForm)
     MainMenu: TMainMenu;
     itmGlobal: TMenuItem;
@@ -139,6 +130,7 @@ type
     itmHelpFile: TMenuItem;
     N5: TMenuItem;
     actHelpFile: TAction;
+    ToolButton4: TToolButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actExitExecute(Sender: TObject);
@@ -200,9 +192,37 @@ implementation
 
 {$R *.dfm}
 
-uses Winapi.ShellApi, Winapi.ShlObj, GnuGetText, InitProg, IniFileUtils, WinUtils,
+uses Winapi.ShellApi, Winapi.ShlObj, System.StrUtils, System.Win.Registry,
+  GnuGetText, InitProg, IniFileUtils, WinUtils,
   FileCopy, MsgDialogs, StringUtils, PathUtils, WinShell, WinExecute, NumberUtils,
   ShowMemo, TxtConvertDlg;
+
+{ ------------------------------------------------------------------- }
+constructor TConfigList.Create (const AFilename : string);
+begin
+  inherited Create;
+  FFilename:=AFilename;
+  end;
+
+procedure TConfigList.Save;
+begin
+  SaveToFile(FFilename);
+  end;
+
+procedure TConfigList.AddSection (const ASection : string);
+begin
+  Add('['+ASection+']');
+  end;
+
+procedure TConfigList.AddValue (const AKey,AValue : string);
+begin
+  Add(AKey+'='+AValue);
+  end;
+
+procedure TConfigList.AddValue (const AKey : string; AValue : integer);
+begin
+  Add(AKey+'='+IntToStr(AValue));
+  end;
 
 { ------------------------------------------------------------------- }
 const
@@ -227,11 +247,13 @@ const
   iniLApp   = 'LastApp';
   iniMSize  = 'MemSize';
   iniCdPage = 'Codepage';
-  iniAStart   = 'AutoStart';
+  iniAStart = 'AutoStart';
+  iniEdt    = 'Editor';
 
   iniAName  = 'AppName';
   iniCat    = 'Category';
   iniApp    = 'Executable';
+  iniMount  = 'MountCD';
   iniCdPath = 'CdPath';
   iniHd     = 'HardDrive';
   iniCD     = 'CdRomDrive';
@@ -241,6 +263,7 @@ const
   iniIcon   = 'IconFile';
   iniMan    = 'Manual';
   iniDesc   = 'Description';
+  iniAppCfg = 'AppConfig';
   iniFull   = 'FullScreen';
   iniAuto   = 'AutoEnd';
   iniCycles = 'Cycles';
@@ -348,6 +371,44 @@ var
   na       : TDosBoxApp;
   DirInfo    : TSearchRec;
   Findresult : integer;
+
+  (* Windows-Verzeichnisse *)
+  function WindowsDirectory : string;
+  var
+    p : pchar;
+  begin
+    p:=StrAlloc(MAX_PATH+1);
+    GetWindowsDirectory (p,MAX_PATH+1);
+    Result:=p;
+    Strdispose(p);
+    end;
+
+  // check text editor
+  procedure CheckTextEditor(var TextEditor : string);
+  var
+    s : string;
+  begin
+    if (length(TextEditor)=0) or not FileExists(TextEditor) then begin
+      with TRegistry.Create do begin
+        Access:=KEY_READ;
+        RootKey:=HKEY_CLASSES_ROOT;
+        s:='';
+        try
+          if OpenKey('.txt',false) then begin
+            s:=ReadString('');
+            CloseKey;
+            if OpenKey(s+'\shell\open\Command',false) then s:=ReadString('')
+            else s:='';
+            s:=AnsiReplaceText(ReadNxtQuotedStr(s,#32,'"'),'%SystemRoot%',WindowsDirectory);
+            end;
+        finally
+          Free;
+          end;
+        end;
+      if (length(s)>0) and FileExists(s) then TextEditor:=s;
+      end;
+    end;
+
 begin
   s:='';
   FindResult:=FindFirst(SetDirName(ProgPath)+'dosbox-*',faDirectory,DirInfo);
@@ -388,9 +449,11 @@ begin
         LangFile:=ReadString(CfgSekt,iniLang,s);
         if length(LangFile)=0 then LangFile:=s;
         s:=LocPath+Format(defMap,[sv]);
-        MapperFile:=ReadString(CfgSekt,iniMap,s);
+        MapperFile:=ReadString(CfgSekt,iniMap,'');
         if length(MapperFile)=0 then MapperFile:=s;
         end;
+      TextEditor:=ReadString(CfgSekt,iniEdt,'');
+      CheckTextEditor(TextEditor);
       RootPath:=ReadString(CfgSekt,iniRoot,UserPath);
       if not DirectoryExists(RootPath) then RootPath:=UserPath;
       KeyLayout:=ReadString(CfgSekt,iniKeyb,'');
@@ -403,7 +466,7 @@ begin
     n:=ReadInteger(CfgSekt,iniACount,0);
     sc:='';
     for i:=1 to n do begin
-      na:=TDosBoxApp.Create(imgLarge.Picture,imgSmall.Picture);
+      na:=TDosBoxApp.Create(BasicSettings.ConfFile,imgLarge.Picture,imgSmall.Picture);
       with na do begin
         sec:=AppSekt+ZStrInt(i,3);
         AppName:=ReadString(sec,iniAName,'');
@@ -412,6 +475,7 @@ begin
         else s:=Category;
         if (length(sc)=0) and AnsiSameText(AppName,CurApp) then sc:=s;
         AppPath:=ReadString(sec,iniRoot,'');
+        MountCd:=ReadBool(sec,iniMount,MountCd);
         CdPath:=ReadString(sec,iniCdPath,'');
         IsoImage:=ReadBool(sec,iniIso,true);
         HardDrv:=ReadString(sec,iniHd,'C')[1];
@@ -423,10 +487,12 @@ begin
         LoadIcons(IconFile);
         ManFile:=ReadString(sec,iniMan,'');
         Description:=ReadString(sec,iniDesc,'');
-        FullScreen:=ReadBool(sec,iniFull,true);
+        AppConfig:=ReadBool(sec,iniAppCfg,AppConfig);
+        AppMapper:=ReadString(sec,iniMap,AppMapper);
+        FullScreen:=ReadBool(sec,iniFull,FullScreen);
         AutoEnd:=ReadBool(sec,iniAuto,true);
-        MemSize:=ReadInteger(sec,iniMSize,16);
-        Speed:=ReadInteger(sec,iniCycles,0);
+        MemSize:=ReadInteger(sec,iniMSize,MemSize);
+        Speed:=ReadInteger(sec,iniCycles,Speed);
         end;
       Apps.Add(na);
       with tcCats.Tabs do begin
@@ -496,6 +562,7 @@ begin
         WriteString(sec,iniAName,AppName);
         WriteString(sec,iniCat,Category);
         WriteString(sec,iniRoot,AppPath);
+        WriteBool(sec,iniMount,MountCd);
         WriteString(sec,iniCdPath,CdPath);
         WriteString(sec,iniHd,HardDrv);
         WriteString(sec,iniCD,CdDrv);
@@ -506,6 +573,8 @@ begin
         WriteString(sec,iniIcon,IconFile);
         WriteString(sec,iniMan,ManFile);
         WriteString(sec,iniDesc,Description);
+        WriteBool(sec,iniAppCfg,AppConfig);
+        WriteString(sec,iniMap,AppMapper);
         WriteBool(sec,iniFull,FullScreen);
         WriteBool(sec,iniAuto,AutoEnd);
         WriteInteger(sec,iniMSize,MemSize);
@@ -643,10 +712,9 @@ var
   k      : integer;
   s      : string;
 begin
-  NewApp:=TDosBoxApp.Create(imgLarge.Picture,imgSmall.Picture);
+  NewApp:=TDosBoxApp.Create(BasicSettings.ConfFile,imgLarge.Picture,imgSmall.Picture);
   if AppSettingsDialog.Execute(tcCats.Tabs,NewApp) then begin
-      with NewApp do if length(Category)=0 then s:=MiscName
-      else s:=Category;
+    with NewApp do if length(Category)=0 then s:=MiscName else s:=Category;
     with tcCats,Tabs do begin
       k:=IndexOf(s);
       if k<0 then k:=AddObject(s,pointer(1))
@@ -669,7 +737,7 @@ begin
   with lvApps do if assigned(Selected) then n:=integer(Selected.Data)
   else n:=-1;
   if (n>=0) then begin
-    NewApp:=TDosBoxApp.Create(imgLarge.Picture,imgSmall.Picture);
+    NewApp:=TDosBoxApp.Create(BasicSettings.ConfFile,imgLarge.Picture,imgSmall.Picture);
     with NewApp do begin
       Assign(Apps[n] as TDosBoxApp);
       if length(Category)=0 then s:=MiscName else s:=Category;
@@ -777,68 +845,74 @@ begin
 
 procedure TfrmMain.actRunExecute(Sender: TObject);
 var
-  sa,
-  sc,s    : string;
+  sa,sc,s : string;
   n       : integer;
-  fc      : TextFile;
+  cl      : TConfigList;
+  ok      : boolean;
 begin
   with lvApps do if assigned(Selected) then n:=integer(Selected.Data)
   else n:=-1;
   if (n>=0) then with Apps[n] as TDosBoxApp do begin
-  // check for basic configuration
-    with BasicSettings do if not FileExists(ConfFile) and not
-      ConfirmDialog(_('Basic configuration file not found! Start application anyway?')) then Exit;
-  // write conf file
+  // check for basic configuration (local or global)
+    ok:=(AppConfig and FileExists(AddPath(AppPath,sConfig))) or FileExists(BasicSettings.ConfFile);
+    if not ok and not ConfirmDialog(_('Basic configuration file not found! Start application anyway?')) then Exit;
+  // write overlay conf file
     if DirectoryExists(AppPath) then begin
-      sc:=SetDirname(AppPath)+ConfName;
-      AssignFile(fc,sc); Rewrite(fc);
-      writeln(fc,secSdl);
-      writeln(fc,cfgFull,LowerCase((BoolToStr(FullScreen,true))));
+      sc:=AddPath(AppPath,ConfName);
+      cl:=TConfigList.Create(sc);
+      cl.AddSection(secSdl);
+      cl.AddValue(cfgFull,LowerCase((BoolToStr(FullScreen,true))));
       with BasicSettings do begin
-        if FileExists(AppMapper) then writeln(fc,cfgMapF,MakeQuotedStr(AppMapper,[' ']))
+        if FileExists(AppMapper) then cl.AddValue(cfgMapF,MakeQuotedStr(AppMapper,[' ']))
         else begin
           if length(AppMapper)>0 then AppMapper:='';
-          if FileExists(MapperFile) then writeln(fc,cfgMapF,MakeQuotedStr(MapperFile,[' ']));
+          if FileExists(MapperFile) then cl.AddValue(cfgMapF,MakeQuotedStr(MapperFile,[' ']));
           end;
-        writeln(fc,secDBox);
-        if FileExists(LangFile) then writeln(fc,cfgLang,MakeQuotedStr(LangFile,[' ']));
-        if MemSize<>0 then writeln(fc,cfgMSz,MemSize);
-        writeln(fc,secCPU);
-        if Speed=0 then s:='auto'
-        else if Speed=maxCycles then s:='max'
-        else s:=IntToStr(Speed);
-        writeln(fc,cfgCycl,s);
-        writeln(fc,secDos);
-        if length(KeyLayout)=0 then s:='auto' else s:=KeyLayout;
-        writeln(fc,cfgKeyb,s);
+        cl.AddSection(secDBox);
+        if FileExists(LangFile) then cl.AddValue(cfgLang,MakeQuotedStr(LangFile,[' ']));
+        if MemSize<>0 then cl.AddValue(cfgMSz,MemSize);
+        cl.AddSection(secCPU);
+        if Speed>=0 then begin
+          if Speed=maxCycles then s:=sMax else s:=sAuto;
+          cl.AddValue(cfgCycl,s);
+          end;
+        cl.AddSection(secDos);
+        if length(KeyLayout)=0 then s:=sAuto else s:=KeyLayout;
+        cl.AddValue(cfgKeyb,s);
         end;
-      writeln(fc,secExec);
-      writeln(fc,cfgMount,' ',HardDrv,' ',MakeQuotedStr(AppPath,[' ']));
-      if IsoImage then begin
-        if FileExists(CdPath) then writeln(fc,CfgImgMt,' ',CdDrv,' ',
-             MakeQuotedStr(CdPath,[' ']),' -t cdrom');
-        end
-      else writeln(fc,CfgMount,' ',CdDrv,' ',CdPath,' -t cdrom');
+      cl.AddSection(secExec);
+      cl.Add(cfgMount+Space+HardDrv+Space+MakeQuotedStr(AppPath,[Space]));
+      if MountCd then begin
+        if IsoImage then begin
+          if FileExists(CdPath) then cl.Add(CfgImgMt+Space+CdDrv+Space+
+               MakeQuotedStr(CdPath,[Space])+' -t cdrom');
+          end
+        else cl.Add(CfgMount+Space+CdDrv+Space+CdPath+' -t cdrom');
+        end;
       s:=Commands;
-      while length(s)>0 do writeln(fc,ReadNxtQuotedStr(s,Semicolon,Quote));
+      while length(s)>0 do cl.Add(ReadNxtQuotedStr(s,Semicolon,Quote));
       if length(AppFile)>0 then begin
         if AnsiSameText(GetExt(AppFile),'bat') then s:='CALL '+AppFile else s:=AppFile;
-        writeln(fc,s,' ',Parameters);
+        cl.Add(s+Space+Parameters);
         end;
-      if AutoEnd then writeln(fc,cfgExit);
-      CloseFile(fc);
+      if AutoEnd then cl.Add(cfgExit);
+      with cl do begin
+        Save; Free;
+        end;
     // start DosBox
-      sa:=SetDirName(BasicSettings.DosBoxPath)+'DosBox.exe';
+      sa:=AddPath(BasicSettings.DosBoxPath,sDosBox);
       if FileExists(sa) then begin
-        s:=MakeQuotedStr(sa,[' ']);
+        s:=MakeQuotedStr(sa,[Space]);
         if BasicSettings.HideCon then s:=s+' -noconsole';
-        if FileExists(BasicSettings.ConfFile) then s:=s+' -conf '+MakeQuotedStr(BasicSettings.ConfFile,[' ']);
-        if not UseDefault then s:=s+' -conf '+MakeQuotedStr(sc,[' ']);
-  //    if length(AppFile)>0 then s:=s+' '+SetDirName(RootPath)+AppFile;
+        if AppConfig then sa:=AddPath(AppPath,sConfig)
+        else sa:=BasicSettings.ConfFile;
+        if FileExists(sa) then s:=s+' -conf '+MakeQuotedStr(sa,[Space]);
+        s:=s+' -conf '+MakeQuotedStr(sc,[Space]); // overlay conf file
+  //    if length(AppFile)>0 then s:=s+Space+SetDirName(RootPath)+AppFile;
   //    if AutoEnd then s:=s+' -exit';
         StartProcess(s,AppPath);
         end
-      else ErrorDialog(_('DosBox.exe not found! Please adjust your global settings!'));
+      else ErrorDialog(SafeFormat(_('%s not found! Please adjust your global settings!'),[sDosBox]));
       end
     else ErrorDialog(SafeFormat(_('Application path not found:'+sLineBreak+'%s'),[AppPath]));
     end;
@@ -876,45 +950,48 @@ procedure TfrmMain.actMapperExecute(Sender: TObject);
 var
   sc,s,sa : string;
   n       : integer;
-  fc      : TextFile;
+  ok      : boolean;
+  cl      : TConfigList;
 begin
   with lvApps do if assigned(Selected) then n:=integer(Selected.Data)
   else n:=-1;
   if (n>=0) then with Apps[n] as TDosBoxApp do begin
-  // check for basic configuration
-    with BasicSettings do if not FileExists(ConfFile) and not
-      ConfirmDialog(_('Basic configuration file not found! Start key mapper anyway?')) then Exit;
-  // write conf file
-    sc:=SetDirname(AppPath)+ConfName;
-    AssignFile(fc,sc); Rewrite(fc);
-    writeln(fc,secSdl);
+  // check for basic configuration (local or global)
+    ok:=(AppConfig and FileExists(AddPath(AppPath,sConfig))) or FileExists(BasicSettings.ConfFile);
+    if not ok and not ConfirmDialog(_('Basic configuration file not found! Start application anyway?')) then Exit;
+  // write overlay conf file
+    sc:=SetDirName(AppPath)+ConfName;
+    cl:=TConfigList.Create(sc);
+    cl.AddSection(secSdl);
     if length(AppMapper)=0 then begin // new keymapper
       AppMapper:=SetDirName(AppPath)+'AppMapper.map';
       if FileExists(BasicSettings.MapperFile) then
         CopyFileTS(BasicSettings.MapperFile,AppMapper);
       end;
-    writeln(fc,cfgMapF,MakeQuotedStr(AppMapper,[' ']));
+    cl.AddValue(cfgMapF,MakeQuotedStr(AppMapper,[Space]));
     with BasicSettings do begin
-      writeln(fc,secDBox);
-      if FileExists(LangFile) then writeln(fc,cfgLang,MakeQuotedStr(LangFile,[' ']));
-      writeln(fc,secDos);
+      cl.AddSection(secDBox);
+      if FileExists(LangFile) then cl.AddValue(cfgLang,MakeQuotedStr(LangFile,[Space]));
+      cl.AddSection(secDos);
       if length(KeyLayout)=0 then s:='auto' else s:=KeyLayout;
-      writeln(fc,cfgKeyb,s);
+      cl.AddValue(cfgKeyb,s);
       end;
-    if DirectoryExists(AppPath) then writeln(fc,cfgMount,' ',HardDrv,
-         ' ',MakeQuotedStr(AppPath,[' ']));
-    writeln(fc,secExec);
-    writeln(fc,cfgExit);   // auto end
-    CloseFile(fc);
+    cl.AddSection(secExec);
+    if DirectoryExists(AppPath) then cl.Add(cfgMount+Space+HardDrv+
+         Space+MakeQuotedStr(AppPath,[Space]));
+    cl.Add(cfgExit);   // auto end
+    with cl do begin
+      Save; Free;
+      end;
     // start DosBox and enter keymapper
-    sa:=SetDirName(BasicSettings.DosBoxPath)+'DosBox.exe';
+    sa:=AddPath(BasicSettings.DosBoxPath,sDosBox);
     if FileExists(sa) then begin
-      s:=MakeQuotedStr(sa,[' '])+' -startmapper';
-      if FileExists(BasicSettings.ConfFile) then s:=s+' -conf '+MakeQuotedStr(BasicSettings.ConfFile,[' ']);
-      s:=s+' -conf '+MakeQuotedStr(sc,[' ']);
+      s:=MakeQuotedStr(sa,[Space])+' -startmapper';
+      if FileExists(BasicSettings.ConfFile) then s:=s+' -conf '+MakeQuotedStr(BasicSettings.ConfFile,[Space]);
+      s:=s+' -conf '+MakeQuotedStr(sc,[Space]);
       StartProcess(s,AppPath)
       end
-    else ErrorDialog(_('DosBox.exe not found! Please adjust your global settings!'));
+    else ErrorDialog(SafeFormat(_('%s not found! Please adjust your global settings!'),[sDosBox]));
     end;
   end;
 
@@ -924,15 +1001,15 @@ var
   sc : string;
 begin
   // start DosBox
-  sc:=SetDirName(BasicSettings.DosBoxPath)+'DosBox.exe';
+  sc:=AddPath(BasicSettings.DosBoxPath,sDosBox);
   if FileExists(sc) then with BasicSettings do begin
-    sc:=MakeQuotedStr(sc,[' ']);
-    if FileExists(LangFile) then sc:=sc+' -lang '+MakeQuotedStr(LangFile,[' ']);
-    if FileExists(ConfFile) then sc:=sc+' -conf '+MakeQuotedStr(ConfFile,[' ']);
-    if length(KeyLayout)> 0 then sc:=sc+' -c '+MakeQuotedStr('KEYB '+KeyLayout,[' ']);
+    sc:=MakeQuotedStr(sc,[Space]);
+    if FileExists(LangFile) then sc:=sc+' -lang '+MakeQuotedStr(LangFile,[Space]);
+    if FileExists(ConfFile) then sc:=sc+' -conf '+MakeQuotedStr(ConfFile,[Space]);
+    if length(KeyLayout)> 0 then sc:=sc+' -c '+MakeQuotedStr('KEYB '+KeyLayout,[Space]);
     StartProcess(sc,RootPath)
     end
-  else ErrorDialog(_('DosBox.exe not found! Please adjust your global settings!'));
+  else ErrorDialog(SafeFormat(_('%s not found! Please adjust your global settings!'),[sDosBox]));
   end;
 
 end.

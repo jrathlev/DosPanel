@@ -372,6 +372,13 @@ object frmMain: TfrmMain
       ParentShowHint = False
       ShowHint = True
     end
+    object ToolButton4: TToolButton
+      Left = 314
+      Top = 0
+      Action = actSettings
+      ParentShowHint = False
+      ShowHint = True
+    end
   end
   object tcCats: TTabControl
     Left = 0
@@ -379,6 +386,12 @@ object frmMain: TfrmMain
     Width = 554
     Height = 31
     Align = alTop
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 1
     Visible = False
     OnChange = tcCatsChange
@@ -630,7 +643,7 @@ object frmMain: TfrmMain
     Left = 130
     Top = 110
     Bitmap = {
-      494C01011100D4013C0214001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011100D401500214001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000050000000640000000100200000000000007D
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

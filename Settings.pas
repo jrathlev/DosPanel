@@ -56,7 +56,8 @@ type
     ConfFile,
     LangFile,
     MapperFile,
-    KeyLayout     : string;
+    KeyLayout,
+    TextEditor    : string;
     Codepage      : integer;
     AutoStart,
     HideCon       : boolean;
@@ -76,7 +77,6 @@ type
     btLang: TSpeedButton;
     OpenDialog: TOpenDialog;
     edMapperFile: TLabeledEdit;
-    btMapper: TSpeedButton;
     gbKeyLayout: TGroupBox;
     rbAutoKey: TRadioButton;
     rbKeyLayout: TRadioButton;
@@ -84,8 +84,12 @@ type
     gbCodePage: TGroupBox;
     cbCodePages: TComboBox;
     gbDosBox: TGroupBox;
-    gbDosPanel: TGroupBox;
     cbAutoStart: TCheckBox;
+    edEditor: TLabeledEdit;
+    btEditor: TSpeedButton;
+    btMapper: TSpeedButton;
+    btEditConf: TSpeedButton;
+    btEditMapper: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure btPathClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -93,6 +97,9 @@ type
     procedure btConfClick(Sender: TObject);
     procedure btLangClick(Sender: TObject);
     procedure btMapperClick(Sender: TObject);
+    procedure btEditorClick(Sender: TObject);
+    procedure btEditConfClick(Sender: TObject);
+    procedure btEditMapperClick(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -110,7 +117,8 @@ implementation
 
 {$R *.dfm}
 
-uses DosPanelMain, GnuGetText, PathUtils, WinUtils, MsgDialogs, ShellDirDlg;
+uses Winapi.ShellApi, DosPanelMain, GnuGetText, StringUtils, PathUtils, WinUtils,
+  MsgDialogs, ShellDirDlg;
 
 { ------------------------------------------------------------------- }
 function GetKeyboardLayoutDosName : string;
@@ -223,7 +231,7 @@ begin
     else InitialDir:=frmMain.LocPath;
     DefaultExt:='map';
     Filename:='';
-    Filter:=_('DOSBox key mapper files')+'|*.map|'+_('All')+'|*.*';
+    Filter:=_('DOSBox key mapper files')+'|*.map;*.txt|'+_('All')+'|*.*';
     Title:=_('Select key mapper file');
     if Execute then edMapperFile.Text:=Filename;
     end;
@@ -249,6 +257,35 @@ begin
       false,true,false,frmMain.ProgPath,s) then edRootPath.Text:=s;
   end;
 
+procedure TDosBoxSetDialog.btEditConfClick(Sender: TObject);
+begin
+  ShellExecute (Application.Handle,'open',PChar(MakeQuotedStr(frmMain.BasicSettings.TextEditor,[' '])),
+        PChar(MakeQuotedStr(edConfFile.Text,[' '])),nil,SW_RESTORE);
+  end;
+
+procedure TDosBoxSetDialog.btEditMapperClick(Sender: TObject);
+begin
+  ShellExecute (Application.Handle,'open',PChar(MakeQuotedStr(frmMain.BasicSettings.TextEditor,[' '])),
+        PChar(MakeQuotedStr(edMapperFile.Text,[' '])),nil,SW_RESTORE);
+  end;
+
+procedure TDosBoxSetDialog.btEditorClick(Sender: TObject);
+begin
+  with OpenDialog do begin
+    if length(edEditor.Text)>0 then InitialDir:=ExtractFilePath(edEditor.Text)
+    else InitialDir:=frmMain.ProgPath;
+    DefaultExt:='exe';
+    Filename:='';
+    Filter:=_('Programs')+'|*.exe|'+_('All')+'|*.*';
+    Title:=_('Select text editor');
+    if Execute then begin
+      edEditor.Text:=Filename;
+      btEditConf.Enabled:=true;
+      btEditMapper.Enabled:=btEditConf.Enabled;
+      end;
+    end;
+  end;
+
 function TDosBoxSetDialog.Execute (var ASettings : TBasicSettings) : boolean;
 var
   i : integer;
@@ -271,6 +308,9 @@ begin
     if i>High(CodePages) then i:=0;
     cbCodePages.ItemIndex:=i;
     cbConsole.Checked:=HideCon;
+    edEditor.Text:=TextEditor;
+    btEditConf.Enabled:=FileExists(TextEditor);
+    btEditMapper.Enabled:=btEditConf.Enabled;
     cbAutoStart.Checked:=AutoStart;
     Result:=ShowModal=mrOK;
     if Result then begin
@@ -283,6 +323,7 @@ begin
       else KeyLayout:=cbKeyLayout.Text;
       CodePage:=CodePages[cbCodePages.ItemIndex].CodePageNr;
       HideCon:=cbConsole.Checked;
+      TextEditor:=edEditor.Text;
       AutoStart:=cbAutoStart.Checked;
       end;
     end;

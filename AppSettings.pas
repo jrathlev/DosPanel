@@ -24,7 +24,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons,
-  Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Imaging.pngimage;
+  Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Imaging.pngimage, CheckBoxes;
 
 const
   defCycles = 4000;
@@ -35,6 +35,37 @@ type
 
 const
   ImageExt : array[TImgType] of string = ('','ico','bmp','png');
+
+  // Conf file parameter
+  secSdl  = 'sdl';
+  cfgFull = 'fullscreen';
+  cfgMapF = 'mapperfile';
+  cfgOutp = 'output';               //*
+  cfgScan = 'usescancodes';         //'
+
+  secDBox = 'dosbox';
+  cfgLang = 'language';
+  cfgMSz  = 'memsize';
+
+  secRender = 'render';
+  cfgScaler = 'scaler';           //*
+
+  secCPU  = 'cpu';
+  cfgCycl = 'cycles';
+
+  secDos  = 'dos]';
+  cfgKeyb = 'keyboardlayout';
+
+  secExec  = 'autoexec';
+  cfgMount = 'MOUNT';
+  cfgImgMt = 'IMGMOUNT';
+  cfgExit  = 'EXIT';
+
+  sAuto = 'auto';
+  sMax  = 'max';
+  sFixed = 'fixed';
+  sConfig = 'dosbox.conf';
+  sDosBox = 'DosBox.exe';
 
 type
   TAppIcons = class(TPicture)
@@ -57,6 +88,7 @@ type
   TDosBoxApp = class(TObject)
   private
     DefLImg,DefSImg   : TPicture;
+    FConfigFile       : string;
     procedure InitIcons;
   public
     AppName,Category,
@@ -66,18 +98,21 @@ type
     IconFile,ManFile,
     Description       : string;
     HardDrv,CdDrv     : Char;
+    MountCd,
     IsoImage,
     FullScreen,
     AutoEnd,
-    UseDefault        : boolean;
+    AppConfig         : boolean;
     ImgIndex,
     MemSize,
     Speed             : integer;
     Icons             : TAppIcons;
-    constructor Create (DefLargeImg,DefSmallImg : TPicture);
+    constructor Create (const AConfigFile : string; DefLargeImg,DefSmallImg : TPicture);
     destructor Destroy; override;
     procedure Assign (ADosBoxApp : TDosBoxApp);
-    procedure LoadIcons(const Filename : string);
+    procedure LoadIcons (const Filename : string);
+    procedure LoadConfig (AConfigFile : string = '');
+    procedure CopyConfig (const AConfigFile : string);
     end;
 
   TAppSettingsDialog = class(TForm)
@@ -98,9 +133,6 @@ type
     edParam: TLabeledEdit;
     gbOptions: TGroupBox;
     cxAutoEnd: TCheckBox;
-    gbSpeed: TGroupBox;
-    rbAuto: TRadioButton;
-    rbCycles: TRadioButton;
     edExeFile: TLabeledEdit;
     btPath: TSpeedButton;
     edCommands: TLabeledEdit;
@@ -118,14 +150,16 @@ type
     btIsoFile: TSpeedButton;
     cbDrive: TComboBox;
     gbHardDrive: TGroupBox;
-    gbCdDrive: TGroupBox;
     pnIsoFile: TPanel;
     edMapperFile: TLabeledEdit;
     btMapper: TSpeedButton;
-    rbMax: TRadioButton;
-    reCycles: TEdit;
-    udCycles: TUpDown;
-    cxDefault: TCheckBox;
+    rgConfig: TRadioGroup;
+    paSettings: TPanel;
+    gbCdDrive: TCheckGroupBox;
+    bbEditConfig: TBitBtn;
+    bbReset: TBitBtn;
+    Label2: TLabel;
+    cbCycles: TComboBox;
     procedure FormCreate(Sender: TObject);
     procedure btPathClick(Sender: TObject);
     procedure btExeFileClick(Sender: TObject);
@@ -138,13 +172,16 @@ type
     procedure rbDriveClick(Sender: TObject);
     procedure rbIsoIMageClick(Sender: TObject);
     procedure btMapperClick(Sender: TObject);
-    procedure cxDefaultClick(Sender: TObject);
+    procedure rgConfigClick(Sender: TObject);
+    procedure bbEditConfigClick(Sender: TObject);
+    procedure bbResetClick(Sender: TObject);
   private
     { Private-Deklarationen }
     NewIcons   : TAppIcons;
-    LastDrive  : string;
+    FDosBoxApp : TDosBoxApp;
+    LastDrive : string;
     procedure ChangeCdRom (IsIso : boolean);
-    procedure ShowOptions;
+    procedure ShowConfig;
   public
     { Public-Deklarationen }
     function Execute (Categories : TStrings;
@@ -161,7 +198,8 @@ implementation
 
 {$R *.dfm}
 
-uses Winapi.ShellApi, System.StrUtils, DosPanelMain, GnuGetText, WinUtils, MsgDialogs,
+uses Winapi.ShellApi, System.StrUtils, System.IniFiles,
+  DosPanelMain, GnuGetText, WinUtils, MsgDialogs, FileCopy,
   PathUtils, ShellDirDlg, SelectFromListDlg, WinDevUtils, StringUtils;
 
 const
@@ -353,22 +391,22 @@ begin
   end;
 
 { ------------------------------------------------------------------- }
-constructor TDosBoxApp.Create(DefLargeImg,DefSmallImg : TPicture);
+constructor TDosBoxApp.Create(const AConfigFile : string; DefLargeImg,DefSmallImg : TPicture);
 begin
   inherited Create;
+  FConfigFile:=AConfigFile;
   AppName:=''; Category:='';
   AppPath:=''; CdPath:='';
   HardDrv:='C'; CdDrv:='D';
   AppFile:=''; Parameters:='';
   IconFile:=''; ManFile:='';
-  AppMapper:='';
   Commands:=HardDrv+':;"CD \"';
   Description:='';
+  MountCd:=true;
   IsoImage:=true;
-  FullScreen:=false;
-  AutoEnd:=true;
-  UseDefault:=false;
-  Speed:=0; ImgIndex:=-1;
+  LoadConfig;
+  AutoEnd:=true; AppMapper:='';
+  AppConfig:=false; ImgIndex:=-1;
   DefLImg:=DefLargeImg; DefSImg:=DefSmallImg;
   InitIcons;
   end;
@@ -377,6 +415,28 @@ destructor TDosBoxApp.Destroy;
 begin
   if assigned(Icons) then Icons.Free;
   inherited Destroy;
+  end;
+
+procedure TDosBoxApp.LoadConfig (AConfigFile : string);
+var
+  s : string;
+begin
+  if length(AConfigFile)=0 then AConfigFile:=FConfigFile;
+  with TIniFile.Create(AConfigFile) do begin
+    FullScreen:=ReadBool(secSdl,cfgFull,false);
+    AppMapper:=ReadString(secSdl,cfgMapF,'');
+    MemSize:=ReadInteger(secDBox,cfgMSz,16);
+    s:=ReadString(secCPU,cfgCycl,sAuto);
+    if AnsiStartsText(s,sAuto) then Speed:=0
+    else if AnsiStartsText(s,sMax) then Speed:=maxCycles
+    else Speed:=-1;
+    Free;
+    end;
+  end;
+
+procedure TDosBoxApp.CopyConfig (const AConfigFile : string);
+begin
+  CopyFileTs(FConfigFile,AConfigFile);
   end;
 
 procedure TDosBoxApp.Assign (ADosBoxApp : TDosBoxApp);
@@ -394,7 +454,9 @@ begin
   AppMapper:=ADosBoxApp.AppMapper;
   Commands:=ADosBoxApp.Commands;
   Description:=ADosBoxApp.Description;
+  MountCd:=ADosBoxApp.MountCd;
   IsoImage:=ADosBoxApp.IsoImage;
+  AppConfig:=ADosBoxApp.AppConfig;
   FullScreen:=ADosBoxApp.FullScreen;
   AutoEnd:=ADosBoxApp.AutoEnd;
   Speed:=ADosBoxApp.Speed;
@@ -422,6 +484,7 @@ begin
     BuildDriveList(Items,[dtCdRom]);
     if Items.Count>0 then ItemIndex:=0;
     end;
+  LastDrive:='';
   end;
 
 procedure TAppSettingsDialog.ChangeCdRom (IsIso : boolean);
@@ -444,17 +507,20 @@ begin
     end;
   end;
 
-procedure TAppSettingsDialog.cxDefaultClick(Sender: TObject);
-begin
-  ShowOptions;
-  end;
-
-procedure TAppSettingsDialog.ShowOptions;
+procedure TAppSettingsDialog.ShowConfig;
 var
   i : integer;
 begin
-  with gbOptions do for i:=0 to ControlCount-1 do Controls[i].Enabled:=not cxDefault.Checked;
-  with gbSpeed do for i:=0 to ControlCount-1 do Controls[i].Enabled:=not cxDefault.Checked;
+  with FDosBoxApp do begin
+    cxFullScreen.Checked:=FullScreen;
+    cxAutoEnd.Checked:=AuToEnd;
+    edMapperFile.Text:=AppMapper;
+    for i:=0 to High(MemSizeList) do if MemSize<=MemSizeList[i] then Break;
+    with cbMemSize do if i>High(MemSizeList) then Itemindex:=1 else Itemindex:=i;
+    with cbCycles do if Speed=0 then ItemIndex:=0
+    else if Speed>=maxCycles then ItemIndex:=1
+    else ItemIndex:=2;
+    end;
   end;
 
 procedure TAppSettingsDialog.rbDriveClick(Sender: TObject);
@@ -467,10 +533,36 @@ begin
   if Visible then ChangeCdRom(true);
   end;
 
+procedure TAppSettingsDialog.rgConfigClick(Sender: TObject);
+var
+  sc : string;
+begin
+  if not Visible then Exit;
+  if rgConfig.ItemIndex=1 then begin
+    bbEditConfig.Enabled:=true;
+    if DirectoryExists(edAppPath.Text) then begin
+      sc:=AddPath(edAppPath.Text,sConfig);
+      if FileExists(sc) then begin
+        FDosBoxApp.LoadConfig(sc);
+        ShowConfig;
+        end
+      else with FDosBoxApp do begin
+        CopyConfig(sc); LoadConfig(sc);
+        ShowConfig;
+        end;
+      end;
+    end
+  else begin
+    bbEditConfig.Enabled:=false;
+    FDosBoxApp.LoadConfig;
+    ShowConfig;
+    end;
+  end;
+
 procedure TAppSettingsDialog.btIconFileClick(Sender: TObject);
 begin
   with OpenDialog do begin
-    if length(edIconFile.Text)>0 then InitialDir:=ExtractFilePath(edIconFile.Text)
+    if length(edIconFile.Text)>0 then InitialDir:=GetExistingParentPath(edIconFile.Text,frmMain.BasicSettings.RootPath)
     else InitialDir:=edAppPath.Text;
     DefaultExt:='ico';
     Filename:='';
@@ -512,16 +604,59 @@ begin
   end;
 
 procedure TAppSettingsDialog.btMapperClick(Sender: TObject);
+var
+  sp,sc : string;
 begin
   with OpenDialog do begin
-    if length(edMapperFile.Text)>0 then InitialDir:=ExtractFilePath(edMapperFile.Text)
-    else InitialDir:=edAppPath.Text;
+    if rgConfig.ItemIndex=0 then sc:=ExtractFilePath(FDosBoxApp.FConfigFile)
+    else sc:=edAppPath.Text;
+    sp:=ExtractFilePath(edMapperFile.Text);
+    if length(sp)>0 then InitialDir:=sp else InitialDir:=sc;
     DefaultExt:='map';
     Filename:='';
-    Filter:=_('DOSBox key mapper files')+'|*.map|'+_('All')+'|*.*';
+    Filter:=_('DOSBox key mapper files')+'|*.map;*.txt|'+_('All')+'|*.*';
     Title:=_('Select key mapper file');
-    if Execute then edMapperFile.Text:=Filename;
+    if Execute then begin
+      if AnsiSameText(ExtractFilePath(Filename),sc) then edMapperFile.Text:=ExtractFileName(Filename)
+      else edMapperFile.Text:=Filename;
+      end;
     end;
+  end;
+
+procedure TAppSettingsDialog.bbEditConfigClick(Sender: TObject);
+var
+  sc : string;
+  ok : boolean;
+begin
+  sc:=AddPath(edAppPath.Text,sConfig);
+  ok:=FileExists(sc);
+  if not ok then begin
+    if ConfirmDialog(_('No application specific configuration found!'+sLineBreak+
+        'Copy global configuration to application path?')) then begin
+      FDosBoxApp.CopyConfig(sc);
+      ok:=true;
+      end
+    else ok:=false;
+    end;
+  if ok then begin
+    if succeeded(ShellExecute (Application.Handle,'open',PChar(MakeQuotedStr(frmMain.BasicSettings.TextEditor,[' '])),
+        PChar(MakeQuotedStr(sc,[' '])),nil,SW_RESTORE)) then begin
+      FDosBoxApp.LoadConfig(AddPath(edAppPath.Text,sConfig));
+      ShowConfig;
+      end;
+    end;
+  end;
+
+procedure TAppSettingsDialog.bbResetClick(Sender: TObject);
+var
+  s : string;
+begin
+  if rgConfig.ItemIndex=1 then s:=AddPath(edAppPath.Text,sConfig) else s:='';
+  with FDosBoxApp do begin
+    LoadConfig(s);
+    AutoEnd:=true;
+    end;
+  ShowConfig;
   end;
 
 procedure TAppSettingsDialog.btCommandsClick(Sender: TObject);
@@ -562,7 +697,7 @@ procedure TAppSettingsDialog.btPathClick(Sender: TObject);
 var
   s : string;
 begin
-  s:=edAppPath.Text;
+  s:=GetExistingParentPath(edAppPath.Text,frmMain.BasicSettings.RootPath);
   if length(s)=0 then s:=frmMain.BasicSettings.RootPath;
   if ShellDirDialog.Execute (SafeFormat(_('Select path to be mounted as drive %s'),[cbHardDrive.Text]),
       false,true,false,frmMain.BasicSettings.RootPath,s) then edAppPath.Text:=s;
@@ -596,6 +731,7 @@ begin
     Clear;
     for i:=0 to Categories.Count-1 do Items.AddObject(Categories[i],pointer(i));
     end;
+  FDosBoxApp:=DosBoxApp;
   with DosBoxApp do begin
     edAppname.Text:=AppName;
     with cbCategory do ItemIndex:=Items.IndexOf(Category);
@@ -610,30 +746,22 @@ begin
       if n>=0 then ItemIndex:=n else ItemIndex:=3;
       end;
     ChangeCdRom(IsoImage);
+    gbCdDrive.Checked:=MountCd;
     if IsoImage then edIsoFile.Text:=CdPath
     else with cbDrive do ItemIndex:=Items.IndexOf(CdPath);
     edExeFile.Text:=AppFile;
     edParam.Text:=Parameters;
     edCommands.Text:=Commands;
     edIconFile.Text:=IconFile;
-    edMapperFile.Text:=AppMapper;
     edManFile.Text:=ManFile;
     edDescription.Text:=Description;
-    cxFullScreen.Checked:=FullScreen;
     cxAutoEnd.Checked:=AutoEnd;
-    for i:=0 to High(MemSizeList) do if MemSize<=MemSizeList[i] then Break;
-    with cbMemSize do if i>High(MemSizeList) then Itemindex:=1 else Itemindex:=i;
-    with udCycles do begin
-      Position:=defCycles;
-      Max:=maxCycles-1;
+    ShowConfig;
+    with rgConfig do if AppConfig then ItemIndex:=1 else ItemIndex:=0;
+    with bbEditConfig do begin
+      Visible:=FileExists(frmMain.BasicSettings.TextEditor);
+      Enabled:=AppConfig;
       end;
-    if Speed=0 then rbAuto.Checked:=true
-    else if Speed>=maxCycles then rbMax.Checked:=true
-    else begin
-      rbCycles.Checked:=true;
-      udCycles.Position:=Speed;
-      end;
-    cxDefault.Checked:=UseDefault;
     imgIcon.Picture.Assign(Icons);
     NewIcons:=TAppIcons.CreateFrom(Icons);
     Result:=ShowModal=mrOK;
@@ -646,6 +774,7 @@ begin
       AppPath:=edAppPath.Text;
       HardDrv:=cbHardDrive.Text[1];
       CdDrv:=cbCdRomDrive.Text[1];
+      MountCd:=gbCdDrive.Checked;
       IsoImage:=rbIsoImage.Checked;
       if IsoImage then CdPath:=edIsoFile.Text else CdPath:=cbDrive.Text;
       AppFile:=edExeFile.Text;
@@ -658,10 +787,12 @@ begin
       FullScreen:=cxFullScreen.Checked;
       AutoEnd:=cxAutoEnd.Checked;
       MemSize:=MemSizeList[cbMemSize.ItemIndex];
-      if rbAuto.Checked then Speed:=0
-      else if rbMax.Checked then Speed:=maxCycles
-      else Speed:=udCycles.Position;
-      UseDefault:=cxDefault.Checked;
+      case cbCycles.ItemHeight of
+      0 : Speed:=0;
+      1 : Speed:=maxCycles;
+      else Speed:=-1;
+        end;
+      AppConfig:=rgConfig.ItemIndex=1;
       Icons.Assign(NewIcons);
       end;
     NewIcons.Free;
