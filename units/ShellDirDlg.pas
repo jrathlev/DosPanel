@@ -27,7 +27,7 @@
    Vers. 3.1 - Nov. 2015 : Delphi 10, adaption to new shell control components
    Vers. 3.2 - July 2022 : define compiler switch "ACCESSIBLE" to make dialog
                         messages accessible to screenreaders
-   last modified: July 2022
+   last modified: September 2023
    *)
 
 unit ShellDirDlg;
@@ -97,17 +97,19 @@ type
   private
     { Private declarations }
     FDefaultDir,FIniName,FIniSection : string;
+    DirList : TStringList;
+    procedure SaveToIni;
     function GetDiskInfo (const APath : string) : string;
     procedure ShowFiles (AShow : boolean);
-    procedure AddHistory (ADir : string);
-    procedure DeleteHistory (ADir : string);
+    procedure AddHistory (const ADir : string);
+    procedure DeleteHistory (const ADir : string);
     procedure SelectDir (const ADir : string);
   public
     { Public declarations }
 {$IFDEF HDPI}   // scale glyphs and images for High DPI
     procedure AfterConstruction; override;
 {$EndIf}
-    procedure LoadFromIni(IniName, Section : string);
+    procedure LoadFromIni(const IniName, Section : string);
     procedure ResetPosition;
     function Execute (const ATitle  : string;
                       Hidden,FileView,ZipAsFiles : boolean;
@@ -138,6 +140,9 @@ const
 var
   IniFileName,SectionName   : string;
 
+const
+  MaxHist = 15;
+
 { ------------------------------------------------------------------- }
 procedure TShellDirDialog.FormCreate(Sender: TObject);
 begin
@@ -145,9 +150,10 @@ begin
   WriteDebugLog('Create ShellDirDlg');
 {$EndIf}
   TranslateComponent (self,'dialogs');
-  FIniName:='';
-  FIniSection:='';
+  FIniName:=''; FIniSection:='';
   FDefaultDir:='';
+  DirList:=TStringList.Create;
+  cbxSelectedDir.MaxLength:=MaxHist;
   panRoot.ParentBackground:=false;
   Top:=(Screen.Height-Height) div 2;
   Left:=(Screen.Width-Width) div 2;
@@ -166,6 +172,53 @@ begin
 {$EndIf}
 
 { ------------------------------------------------------------------- }
+(* Initialize *)
+procedure TShellDirDialog.FormShow(Sender: TObject);
+begin
+  FitToScreen(Screen,self);
+  with spbHome do begin
+    Visible:=FDefaultDir<>'';
+    Hint:=dgettext('dialogs','Default: ')+FDefaultDir;
+    end;
+  with cbxSelectedDir do begin
+    Items.Assign(DirList);
+    if Items.Count>0 then Style:=csDropDown else Style:=csSimple;
+    if DirectoryExists(Text) then ShellTreeView.Path:=Text;
+    end;
+  end;
+
+
+procedure TShellDirDialog.FormActivate(Sender: TObject);
+begin
+  with ShellTreeView do begin
+//      Path:=cbxSelectedDir.Text;
+    try
+      Selected.MakeVisible;
+    except
+      end;
+    SetFocus;
+    end;
+  end;
+
+procedure TShellDirDialog.FormResize(Sender: TObject);
+begin
+  if Visible and cbxFiles.Checked then
+    with ShellListView do SetColWidths([GetWidth-48,12,15,17]) // Anzahl Zeichen pro Spalte
+  end;
+
+procedure TShellDirDialog.ResetPosition;
+begin
+  Top:=50; Left:=50;
+  end;
+
+(* save posiition and history list *)
+procedure TShellDirDialog.FormDestroy(Sender: TObject);
+begin
+  SaveToIni;
+  DirList.Free;
+  end;
+
+{ ------------------------------------------------------------------- }
 const
   iniHistory = 'History';
   iniFileView = 'Fileview';
@@ -176,19 +229,19 @@ const
   iniRWidth= 'FileWidth';
 
 (* load posiition and history list *)
-procedure TShellDirDialog.LoadFromIni(IniName, Section : string);
+procedure TShellDirDialog.LoadFromIni(const IniName, Section : string);
 var
   i       : integer;
   IniFile : TIniFile;
   s       : string;
 begin
   FIniName:=IniName; FIniSection:=Section;
-  cbxSelectedDir.Items.Clear;
   if FileExists(FIniName) and (length(FIniSection)>0) then begin
+    DirList.Clear;
     IniFile:=TIniFile.Create(IniName);
     for i:=0 to FMaxLen-1 do begin
       s:=IniFile.ReadString(FIniSection,iniHistory+IntToStr(i),'');
-      if s<>'' then cbxSelectedDir.AddItem(s,nil);
+      if s<>'' then DirList.Add(s);
       end;
     with IniFile do begin
       Top:=ReadInteger(FIniSection,iniTop,0);
@@ -207,18 +260,7 @@ begin
     end;
   end;
 
-procedure TShellDirDialog.FormResize(Sender: TObject);
-begin
-  with ShellListView do SetColWidths([GetWidth-48,12,15,17]) // Anzahl Zeichen pro Spalte
-  end;
-
-procedure TShellDirDialog.ResetPosition;
-begin
-  Top:=50; Left:=50;
-  end;
-
-(* save posiition and history list *)
-procedure TShellDirDialog.FormDestroy(Sender: TObject);
+procedure TShellDirDialog.SaveToIni;
 var
   i : integer;
 begin
@@ -226,7 +268,7 @@ begin
     with TIniFile.Create(FIniName) do begin
       try
         EraseSection(FIniSection);
-        with cbxSelectedDir.Items do for i:=0 to Count-1 do
+        with DirList do for i:=0 to Count-1 do
           WriteString(FIniSection,iniHistory+IntToStr(i),Strings[i]);
         WriteInteger(FIniSection,iniTop,Top);
         WriteInteger(FIniSection,iniLeft,Left);
@@ -253,50 +295,36 @@ begin
 
 { ------------------------------------------------------------------- }
 (* add directory to history list *)
-procedure TShellDirDialog.AddHistory (ADir : string);
+procedure TShellDirDialog.AddHistory (const ADir : string);
+var
+  n : integer;
 begin
-  with cbxSelectedDir.Items do begin
-    if IndexOf(ADir)<0 then Add (ADir);
+  if length(ADir)>0 then with DirList do begin
+    n:=IndexOf(ADir);
+    if n<0 then begin
+      if Count>=MaxHist then Delete (Count-1);
+      Insert (0,ADir);
+      end
+    else begin
+      if n>0 then Move (n,0);
+      Strings[0]:=ADir;  // update string anyway, e.g. if case was changed
+      end;
     end;
+  cbxSelectedDir.Items.Assign(DirList);
   end;
 
 (* delete directory from history list *)
-procedure TShellDirDialog.DeleteHistory (ADir : string);
+procedure TShellDirDialog.DeleteHistory (const ADir : string);
 var
-  i : integer;
+  n : integer;
 begin
-  with cbxSelectedDir,Items do begin
-    i:=IndexOf(ADir);
-    if i>=0 then Delete (i);
-    ItemIndex:=0;
-    end;
-  end;
-
-{ ------------------------------------------------------------------- }
-(* Initialize *)
-procedure TShellDirDialog.FormShow(Sender: TObject);
-begin
-  FitToScreen(Screen,self);
-  with spbHome do begin
-    Visible:=FDefaultDir<>'';
-    Hint:=dgettext('dialogs','Default: ')+FDefaultDir;
+  with DirList do begin
+    n:=IndexOf(ADir);
+    if n>=0 then Delete(n);
     end;
   with cbxSelectedDir do begin
-    if Items.Count>0 then Style:=csDropDown else Style:=csSimple;
-    if DirectoryExists(Text) then ShellTreeView.Path:=Text;
-    end;
-  end;
-
-
-procedure TShellDirDialog.FormActivate(Sender: TObject);
-begin
-  with ShellTreeView do begin
-//      Path:=cbxSelectedDir.Text;
-    try
-      Selected.MakeVisible;
-    except
-      end;
-    SetFocus;
+    Items.Assign(DirList);
+    ItemIndex:=0;
     end;
   end;
 
@@ -637,8 +665,6 @@ function TShellDirDialog.Execute (const ATitle  : string;
                                   Hidden,FileView,ZipAsFiles  : boolean;
                                   const HomeDir : string;
                                   var Dir : string) : boolean;
-var
-  ok : boolean;
 begin
   Caption:=ATitle; FDefaultDir:=HomeDir;
   with ShellTreeView do begin
@@ -662,9 +688,8 @@ begin
   cbxFiles.Visible:=FileView;
   if FileView then ShowFiles(cbxFiles.Checked)
   else ShowFiles(false);
-  ok:=ShowModal=mrOK;
-  if ok then Dir:=SetDirName(cbxSelectedDir.Text);
-  Result:=ok;
+  Result:=ShowModal=mrOK;
+  if Result then Dir:=SetDirName(cbxSelectedDir.Text);
   end;
 
 procedure InitDirectoryDialog (const AIniName,ASection : string);

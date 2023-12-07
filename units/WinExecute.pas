@@ -15,7 +15,7 @@
    Vers. 1 - Mai 2005
          1.1 - Aug. 2005 : return process exit code
          2.0 - July 2015 : optional view of console output fixed
-   last modified: June 2022
+   last modified: July 2023
    *)
 
 unit WinExecute;
@@ -26,7 +26,7 @@ uses Winapi.Windows, Vcl.Forms, System.Classes, System.SysUtils;
 
 type
   EProcessError = class(Exception);
-  TProcessFlag = (pfConsole,pfShowConsole,pfShowOutput,pfShowError);
+  TProcessFlag = (pfConsole,pfErrorOut,pfShowConsole,pfShowOutput,pfShowError);
   TProcessFlags = set of TProcessFlag;
 
 // Programm mit CreateProcess starten
@@ -39,6 +39,9 @@ function ExecuteProcess (const CmdLine,WorkDir : string; Flags : TProcessFlags;
                          Output : TStringList = nil) : HResult; overload;
 
 function ExecuteProcess (const CmdLine,WorkDir : string; Output : TStringList = nil; CodePage : integer = 850) : HResult; overload;
+
+function ExecuteProcess (const CmdLine,WorkDir : string; Flags : TProcessFlags;
+                         Output : TStringList; CodePage : integer) : HResult; overload;
 
 function ExecuteConsoleProcess (const CmdLine,WorkDir : string; Output : TStringList; CodePage : integer = 850) : HResult;
 
@@ -161,7 +164,10 @@ begin
     cb:=Sizeof(TStartupInfo);
     dwFlags:=STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
     wShowWindow:=SW_SHOWNORMAL;
-    if (pfConsole in Flags) and not (pfShowConsole in Flags) then hStdOutput:=hChildStdoutWr;
+    if (pfConsole in Flags) and not (pfShowConsole in Flags) then begin
+      hStdOutput:=hChildStdoutWr;
+      if pfErrorOut in Flags then hStdError:=hChildStdoutWr;
+      end;
     end;
 
   cf:=NORMAL_PRIORITY_CLASS;
@@ -244,9 +250,15 @@ begin
   Result:=ExecuteProcess('',CmdLine,WorkDir,[],0,false,Output,CodePage);
   end;
 
+function ExecuteProcess (const CmdLine,WorkDir : string; Flags : TProcessFlags;
+                         Output : TStringList; CodePage : integer) : HResult;
+begin
+  Result:=ExecuteProcess('',CmdLine,WorkDir,Flags,0,false,Output,CodePage);
+  end;
+
 function ExecuteConsoleProcess (const CmdLine,WorkDir : string; Output : TStringList; CodePage : integer) : HResult;
 begin
-  Result:=ExecuteProcess('',CmdLine,WorkDir,[pfConsole],0,false,Output,CodePage);
+  Result:=ExecuteProcess('',CmdLine,WorkDir,[pfConsole,pfErrorOut],0,false,Output,CodePage);
   end;
 
 procedure CancelProcess;

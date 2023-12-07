@@ -36,7 +36,6 @@ type
     cbOption: TCheckBox;
     stCaption: TStaticText;
     procedure FormCreate(Sender: TObject);
-    procedure imgIconClick(Sender: TObject);
   private
     { Private declarations }
     Buttons : array  of TButton;
@@ -99,11 +98,6 @@ begin
   if not SystemParametersInfo(SPI_GETSCREENREADER,0,@ActiveScreenReader,0) then ActiveScreenReader:=false;
 {$ENDIF}
   end;
-
-procedure TSelectDialog.imgIconClick(Sender: TObject);
-begin
-
-end;
 
 {$IFDEF HDPI}   // scale glyphs and images for High DPI
 procedure TSelectDialog.AfterConstruction;

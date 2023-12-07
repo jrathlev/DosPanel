@@ -296,7 +296,7 @@ begin
 
 { ---------------------------------------------------------------- }
 // Strip a path to a maximum length of Len characters
-// similar to MinimizeName in FileCtrl but chararter related
+// similar to MinimizeName in FileCtrl but character related
 function StripPath (Name : String;
                     Len  : integer) : String;
 const

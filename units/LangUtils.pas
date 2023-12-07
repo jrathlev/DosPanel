@@ -13,7 +13,7 @@
   the specific language governing rights and limitations under the License.
 
   Version 2.0 - Nov. 2011
-          last changed: Dec. 2021
+          last modified: Aug. 2023
 
   Hinweise zur Verwendung:
   ========================
@@ -21,54 +21,64 @@
      -----------------------------
     ...
     uses
-      GnuGetText in '..\..\(..\)Bibliotheken\Units\GnuGetText.pas',
-      LangUtils in '..\..\(..\)Bibliotheken\Units\LangUtils.pas',
+      GnuGetText in '<relative path>\Units\GnuGetText.pas',
+      LangUtils in '<relative path>Bibliotheken\Units\LangUtils.pas',
       ...
     begin
       TP_GlobalIgnoreClass(TFont);
       TP_GlobalIgnoreClassProperty(TMdiForm,'Caption');
+      // ... mögliche weitere "ignores"
       // Subdirectory in AppData for user configuration files and supported languages
       InitTranslation('CfgDir','CfgName',['Delphi10','Indy10','more domains..']);
       ...
+
     dabei sind:  CfgDir  - Unterverzeichnis für die Konfigurations-Dateien (ini,cfg)
-                           in "Anwendungsdaten  oder absolutes Verzeichnis
+                           in "Anwendungsdaten" oder absolutes Verzeichnis
                  CfgName - Name der Cfg-Datei zum Speichern der Spracheinstellung
                            (leer: Name der Anwendung)
   2. im Haupt-Formular:
      ------------------
+    interfaace
     uses ..., LangUtils, ...
     ...
-    private
+    type
+      TMainForm = class(TForm)
+        ...
+      private
+        ...
+        Languages        : TLanguageList;
+        procedure SetLanguageClick(Sender : TObject; Language : TLangCodeString);
+        ...
+      end;
       ...
-      Languages        : TLanguageList;
-      procedure SetLanguageClick(Sender : TObject; Language : TLangCodeString);
-      ...
+    implementation
+    ...
+    procedure TMainForm.FormCreate(Sender: TObject);
     begin
       ...
-      procedure TMainForm.FormCreate(Sender: TObject);
-      begin
-        ...
-        InitPaths (AppPath,UserPath);
-        InitVersion(Progname,Vers,CopRgt,3,3,ProgVersName,ProgVersDate);
-
-        ...
-        Languages:=TLanguageList.Create(PrgPath,LangName);
-        with Languages do begin
-          Menu:=itmLang;
-          LoadLanguageNames(SelectedLanguage);
-          OnLanguageItemClick:=SetLanguageClick;
-          end;
-        ...
-      { ------------------------------------------------------------------- }
-      procedure TMainForm.SetLanguageClick(Sender : TObject; Language : TLangCodeString);
-      begin
-        if not AnsiSameStr(SelectedLanguage,Language) then begin
-          Languages.LanguageCode:=Language;
-          SaveLanguage(Language);
-          InfoDialog('',GetLanguageHint,CursorPos);
-          end;
+      InitPaths (AppPath,UserPath);
+      InitVersion(Progname,Vers,CopRgt,3,3,ProgVersName,ProgVersDate);
+      ...
+      Languages:=TLanguageList.Create(PrgPath,LangName);
+      with Languages do begin
+        Menu:=itmLang;
+        LoadLanguageNames(SelectedLanguage);
+        OnLanguageItemClick:=SetLanguageClick;
         end;
       ...
+
+    { ------------------------------------------------------------------- }
+    procedure TMainForm.SetLanguageClick(Sender : TObject; Language : TLangCodeString);
+    begin
+      if not AnsiSameStr(SelectedLanguage,Language) then begin
+        Languages.LanguageCode:=Language;
+        ChangeLanguage(Language);
+        Languages.LoadLanguageNames(SelectedLanguage);
+        InfoDialog('',GetLanguageHint,CursorPos);
+        ...
+        end;
+      end;
+    ...
 
     dabei sind: TLangCodeString - Länder-Code (2 Buchstaben)
                 itmLang         - Menü-Item im Hauptmenü
@@ -119,8 +129,8 @@ type
   protected
     procedure DoLangItemClick(Sender : TObject); virtual;
     procedure DoLangMeasureItem (Sender: TObject; ACanvas: TCanvas; var Width, Height: Integer);
-    function GetLangIndex (Value: TLangCodeString) : integer;
-    procedure SetLangCode (Value: TLangCodeString);
+    function GetLangIndex (const Value: TLangCodeString) : integer;
+    procedure SetLangCode (const Value: TLangCodeString);
   public
     constructor Create (const APath,Filename : string);
     destructor Destroy; override;
@@ -268,14 +278,14 @@ begin
   AddMenuItems; { ab sofort bleibt das Menü aktuell }
   end;
 
-function TLanguageList.GetLangIndex (Value: TLangCodeString) : integer;
+function TLanguageList.GetLangIndex (const Value: TLangCodeString) : integer;
 begin
   for Result:=0 to Count-1 do
      if LangCodeStringToCardinal(Value)=Objects[Result] then Exit;
   Result:=-1;
   end;
 
-procedure TLanguageList.SetLangCode (Value: TLangCodeString);
+procedure TLanguageList.SetLangCode (const Value: TLangCodeString);
 var
   n : integer;
 begin
@@ -338,7 +348,7 @@ begin
 
 { ------------------------------------------------------------------- }
 // GnuGetText ermittelt als System-Standard nicht die Sprache sondern die lokale
-// Einstellung (GetLocaleInfo)
+// Einstellung (GetLocaleInfo) (korrigiert Sept. 2023)
 // Bsp: engl. System mit lokaler Einstellung "German" gibt:
 //    GetLocaleInfo oder GetUserDefaultLangID   ==> de_DE
 //    GetUserDefaultUILanguage                  ==> 1033 = $409 = "English (US)"

@@ -34,7 +34,7 @@ resourcestring
 
 { ------------------------------------------------------------------- }
 // Strings from LangUtils
-  rsSystemDefault = '&System default';
+  rsSystemDefault = '&System default';  // "&" is required so that this entry is always the first when sorting
   rsLangRestart = 'Changing language requires the program to be restarted!';
 
 { ------------------------------------------------------------------- }
@@ -127,3 +127,4 @@ resourcestring
 implementation
 
 end.
+
