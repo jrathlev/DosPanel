@@ -787,7 +787,7 @@ begin
       FullScreen:=cxFullScreen.Checked;
       AutoEnd:=cxAutoEnd.Checked;
       MemSize:=MemSizeList[cbMemSize.ItemIndex];
-      case cbCycles.ItemHeight of
+      case cbCycles.ItemIndex of
       0 : Speed:=0;
       1 : Speed:=maxCycles;
       else Speed:=-1;
