@@ -873,7 +873,14 @@ begin
         if MemSize<>0 then cl.AddValue(cfgMSz,MemSize);
         cl.AddSection(secCPU);
         if Speed>=0 then begin
-          if Speed=maxCycles then s:=sMax else s:=sAuto;
+          case Speed of
+          maxCycles: s:=sMax;
+          5000  : s:=sFixed+' 5000';
+          10000 : s:=sFixed+' 10000';
+          25000 : s:=sFixed+' 25000';
+          50000 : s:=sFixed+' 50000';
+          else s:=sAuto;
+            end;
           cl.AddValue(cfgCycl,s);
           end;
         cl.AddSection(secDos);

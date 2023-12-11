@@ -247,6 +247,10 @@ object AppSettingsDialog: TAppSettingsDialog
       Items.Strings = (
         'Set automatically'
         'Set to maximum'
+        '5 000'
+        '10 000'
+        '25 000'
+        '50 000'
         'Use preset')
     end
   end

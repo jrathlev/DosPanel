@@ -517,9 +517,17 @@ begin
     edMapperFile.Text:=AppMapper;
     for i:=0 to High(MemSizeList) do if MemSize<=MemSizeList[i] then Break;
     with cbMemSize do if i>High(MemSizeList) then Itemindex:=1 else Itemindex:=i;
-    with cbCycles do if Speed=0 then ItemIndex:=0
-    else if Speed>=maxCycles then ItemIndex:=1
-    else ItemIndex:=2;
+    with cbCycles do begin
+      case Speed of
+      0 : ItemIndex:=0;
+      maxCycles: ItemIndex:=1;
+      5000  : ItemIndex:=2;
+      10000 : ItemIndex:=3;
+      25000 : ItemIndex:=4;
+      50000 : ItemIndex:=5;
+      else ItemIndex:=6;
+        end;
+      end;
     end;
   end;
 
@@ -790,6 +798,10 @@ begin
       case cbCycles.ItemIndex of
       0 : Speed:=0;
       1 : Speed:=maxCycles;
+      2 : Speed:=5000;
+      3 : Speed:=10000;
+      4 : Speed:=25000;
+      5 : Speed:=50000;
       else Speed:=-1;
         end;
       AppConfig:=rgConfig.ItemIndex=1;
