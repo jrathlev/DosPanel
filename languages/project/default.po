@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-12-05 14:01+0100\n"
-"PO-Revision-Date: 2023-12-05 14:01+0100\n"
+"POT-Creation-Date: 2023-12-11 19:32+0100\n"
+"PO-Revision-Date: 2023-12-11 19:32+0100\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -110,24 +110,24 @@ msgid "Set to maximum"
 msgstr ""
 
 #. AppSettingsDialog.gbOptions.cbCycles.Items.Strings
-#: AppSettings.dfm:250
+#: AppSettings.dfm:254
 msgid "Use preset"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.Caption
-#: AppSettings.dfm:259
+#: AppSettings.dfm:263
 msgid "Mount drive to path:"
 msgstr ""
 
 #. AppSettingsDialog.rgConfig.Caption
-#: AppSettings.dfm:383
+#: AppSettings.dfm:387
 #. DosBoxSetDialog.gbDosBox.btConf.Hint
 #: Settings.dfm:235
 msgid "Select configuration"
 msgstr ""
 
 #. AppSettingsDialog.rgConfig.Items.Strings
-#: AppSettings.dfm:386
+#: AppSettings.dfm:390
 #. frmMain.ActionList.actExit.Category
 #: DosPanelMain.dfm:505
 #. frmMain.ActionList.actSettings.Category
@@ -140,29 +140,29 @@ msgid "Global"
 msgstr ""
 
 #. AppSettingsDialog.rgConfig.Items.Strings
-#: AppSettings.dfm:387
+#: AppSettings.dfm:391
 msgid "Application specific"
 msgstr ""
 
 #. AppSettingsDialog.paSettings.btCommands.Hint
-#: AppSettings.dfm:406
+#: AppSettings.dfm:410
 #. AppSettingsDialog.paSettings.btIconFile.Hint
-#: AppSettings.dfm:534
+#: AppSettings.dfm:538
 msgid "Select icon"
 msgstr ""
 
 #. AppSettingsDialog.paSettings.btExeFile.Hint
-#: AppSettings.dfm:470
+#: AppSettings.dfm:474
 msgid "Select executable to run on startup"
 msgstr ""
 
 #. AppSettingsDialog.paSettings.btManFile.Hint
-#: AppSettings.dfm:598
+#: AppSettings.dfm:602
 msgid "Select manual"
 msgstr ""
 
 #. AppSettingsDialog.paSettings.btMapper.Hint
-#: AppSettings.dfm:662
+#: AppSettings.dfm:666
 #. DosBoxSetDialog.btEditor.Hint
 #: Settings.dfm:28
 #. DosBoxSetDialog.gbDosBox.btMapper.Hint
@@ -171,69 +171,69 @@ msgid "Select mapper file"
 msgstr ""
 
 #. AppSettingsDialog.paSettings.edCommands.EditLabel.Caption
-#: AppSettings.dfm:729
+#: AppSettings.dfm:733
 msgid "Additional commands on startup:"
 msgstr ""
 
 #. AppSettingsDialog.paSettings.edDescription.EditLabel.Caption
-#: AppSettings.dfm:740
+#: AppSettings.dfm:744
 msgid "Description:"
 msgstr ""
 
 #. AppSettingsDialog.paSettings.edExeFile.EditLabel.Caption
-#: AppSettings.dfm:751
+#: AppSettings.dfm:755
 msgid "Application to be started:"
 msgstr ""
 
 #. AppSettingsDialog.paSettings.edIconFile.EditLabel.Caption
-#: AppSettings.dfm:762
+#: AppSettings.dfm:766
 msgid "Icon file:"
 msgstr ""
 
 #. AppSettingsDialog.paSettings.edManFile.EditLabel.Caption
-#: AppSettings.dfm:773
+#: AppSettings.dfm:777
 msgid "Manual:"
 msgstr ""
 
 #. AppSettingsDialog.paSettings.edMapperFile.EditLabel.Caption
-#: AppSettings.dfm:784
+#: AppSettings.dfm:788
 msgid "Mapper file:"
 msgstr ""
 
 #. AppSettingsDialog.paSettings.edParam.EditLabel.Caption
-#: AppSettings.dfm:795
+#: AppSettings.dfm:799
 msgid "Parameters:"
 msgstr ""
 
 #. AppSettingsDialog.gbCdDrive.Caption
-#: AppSettings.dfm:804
+#: AppSettings.dfm:808
 msgid "Mount CD drive:"
 msgstr ""
 
 #. AppSettingsDialog.gbCdDrive.pnIsoFile.btIsoFile.Hint
-#: AppSettings.dfm:880
+#: AppSettings.dfm:884
 msgid "Select ISO image"
 msgstr ""
 
 #. AppSettingsDialog.gbCdDrive.rbDrive.Caption
-#: AppSettings.dfm:953
+#: AppSettings.dfm:957
 msgid "to physical drive"
 msgstr ""
 
 #. AppSettingsDialog.gbCdDrive.rbIsoIMage.Caption
-#: AppSettings.dfm:963
+#: AppSettings.dfm:967
 msgid "to ISO image"
 msgstr ""
 
 #. AppSettingsDialog.bbEditConfig.Caption
-#: AppSettings.dfm:977
+#: AppSettings.dfm:981
 #. DosBoxSetDialog.gbDosBox.btEditConf.Hint
 #: Settings.dfm:551
 msgid "Edit configuration"
 msgstr ""
 
 #. AppSettingsDialog.bbReset.Caption
-#: AppSettings.dfm:1065
+#: AppSettings.dfm:1069
 msgid "Default options"
 msgstr ""
 
@@ -619,20 +619,20 @@ msgstr ""
 msgid "No physical CD drives available!"
 msgstr ""
 
-#: AppSettings.pas:569
+#: AppSettings.pas:577
 msgid "Image"
 msgstr ""
 
-#: AppSettings.pas:569
-#: AppSettings.pas:685
+#: AppSettings.pas:577
+#: AppSettings.pas:693
 msgid "Executables"
 msgstr ""
 
-#: AppSettings.pas:569
-#: AppSettings.pas:600
-#: AppSettings.pas:617
-#: AppSettings.pas:685
-#: DosPanelMain.pas:936
+#: AppSettings.pas:577
+#: AppSettings.pas:608
+#: AppSettings.pas:625
+#: AppSettings.pas:693
+#: DosPanelMain.pas:943
 #: Settings.pas:208
 #: Settings.pas:221
 #: Settings.pas:234
@@ -642,74 +642,74 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: AppSettings.pas:570
+#: AppSettings.pas:578
 msgid "Select file with icon for this application"
 msgstr ""
 
-#: AppSettings.pas:586
+#: AppSettings.pas:594
 msgid "ISO images"
 msgstr ""
 
-#: AppSettings.pas:587
+#: AppSettings.pas:595
 msgid "Select iso image to be mounted as drive "
 "%s"
 msgstr ""
 
-#: AppSettings.pas:599
+#: AppSettings.pas:607
 msgid "Text files"
 msgstr ""
 
-#: AppSettings.pas:599
+#: AppSettings.pas:607
 msgid "HTML files"
 msgstr ""
 
-#: AppSettings.pas:600
+#: AppSettings.pas:608
 msgid "PDF files"
 msgstr ""
 
-#: AppSettings.pas:601
+#: AppSettings.pas:609
 msgid "Select manual for this application"
 msgstr ""
 
-#: AppSettings.pas:617
+#: AppSettings.pas:625
 #: Settings.pas:234
 msgid "DOSBox key mapper files"
 msgstr ""
 
-#: AppSettings.pas:618
+#: AppSettings.pas:626
 #: Settings.pas:235
 msgid "Select key mapper file"
 msgstr ""
 
-#: AppSettings.pas:635
+#: AppSettings.pas:643
 msgid "No application specific configuration found!\n"
 "Copy global configuration to application "
 "path?"
 msgstr ""
 
-#: AppSettings.pas:672
+#: AppSettings.pas:680
 msgid "Edit startup commands"
 msgstr ""
 
-#: AppSettings.pas:672
+#: AppSettings.pas:680
 msgid "List of commands"
 msgstr ""
 
-#: AppSettings.pas:685
+#: AppSettings.pas:693
 msgid "Batch files"
 msgstr ""
 
-#: AppSettings.pas:686
+#: AppSettings.pas:694
 msgid "Select executable for startup"
 msgstr ""
 
-#: AppSettings.pas:691
+#: AppSettings.pas:699
 msgid "The executable file must be located beneath the root path:\n"
 "%s\n"
 "Please try again!"
 msgstr ""
 
-#: AppSettings.pas:702
+#: AppSettings.pas:710
 msgid "Select path to be mounted as drive %s"
 msgstr ""
 
@@ -737,31 +737,31 @@ msgstr ""
 #. check for basic configuration (local or global)
 #: DosPanelMain.pas:858
 #. check for basic configuration (local or global)
-#: DosPanelMain.pas:961
+#: DosPanelMain.pas:968
 msgid "Basic configuration file not found! Start application "
 "anyway?"
 msgstr ""
 
 #. if AutoEnd then s:=s+' -exit';
-#: DosPanelMain.pas:915
+#: DosPanelMain.pas:922
 #. start DosBox and enter keymapper
-#: DosPanelMain.pas:994
+#: DosPanelMain.pas:1001
 #. start DosBox
-#: DosPanelMain.pas:1012
+#: DosPanelMain.pas:1019
 msgid "%s not found! Please adjust your global "
 "settings!"
 msgstr ""
 
-#: DosPanelMain.pas:917
+#: DosPanelMain.pas:924
 msgid "Application path not found:\n"
 "%s"
 msgstr ""
 
-#: DosPanelMain.pas:930
+#: DosPanelMain.pas:937
 msgid "Manual for "
 msgstr ""
 
-#: DosPanelMain.pas:940
+#: DosPanelMain.pas:947
 msgid "Manual not found (%s)!"
 msgstr ""
 
