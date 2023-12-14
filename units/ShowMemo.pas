@@ -19,7 +19,8 @@
    Vers. 1 - Sep. 2004
    Vers. 2 - July 2022: define compiler switch "ACCESSIBLE" to make dialog
                         messages accessible to screenreaders
-   last modified: December 2022
+   Vers. 3 - December 2023: code page selection added
+   last modified: December 2023
    *)
 
 
@@ -29,7 +30,7 @@ interface
 
 uses Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Buttons,
-  Vcl.Printers, Vcl.ComCtrls, System.Math;
+  Vcl.Printers, Vcl.ComCtrls, System.Math, ListSelectDlg;
 
 const
   defTopMargin = 150;  // Angaben in 1/10 mm
@@ -52,7 +53,7 @@ type
     procedure Init;
     end;
 
-  TShowDlgBtn = (sbOpen,sbErase,sbPrint,sbSearch,sbSection,sbError,sbFont);
+  TShowDlgBtn = (sbOpen,sbErase,sbPrint,sbSearch,sbSection,sbError,sbFont,sbCodepage);
   TShowDlgButtons = set of TShowDlgBtn;
 
   TShowDlgType = (stShow,stModal);
@@ -76,6 +77,7 @@ type
     UpdateBtn: TBitBtn;
     FontBtn: TBitBtn;
     FontDialog: TFontDialog;
+    EncBtn: TBitBtn;
     procedure FormCreate(Sender: TObject);
     procedure MemoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -103,6 +105,7 @@ type
     procedure UpdateBtnClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FontBtnClick(Sender: TObject);
+    procedure EncBtnClick(Sender: TObject);
   private
     { Private-Deklarationen }
     LPos             : integer;
@@ -113,9 +116,13 @@ type
     FDlgType : TShowDlgType;
     LWidth,
     FCodePage  : integer;
+    CodePageList : TStringList;
+    ListSelectDialog : TListSelectDialog;
     procedure Print (NoPrompt,SelectedLines : boolean);
     function LoadText (const FName : string) : boolean;
     procedure InitView (const FName : string);
+    procedure GetSelectedIndex (n : integer);
+    function GetCodepageIndex : integer;
   public
     { Public-Deklarationen }
     TextName : string;
@@ -269,6 +276,9 @@ begin
   PosFromIni:=false;
   PrinterSettings.Init;
   LWidth:=Width;
+  CodePageList:=TStringList.Create;
+  FCodePage:=0;
+  ListSelectDialog:=TListSelectDialog.Create(self);
   end;
 
 {$IFDEF HDPI}   // scale glyphs and images for High DPI
@@ -304,10 +314,22 @@ begin
       Free;
       end;
     end;
+  CodePageList.Free;
+  ListSelectDialog.Free;
+  end;
+
+procedure TShowTextDialog.GetSelectedIndex (n : integer);
+begin
+  FCodePage:=n;
+  InitView(TextName);
   end;
 
 procedure TShowTextDialog.FormShow(Sender: TObject);
 begin
+  with ListSelectDialog do begin
+    Sorted:=false; Width:=ClientWidth div 4;
+    OnSelect:=GetSelectedIndex;
+    end;
   with Printer,PrinterSettings do begin
     if Printers.Count>0 then begin
       try
@@ -679,7 +701,13 @@ begin
         try
           Text:=Enc.GetString(Buffer,Size,Length(Buffer)-Size);
         except
-          on EEncodingError do Text:=TEncoding.ANSI.GetString(Buffer,Size,Length(Buffer)-Size);
+          on EEncodingError do begin
+            ErrorDialog(dgettext('dialogs','Invalid code page - Windows default is used!'));
+            with TEncoding.ANSI do begin
+              FCodePage:=CodePage;
+              Text:=GetString(Buffer,Size,Length(Buffer)-Size);
+              end;
+            end;
           end;
       finally
         EndUpdate;
@@ -734,6 +762,24 @@ begin
       end
     else StatusBar.Panels[1].Text:='';
     MemoChange(Sender);
+    end;
+  end;
+
+function TShowTextDialog.GetCodepageIndex : integer;
+var
+  i : integer;
+begin
+  with CodepageList do begin
+    for Result:=0 to Count-1 do if word(Objects[Result])=FCodePage then Break;
+    if Result>=Count then Result:=-1;
+    end;
+  end;
+
+procedure TShowTextDialog.EncBtnClick(Sender: TObject);
+begin
+  with ListSelectDialog do begin
+    Assign(CodepageList,GetCodepageIndex);
+    ShowList(BottomLeftPos(EncBtn,0,2),Memo.Height);
     end;
   end;
 
@@ -807,6 +853,10 @@ begin
       Visible:=true; Left:=x; x:=x+Width-1;
       end
     else Visible:=false;
+    with EncBtn do if sbCodepage in Buttons then begin
+      Visible:=true; Left:=x; x:=x+Width-1;
+      end
+    else Visible:=false;
     with PrintBtn do if sbPrint in Buttons then begin
       Visible:=true; Left:=x; x:=x+Width-1;
       end
@@ -849,7 +899,10 @@ begin
       PrevErrBtn.Visible:=false;
       NextErrBtn.Visible:=false;
       end;
-    FCodePage:=CodePage;
+    if sbCodePage in Buttons then begin
+      if CodePageList.Count=0 then GetCodePageList(CodePageList);
+      end;
+    if FCodePage=0 then FCodePage:=CodePage;
     FDlgType:=DlgType;
     if FileExists (TextDatei) then begin
       TextName:=TextDatei;
