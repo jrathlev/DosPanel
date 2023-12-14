@@ -953,7 +953,7 @@ begin
         end
       else if AnsiSameText(se,'txt') then
         ShowTextDialog.Execute (st,ManFile,'','','','','','',_('All')+'|*.*',
-          Point(Left+20,Top+20),1,stShow,[sbPrint,sbSearch],BasicSettings.Codepage)
+          Point(Left+20,Top+20),1,stShow,[sbPrint,sbSearch,sbCodepage],BasicSettings.Codepage)
       else ShellExecute(0,'open',pchar(ManFile),nil,pchar(ExtractFilePath(ManFile)),SW_SHOWNORMAL)
       end
     else ErrorDialog(SafeFormat(_('Manual not found (%s)!'),[AppName]));
