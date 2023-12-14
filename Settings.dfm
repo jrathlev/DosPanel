@@ -147,8 +147,6 @@ object DosBoxSetDialog: TDosBoxSetDialog
     ModalResult = 1
     NumGlyphs = 2
     TabOrder = 0
-    ExplicitLeft = 225
-    ExplicitTop = 399
   end
   object CancelBtn: TBitBtn
     Left = 330
@@ -212,8 +210,6 @@ object DosBoxSetDialog: TDosBoxSetDialog
     ModalResult = 2
     NumGlyphs = 2
     TabOrder = 1
-    ExplicitLeft = 300
-    ExplicitTop = 399
   end
   object gbDosBox: TGroupBox
     Left = 5
@@ -223,7 +219,6 @@ object DosBoxSetDialog: TDosBoxSetDialog
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Settings for DOSBox'
     TabOrder = 2
-    ExplicitWidth = 396
     DesignSize = (
       426
       312)
@@ -722,7 +717,6 @@ object DosBoxSetDialog: TDosBoxSetDialog
       EditLabel.Height = 13
       EditLabel.Caption = 'Path to DOSBox:'
       TabOrder = 1
-      ExplicitWidth = 346
     end
     object edRootPath: TLabeledEdit
       Left = 10
@@ -734,7 +728,6 @@ object DosBoxSetDialog: TDosBoxSetDialog
       EditLabel.Height = 13
       EditLabel.Caption = 'Root path to DOS applications:'
       TabOrder = 0
-      ExplicitWidth = 346
     end
     object gbCodePage: TGroupBox
       Left = 185
@@ -815,7 +808,6 @@ object DosBoxSetDialog: TDosBoxSetDialog
     EditLabel.Height = 13
     EditLabel.Caption = 'Text editor:'
     TabOrder = 3
-    ExplicitWidth = 346
   end
   object cbAutoStart: TCheckBox
     Left = 15

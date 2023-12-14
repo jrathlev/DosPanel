@@ -103,11 +103,12 @@ type
     FullScreen,
     AutoEnd,
     AppConfig         : boolean;
+    CodePage,
     ImgIndex,
     MemSize,
     Speed             : integer;
     Icons             : TAppIcons;
-    constructor Create (const AConfigFile : string; DefLargeImg,DefSmallImg : TPicture);
+    constructor Create (const AConfigFile : string; DefLargeImg,DefSmallImg : TPicture; DefCodePage : integer);
     destructor Destroy; override;
     procedure Assign (ADosBoxApp : TDosBoxApp);
     procedure LoadIcons (const Filename : string);
@@ -391,7 +392,7 @@ begin
   end;
 
 { ------------------------------------------------------------------- }
-constructor TDosBoxApp.Create(const AConfigFile : string; DefLargeImg,DefSmallImg : TPicture);
+constructor TDosBoxApp.Create(const AConfigFile : string; DefLargeImg,DefSmallImg : TPicture; DefCodePage : integer);
 begin
   inherited Create;
   FConfigFile:=AConfigFile;
@@ -406,7 +407,7 @@ begin
   IsoImage:=true;
   LoadConfig;
   AutoEnd:=true; AppMapper:='';
-  AppConfig:=false; ImgIndex:=-1;
+  AppConfig:=false; ImgIndex:=-1; CodePage:=DefCodePage;
   DefLImg:=DefLargeImg; DefSImg:=DefSmallImg;
   InitIcons;
   end;
@@ -451,6 +452,7 @@ begin
   Parameters:=ADosBoxApp.Parameters;
   IconFile:=ADosBoxApp.IconFile;
   ManFile:=ADosBoxApp.ManFile;
+  CodePage:=ADosBoxApp.CodePage;
   AppMapper:=ADosBoxApp.AppMapper;
   Commands:=ADosBoxApp.Commands;
   Description:=ADosBoxApp.Description;

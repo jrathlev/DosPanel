@@ -2,7 +2,7 @@ object TxtConvertDialog: TTxtConvertDialog
   Left = 0
   Top = 0
   Caption = 'Convert Unicode text'
-  ClientHeight = 181
+  ClientHeight = 201
   ClientWidth = 387
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,7 +15,7 @@ object TxtConvertDialog: TTxtConvertDialog
   OnCreate = FormCreate
   DesignSize = (
     387
-    181)
+    201)
   PixelsPerInch = 96
   TextHeight = 13
   object btTextFile: TSpeedButton
@@ -84,7 +84,7 @@ object TxtConvertDialog: TTxtConvertDialog
   end
   object btbCancel: TBitBtn
     Left = 278
-    Top = 145
+    Top = 165
     Width = 101
     Height = 31
     Anchors = [akRight, akBottom]
@@ -144,10 +144,11 @@ object TxtConvertDialog: TTxtConvertDialog
     ModalResult = 2
     NumGlyphs = 2
     TabOrder = 0
+    ExplicitTop = 145
   end
   object btbConvert: TBitBtn
     Left = 160
-    Top = 145
+    Top = 165
     Width = 112
     Height = 31
     Anchors = [akRight, akBottom]
@@ -206,19 +207,23 @@ object TxtConvertDialog: TTxtConvertDialog
     NumGlyphs = 2
     TabOrder = 1
     OnClick = btbConvertClick
+    ExplicitTop = 145
   end
   object rgCodePages: TRadioGroup
     Left = 8
     Top = 55
     Width = 371
-    Height = 81
+    Height = 101
+    Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'Convert to code page'
     Columns = 3
     Items.Strings = (
       '437'
+      '1252'
       '850'
       '858')
     TabOrder = 2
+    ExplicitHeight = 81
   end
   object edTextfile: TLabeledEdit
     Left = 8

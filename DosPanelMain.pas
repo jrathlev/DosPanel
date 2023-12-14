@@ -130,7 +130,8 @@ type
     itmHelpFile: TMenuItem;
     N5: TMenuItem;
     actHelpFile: TAction;
-    ToolButton4: TToolButton;
+    tbSettings: TToolButton;
+    tbExit: TToolButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actExitExecute(Sender: TObject);
@@ -178,6 +179,7 @@ type
     procedure SetViewStyle (AViewStyle : TViewStyle);
     procedure UpdateView (const NAppName : string);
     procedure UpdateAutoStart;
+    function CurrentAppIndex : integer;
   public
     { Public-Deklarationen }
     UserPath,ProgPath,
@@ -466,7 +468,7 @@ begin
     n:=ReadInteger(CfgSekt,iniACount,0);
     sc:='';
     for i:=1 to n do begin
-      na:=TDosBoxApp.Create(BasicSettings.ConfFile,imgLarge.Picture,imgSmall.Picture);
+      na:=TDosBoxApp.Create(BasicSettings.ConfFile,imgLarge.Picture,imgSmall.Picture,BasicSettings.CodePage);
       with na do begin
         sec:=AppSekt+ZStrInt(i,3);
         AppName:=ReadString(sec,iniAName,'');
@@ -486,6 +488,7 @@ begin
         IconFile:=ReadString(sec,iniIcon,'');
         LoadIcons(IconFile);
         ManFile:=ReadString(sec,iniMan,'');
+        CodePage:=ReadInteger(sec,iniCdPage,CodePage);
         Description:=ReadString(sec,iniDesc,'');
         AppConfig:=ReadBool(sec,iniAppCfg,AppConfig);
         AppMapper:=ReadString(sec,iniMap,AppMapper);
@@ -572,6 +575,7 @@ begin
         WriteString(sec,iniCmd,AnsiQuotedStr(Commands,'#'));
         WriteString(sec,iniIcon,IconFile);
         WriteString(sec,iniMan,ManFile);
+        WriteInteger(sec,iniCdPage,CodePage);
         WriteString(sec,iniDesc,Description);
         WriteBool(sec,iniAppCfg,AppConfig);
         WriteString(sec,iniMap,AppMapper);
@@ -702,8 +706,14 @@ begin
   end;
 
 procedure TfrmMain.actSettingsExecute(Sender: TObject);
+var
+  n : integer;
 begin
-  if DosBoxSetDialog.Execute(BasicSettings) then UpdateAutoStart;
+  if DosBoxSetDialog.Execute(BasicSettings) then begin
+    n:=CurrentAppIndex;
+    if n>=0 then (Apps[n] as TDosBoxApp).CodePage:=BasicSettings.Codepage;
+    UpdateAutoStart;
+    end;
   end;
 
 procedure TfrmMain.actNewProgramExecute(Sender: TObject);
@@ -712,7 +722,7 @@ var
   k      : integer;
   s      : string;
 begin
-  NewApp:=TDosBoxApp.Create(BasicSettings.ConfFile,imgLarge.Picture,imgSmall.Picture);
+  NewApp:=TDosBoxApp.Create(BasicSettings.ConfFile,imgLarge.Picture,imgSmall.Picture,BasicSettings.Codepage);
   if AppSettingsDialog.Execute(tcCats.Tabs,NewApp) then begin
     with NewApp do if length(Category)=0 then s:=MiscName else s:=Category;
     with tcCats,Tabs do begin
@@ -728,16 +738,21 @@ begin
   else NewApp.Free;
   end;
 
+function TfrmMain.CurrentAppIndex : integer;
+begin
+  with lvApps do if assigned(Selected) then Result:=integer(Selected.Data)
+  else Result:=-1;
+  end;
+
 procedure TfrmMain.actDuplicateExecute(Sender: TObject);
 var
   NewApp : TDosBoxApp;
   k,n    : integer;
   s,t    : string;
 begin
-  with lvApps do if assigned(Selected) then n:=integer(Selected.Data)
-  else n:=-1;
+  n:=CurrentAppIndex;
   if (n>=0) then begin
-    NewApp:=TDosBoxApp.Create(BasicSettings.ConfFile,imgLarge.Picture,imgSmall.Picture);
+    NewApp:=TDosBoxApp.Create(BasicSettings.ConfFile,imgLarge.Picture,imgSmall.Picture,BasicSettings.Codepage);
     with NewApp do begin
       Assign(Apps[n] as TDosBoxApp);
       if length(Category)=0 then s:=MiscName else s:=Category;
@@ -769,8 +784,7 @@ var
   s,t : string;
   sa  : TDosBoxApp;
 begin
-  with lvApps do if assigned(Selected) then n:=integer(Selected.Data)
-  else n:=-1;
+  n:=CurrentAppIndex;
   if (n>=0) then begin
     sa:=Apps[n] as TDosBoxApp;
     with sa do if length(Category)=0 then s:=MiscName
@@ -850,8 +864,7 @@ var
   cl      : TConfigList;
   ok      : boolean;
 begin
-  with lvApps do if assigned(Selected) then n:=integer(Selected.Data)
-  else n:=-1;
+  n:=CurrentAppIndex;
   if (n>=0) then with Apps[n] as TDosBoxApp do begin
   // check for basic configuration (local or global)
     ok:=(AppConfig and FileExists(AddPath(AppPath,sConfig))) or FileExists(BasicSettings.ConfFile);
@@ -930,8 +943,7 @@ var
   n : integer;
   se,st : string;
 begin
-  with lvApps do if assigned(Selected) then n:=integer(Selected.Data)
-  else n:=-1;
+  n:=CurrentAppIndex;
   if (n>=0) then with Apps[n] as TDosBoxApp do begin
     if FileExists(ManFile) then begin
       st:=_('Manual for ')+AppName;
@@ -960,8 +972,7 @@ var
   ok      : boolean;
   cl      : TConfigList;
 begin
-  with lvApps do if assigned(Selected) then n:=integer(Selected.Data)
-  else n:=-1;
+  n:=CurrentAppIndex;
   if (n>=0) then with Apps[n] as TDosBoxApp do begin
   // check for basic configuration (local or global)
     ok:=(AppConfig and FileExists(AddPath(AppPath,sConfig))) or FileExists(BasicSettings.ConfFile);

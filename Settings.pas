@@ -36,9 +36,10 @@ type
     end;
 
 const
-  CodePages : array [0..8] of TCodePageInfo = (
+  CodePages : array [0..9] of TCodePageInfo = (
 //    (CodePageName : ''; CodePageNr : ),
     (CodePageName : 'US (437)'; CodePageNr : 437),
+    (CodePageName : 'ANSI Latin (1252)'; CodePageNr : 1252),
     (CodePageName : 'Latin-1 (850)'; CodePageNr : 850),
     (CodePageName : 'Latin-2 (852)'; CodePageNr : 852),
     (CodePageName : 'Latin-1 + Euro (858)'; CodePageNr : 858),
