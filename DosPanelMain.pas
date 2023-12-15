@@ -492,6 +492,8 @@ begin
         Description:=ReadString(sec,iniDesc,'');
         AppConfig:=ReadBool(sec,iniAppCfg,AppConfig);
         AppMapper:=ReadString(sec,iniMap,AppMapper);
+        if (length(AppMapper)>0) and not FileExists(AppMapper) then
+          AppMapper:=MakeAbsolutePath(ExtractFilePath(BasicSettings.ConfFile),BasicSettings.MapperFile);
         FullScreen:=ReadBool(sec,iniFull,FullScreen);
         AutoEnd:=ReadBool(sec,iniAuto,true);
         MemSize:=ReadInteger(sec,iniMSize,MemSize);
@@ -875,31 +877,26 @@ begin
       cl:=TConfigList.Create(sc);
       cl.AddSection(secSdl);
       cl.AddValue(cfgFull,LowerCase((BoolToStr(FullScreen,true))));
-      with BasicSettings do begin
-        if FileExists(AppMapper) then cl.AddValue(cfgMapF,MakeQuotedStr(AppMapper,[' ']))
-        else begin
-          if length(AppMapper)>0 then AppMapper:='';
-          if FileExists(MapperFile) then cl.AddValue(cfgMapF,MakeQuotedStr(MapperFile,[' ']));
-          end;
-        cl.AddSection(secDBox);
-        if FileExists(LangFile) then cl.AddValue(cfgLang,MakeQuotedStr(LangFile,[' ']));
-        if MemSize<>0 then cl.AddValue(cfgMSz,MemSize);
-        cl.AddSection(secCPU);
-        if Speed>=0 then begin
-          case Speed of
-          maxCycles: s:=sMax;
-          5000  : s:=sFixed+' 5000';
-          10000 : s:=sFixed+' 10000';
-          25000 : s:=sFixed+' 25000';
-          50000 : s:=sFixed+' 50000';
-          else s:=sAuto;
-            end;
-          cl.AddValue(cfgCycl,s);
-          end;
-        cl.AddSection(secDos);
-        if length(KeyLayout)=0 then s:=sAuto else s:=KeyLayout;
-        cl.AddValue(cfgKeyb,s);
+      if FileExists(AppMapper) then cl.AddValue(cfgMapF,MakeQuotedStr(AppMapper,[' ']))
+      else begin
+        if length(AppMapper)>0 then AppMapper:='';
+        with BasicSettings do if FileExists(MapperFile) then cl.AddValue(cfgMapF,MakeQuotedStr(MapperFile,[' ']));
         end;
+      cl.AddSection(secDBox);
+      with BasicSettings do if FileExists(LangFile) then cl.AddValue(cfgLang,MakeQuotedStr(LangFile,[' ']));
+      if MemSize<>0 then cl.AddValue(cfgMSz,MemSize);
+      cl.AddSection(secCPU);
+      if Speed>=0 then begin
+        case Speed of
+        0         : s:=sAuto;
+        maxCycles : s:=sMax;
+        else s:=sFixed+' '+IntToStr(Speed);
+          end;
+        cl.AddValue(cfgCycl,s);
+        end;
+      cl.AddSection(secDos);
+      with BasicSettings do if length(KeyLayout)=0 then s:=sAuto else s:=KeyLayout;
+      cl.AddValue(cfgKeyb,s);
       cl.AddSection(secExec);
       cl.Add(cfgMount+Space+HardDrv+Space+MakeQuotedStr(AppPath,[Space]));
       if MountCd then begin
@@ -967,24 +964,24 @@ begin
 
 procedure TfrmMain.actMapperExecute(Sender: TObject);
 var
+  sCfg,
   sc,s,sa : string;
   n       : integer;
-  ok      : boolean;
   cl      : TConfigList;
 begin
   n:=CurrentAppIndex;
   if (n>=0) then with Apps[n] as TDosBoxApp do begin
   // check for basic configuration (local or global)
-    ok:=(AppConfig and FileExists(AddPath(AppPath,sConfig))) or FileExists(BasicSettings.ConfFile);
-    if not ok and not ConfirmDialog(_('Basic configuration file not found! Start application anyway?')) then Exit;
+    if AppConfig then sCfg:=AddPath(AppPath,sConfig) else sCfg:=BasicSettings.ConfFile;
+    if not FileExists(sCfg) and not ConfirmDialog(_('Basic configuration file not found! Start application anyway?')) then Exit;
   // write overlay conf file
     sc:=SetDirName(AppPath)+ConfName;
     cl:=TConfigList.Create(sc);
     cl.AddSection(secSdl);
-    if length(AppMapper)=0 then begin // new keymapper
-      AppMapper:=SetDirName(AppPath)+'AppMapper.map';
-      if FileExists(BasicSettings.MapperFile) then
-        CopyFileTS(BasicSettings.MapperFile,AppMapper);
+    sa:=MakeAbsolutePath(ExtractFilePath(BasicSettings.ConfFile),BasicSettings.MapperFile);
+    if (length(AppMapper)=0) or (SameFileName(sa,AppMapper)) then begin // new keymapper
+      AppMapper:=AddPath(AppPath,sMapper);
+      if FileExists(sa) then CopyFileTS(sa,AppMapper);
       end;
     cl.AddValue(cfgMapF,MakeQuotedStr(AppMapper,[Space]));
     with BasicSettings do begin
@@ -1005,14 +1002,13 @@ begin
     sa:=AddPath(BasicSettings.DosBoxPath,sDosBox);
     if FileExists(sa) then begin
       s:=MakeQuotedStr(sa,[Space])+' -startmapper';
-      if FileExists(BasicSettings.ConfFile) then s:=s+' -conf '+MakeQuotedStr(BasicSettings.ConfFile,[Space]);
+      if FileExists(sCfg) then s:=s+' -conf '+MakeQuotedStr(sCfg,[Space]);
       s:=s+' -conf '+MakeQuotedStr(sc,[Space]);
       StartProcess(s,AppPath)
       end
     else ErrorDialog(SafeFormat(_('%s not found! Please adjust your global settings!'),[sDosBox]));
     end;
   end;
-
 
 procedure TfrmMain.actDosBoxExecute(Sender: TObject);
 var

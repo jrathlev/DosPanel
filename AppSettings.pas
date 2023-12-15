@@ -65,6 +65,7 @@ const
   sMax  = 'max';
   sFixed = 'fixed';
   sConfig = 'dosbox.conf';
+  sMapper = 'appmapper.map';
   sDosBox = 'DosBox.exe';
 
 type
@@ -425,7 +426,10 @@ begin
   if length(AConfigFile)=0 then AConfigFile:=FConfigFile;
   with TIniFile.Create(AConfigFile) do begin
     FullScreen:=ReadBool(secSdl,cfgFull,false);
-    AppMapper:=ReadString(secSdl,cfgMapF,'');
+    s:=ReadString(secSdl,cfgMapF,'');
+    AppMapper:=MakeAbsolutePath(ExtractFilePath(AConfigFile),s);
+    if (length(AppMapper)>0) and not FileExists(AppMapper) then
+      AppMapper:=MakeAbsolutePath(ExtractFilePath(FConfigFile),s);
     MemSize:=ReadInteger(secDBox,cfgMSz,16);
     s:=ReadString(secCPU,cfgCycl,sAuto);
     if AnsiStartsText(s,sAuto) then Speed:=0
@@ -626,10 +630,10 @@ begin
     Filename:='';
     Filter:=_('DOSBox key mapper files')+'|*.map;*.txt|'+_('All')+'|*.*';
     Title:=_('Select key mapper file');
-    if Execute then begin
-      if AnsiSameText(ExtractFilePath(Filename),sc) then edMapperFile.Text:=ExtractFileName(Filename)
-      else edMapperFile.Text:=Filename;
-      end;
+    if Execute then edMapperFile.Text:=Filename;
+//      if AnsiSameText(ExtractFilePath(Filename),sc) then edMapperFile.Text:=ExtractFileName(Filename)
+//      else edMapperFile.Text:=Filename;
+//      end;
     end;
   end;
 
