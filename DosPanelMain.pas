@@ -14,7 +14,7 @@
    the specific language governing rights and limitations under the License.
 
    J. Rathlev, Dec. 2011
-   last modified: Sept 2020
+   last modified: December 2023
    *)
 
 unit DosPanelMain;
@@ -30,7 +30,7 @@ uses
 
 const
   ProgName = 'DOS Panel';
-  Vers = ' - Vers. 1.6';
+  Vers = ' - Vers. 1.7';
   CopRgt = '© 2018-2023 - Dr. J. Rathlev, D-24222 Schwentinental';
   EMailAdr = 'kontakt(a)rathlev-home.de';
 
