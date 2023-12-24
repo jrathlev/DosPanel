@@ -11,6 +11,7 @@ configuration file. Each DOS application can have its individual settings stored
   - Any host DVD/CD drive or ISO image as CD drive
 - Selection of an application or DOS batch file with optional parameters to be started automatically when opening *DOSBox*
 - A list of any DOS commands to be executed before starting the above application (e.g. changing the directory)
+- Optional MIXER settings
 - Selection of an icon to be displayed in DosPanel
 - Optional selection of a keymapper
 - Selection of a manual (e.g. text or PDF) for the DOS application
