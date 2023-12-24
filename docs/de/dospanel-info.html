@@ -232,7 +232,7 @@
 
 <hr style="text-align:left;width:400px;color:#FF0000;">
 <h3>Konfigurieren einer DOS-Anwendung</h3>
-<img src="images/app-options.png" width="541" height="539" align="right" border="0" hspace="5">
+<img src="images/app-options.png" width="541" height="559" align="right" border="0" hspace="5">
 <h4><a name="add"><img src="images/app-add.png" width="20" height="20" border="0"> 
   Neue Anwendung hinzufügen</a></h4>
 <p>Ein Klick auf diese Schaltfläche fügt eine neue DOS-Anwendung in <strong>DosPanel</strong>
@@ -255,26 +255,49 @@
     beim Start von <em>DOSBox</em> das ausgewählte CD-Laufwerk (hier <b>D:</b>) entweder 
     mit einem physikalischen Laufwerk des Host-Systems oder mit einem Iso-Image 
     auf dem Host-System verbunden werden.</li>
-  <li><b>Zu startende Anwendung:</b> Auswahl einer DOS-Anwendung oder einer Batch-Datei 
-    in dem als Hauptlaufwerk (hier <b>C:</b>) angegebenen Pfad oder einem Unterverzeichnis. 
-    Diese wird nach dem Öffnen von <em>DOSBox</em> automatisch gestartet.</li>
-  <li><b>Parameter für ausführbare Datei:</b> Optionale Parameter für die automatisch 
-    zu startende DOS-Anwendung.</li>
-  <li><b>Zusätzliche Befehle beim Start:</b> Eingabe von DOS-Befehlen, die vor der 
-    automatisch zu startenden Anwendung ausgeführt werden sollen (z.B. Wechsel auf
-    das Laufwerk <b>C:</b>).</li>
-  <li><b>Symbol-Datei:</b> Auswahl eines Symbols (Bilddatei, wie z.B. <i>.ICO</i>) 
-    oder einer Anwendung mit einem Symbol für die Anzeige in <strong>DosPanel</strong></li>
-  <li><b>Mapper-Datei:</b> Hier wird die für die ausgewählte DOS-Anwendung angepasste 
-    Tastaturmapper-Datei ausgewählt (<a href="#appmapper">siehe auch</a>). Sie befindet 
-    sich normalerweise im Verzeichnis des Hauptlaufwerks der DOS-Anwendung (siehe oben).</li>
-  <li><b>Anleitung:</b> Auswahl einer Datei auf dem Host-System (z.B. Text oder PDF),
-    die in <strong>DosPanel</strong> als Anleitung für die ausgewählte Anwendung
-    angezeigt werden soll. Diese Datei wird automatisch mit der in Windows zugeordneten 
-    Anwendung (z.B. Adobe Reader) geöffnet.</li>
-  <li><b>Beschreibung:</b> Eine kurze Beschreibung der DOS-Anwendung, die in
-    <strong>DosPanel</strong> angezeigt wird, wenn man die Maus über das zugeordnete 
-    Symbol bewegt.</li>   
+  <li><b>Allgemeine Einstellungen</b>
+  <ul>
+    <li style="margin-top:-5px;"><b>Zu startende Anwendung:</b> Auswahl einer DOS-Anwendung oder einer Batch-Datei 
+      in dem als Hauptlaufwerk (hier <b>C:</b>) angegebenen Pfad oder einem Unterverzeichnis. 
+      Diese wird nach dem Öffnen von <em>DOSBox</em> automatisch gestartet.</li>
+    <li><b>Parameter für ausführbare Datei:</b> Optionale Parameter für die automatisch 
+      zu startende DOS-Anwendung.</li>
+    <li><b>Zusätzliche Befehle beim Start:</b> Eingabe von DOS-Befehlen, die vor der 
+      automatisch zu startenden Anwendung ausgeführt werden sollen (z.B. Wechsel auf
+      das Laufwerk <b>C:</b>).</li>
+    <li><b>Symbol-Datei:</b> Auswahl eines Symbols (Bilddatei, wie z.B. <i>.ICO</i>) 
+      oder einer Anwendung mit einem Symbol für die Anzeige in <strong>DosPanel</strong></li>
+    <li><b>Mapper-Datei:</b> Hier wird die für die ausgewählte DOS-Anwendung angepasste 
+      Tastaturmapper-Datei ausgewählt (<a href="#appmapper">siehe auch</a>). Sie befindet 
+      sich normalerweise im Verzeichnis des Hauptlaufwerks der DOS-Anwendung (siehe oben).</li>
+    <li><b>Anleitung:</b> Auswahl einer Datei auf dem Host-System (z.B. Text oder PDF),
+      die in <strong>DosPanel</strong> als Anleitung für die ausgewählte Anwendung
+      angezeigt werden soll. Diese Datei wird automatisch mit der in Windows zugeordneten 
+      Anwendung (z.B. <i>Adobe Reader</i> oder <i>Sumatra PDF</i>) geöffnet.</li>
+    <li><b>Beschreibung:</b> Eine kurze Beschreibung der DOS-Anwendung, die in
+      <strong>DosPanel</strong> angezeigt wird, wenn man die Maus über das zugeordnete 
+      Symbol bewegt.</li>   
+  </ul></li>
+  <img src="images/app-mixer.png" width="346" height="301" align="right" border="0" hspace="5">
+  <li><b>Audio-Mischpult</b><br>
+    Mit dem internen <em>DOSBox</em>-Programm <i>MIXER</i> kann die Lautstärke der verschiedenen 
+    Sound-Quellen individuell eingestellt werden. <i>DosPanel</i> stellt dafür ein
+    bedienerfreundliches Interface bereit (siehe Abb. rechts) und nimmt diese Einstellungen
+    automatisch vor dem Start des DOS-Programms vor. 
+  <ul>
+    <li><b>Kanal:</b> <em>DOSBox</em> unterstützt folgende Sound-Quellen:<br>
+      <i>Hauptkanal</i> (<tt>MASTER</tt>), <i>Disney</i> (<tt>DISNEY</tt>), <i>Lautsprecher</i> (<tt>SPKR</tt>), 
+      <i>Gravis Ultra Sound</i> (<tt>GUS</tt>), <i>Sound Blaster</i> (<tt>SB</tt>), <i>FM-Stereo</i> (<tt>FM</tt>)
+      und <i>CD-Audio</i> (<tt>CDAUDIO</tt>).</li>
+    <li><b>Lautstärke-Einstellung:</b> Mit den Schiebereglern kann die Lautstärke der ausgewählten
+      Quelle zwischen 0 und 100% eingestellt werden. Wenn dies getrennt für links und rechts
+      erfolgen soll, muss die Option <i>Schieberegler verbinden</i> abgeschaltet werden.</li>
+    <li><b>Liste mit den Kanaleinstellungen:</b> Mit den Schaltflächen kann die Auswahl
+      der Liste der beim Start des DOS-Programms vorzunehmenden Einstellungen hinzugefügt 
+      werden oder eine Einstellung aus der Liste entfernt werden. Außerdem ist es möglich,
+      die Liste komplett zu löschen und die Reihenfolge der Einträge zu ändern.</li>
+  </ul>
+  </li>
   <li><b>Grundkonfiguration auswählen:</b> Per Voreinstellung wird immer die von <em>DOSBox</em>
     <a href="#basic">bereit gestellte Konfiguration</a> ausgewählt. Wenn für die jeweilige 
     Anwendung besondere Einstellungen erforderlich sind, kann man auf <i>Anwendungsspezifisch</i>
