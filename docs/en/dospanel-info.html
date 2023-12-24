@@ -213,7 +213,7 @@
 
 <hr style="text-align:left;width:400px;color:#FF0000;">
 <h3><a name="add">Configuration of a DOS application</a></h3>
-<img src="images/app-options.png" width="541" height="539" align="right" border="0" hspace="5">
+<img src="images/app-options.png" width="541" height="559" align="right" border="0" hspace="5">
 <h4><img src="images/app-add.png" width="20" height="20" border="0"> 
   Add a new application</h4>
 <p>Clicking this button will add a new DOS application to <strong>DosPanel</strong>.
@@ -233,7 +233,9 @@
   <li><b>Mount CD drive:</b> If this option is activated, a virtual
     CD drive is connected to a physical drive of your host system or to an ISO image on your
     host system (e.g. <b>D:</b>) when <em>DOSBox</em> is started.</li>
-  <li><b>Application to be started:</b> Select the DOS application or the batch file
+  <li><b>General settings:</b>
+  <ul>
+    <li style="margin-top:-5px;"><b>Application to be started:</b> Select the DOS application or the batch file
     on your main drive (e.g <b>C:</b>) or any subdirectory that will be started 
     automatically in <em>DOSBox</em>.</li>
   <li><b>Parameters of application:</b> Optional parameters for the application to
@@ -247,10 +249,31 @@
     main drive directory of the DOS application (see above).</li>
   <li><b>Manual:</b> Select a file on your host system that contains a manual for 
     the selected DOS application. This may be any file type (e.g. text or PDF)
-    and will be opened with the application assigned in Windows (e.g. Adobe Reader).</li>
+    and will be opened with the application assigned in Windows (e.g. <i>Adobe Reader</i> 
+    or <i>Sumatra PDF</i>).</li>
   <li><b>Description:</b> This is a short description for the selected DOS application
     that will be displayed in <strong>DosPanel</strong> when moving the mouse over
-    the assigned icon.</li>   
+    the assigned icon.</li>
+  </ul></li>
+  <img src="images/app-mixer.png" width="346" height="301" align="right" border="0" hspace="5">
+  <li><b>Audio mixer</b><br>
+    The internal <em>DOSBox</em> program <i>MIXER</i> can be used to adjust the volume 
+    of the various sound sources individually. <i>DosPanel</i> provides a user-friendly 
+    interface for this purpose (see picture on the right) and makes these settings 
+    automatically before the DOS program is started. 
+  <ul>
+    <li><b>Channel:</b> <em>DOSBox</em> supports these sound sources:<br>
+      <i>Master</i> (<tt>MASTER</tt>), <i>Disney</i> (<tt>DISNEY</tt>), <i>Speaker</i> (<tt>SPKR</tt>), 
+      <i>Gravis Ultra Sound</i> (<tt>GUS</tt>), <i>Sound Blaster</i> (<tt>SB</tt>), <i>FM Stereo</i> (<tt>FM</tt>)
+      and <i>CD Audio</i> (<tt>CDAUDIO</tt>).</li>
+    <li><b>Volume control:</b> The sliders can be used to set the volume of the selected 
+      source between 0 and 100%. If this is to be done separately for left and right, 
+      the <i>Connect sliders</i> option must be switched off.</li>
+    <li><b>List of channel settings:</b> The buttons can be used to add the selection
+      to the list of settings to be made when starting the DOS program or to remove 
+      a setting from the list. It is also possible to
+      delete the list completely and change the order of the entries.</li>
+  </ul></li>
   <li><b>Select configuration:</b> The configuration provided by <em>DOSBox</em> is 
     always selected by default. If special settings are required for the respective 
     application, you can switch to <i>Application specific</i>. The basic configuration 
