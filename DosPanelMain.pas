@@ -265,6 +265,7 @@ const
   iniIcon   = 'IconFile';
   iniMan    = 'Manual';
   iniDesc   = 'Description';
+  iniMixer  = 'Mixer';
   iniAppCfg = 'AppConfig';
   iniFull   = 'FullScreen';
   iniAuto   = 'AutoEnd';
@@ -490,6 +491,7 @@ begin
         ManFile:=ReadString(sec,iniMan,'');
         CodePage:=ReadInteger(sec,iniCdPage,CodePage);
         Description:=ReadString(sec,iniDesc,'');
+        MixerChannels:=AnsiDequotedStr(ReadString(sec,iniMixer,''),'#');;
         AppConfig:=ReadBool(sec,iniAppCfg,AppConfig);
         AppMapper:=ReadString(sec,iniMap,AppMapper);
         if (length(AppMapper)>0) and not FileExists(AppMapper) then
@@ -579,6 +581,7 @@ begin
         WriteString(sec,iniMan,ManFile);
         WriteInteger(sec,iniCdPage,CodePage);
         WriteString(sec,iniDesc,Description);
+        WriteString(sec,iniMixer,AnsiQuotedStr(MixerChannels,'#'));
         WriteBool(sec,iniAppCfg,AppConfig);
         WriteString(sec,iniMap,AppMapper);
         WriteBool(sec,iniFull,FullScreen);
@@ -901,10 +904,16 @@ begin
       cl.Add(cfgMount+Space+HardDrv+Space+MakeQuotedStr(AppPath,[Space]));
       if MountCd then begin
         if IsoImage then begin
-          if FileExists(CdPath) then cl.Add(CfgImgMt+Space+CdDrv+Space+
-               MakeQuotedStr(CdPath,[Space])+' -t cdrom');
+          if FileExists(CdPath) then begin
+            s:=CfgImgMt+Space+CdDrv+Space+MakeQuotedStr(CdPath,[Space])+' -t cdrom';
+            cl.Add(s);
+            end;
           end
         else cl.Add(CfgMount+Space+CdDrv+Space+CdPath+' -t cdrom');
+        end;
+      if length(MixerChannels)>0 then begin
+        s:=MixerChannels;
+        while length(s)>0 do cl.Add('MIXER '+ReadNxtQuotedStr(s,Semicolon,Quote));
         end;
       s:=Commands;
       while length(s)>0 do cl.Add(ReadNxtQuotedStr(s,Semicolon,Quote));

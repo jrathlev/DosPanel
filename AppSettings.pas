@@ -35,6 +35,8 @@ type
 
 const
   ImageExt : array[TImgType] of string = ('','ico','bmp','png');
+  ChannelCount = 7;
+  MixerChannels : array[0..ChannelCount-1] of string = ('MASTER','DISNEY','SPKR','GUS','SB','FM','CDAUDIO');
 
   // Conf file parameter
   secSdl  = 'sdl';
@@ -97,7 +99,8 @@ type
     AppFile,Parameters,
     Commands,AppMapper,
     IconFile,ManFile,
-    Description       : string;
+    Description,
+    MixerChannels     : string;
     HardDrv,CdDrv     : Char;
     MountCd,
     IsoImage,
@@ -162,6 +165,29 @@ type
     bbReset: TBitBtn;
     Label2: TLabel;
     cbCycles: TComboBox;
+    pcSettings: TPageControl;
+    tsGeneral: TTabSheet;
+    tsAudio: TTabSheet;
+    paAudio: TPanel;
+    cbChannels: TComboBox;
+    Label3: TLabel;
+    tbRight: TTrackBar;
+    tbLeft: TTrackBar;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    bbAddMixer: TBitBtn;
+    bbRemMixer: TBitBtn;
+    bbClearMixer: TBitBtn;
+    lbMixerSettings: TListBox;
+    cbConnect: TCheckBox;
+    Label12: TLabel;
+    Label13: TLabel;
+    gbVolume: TGroupBox;
+    bbUp: TBitBtn;
+    bbDown: TBitBtn;
+    btRebuild: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure btPathClick(Sender: TObject);
     procedure btExeFileClick(Sender: TObject);
@@ -177,12 +203,23 @@ type
     procedure rgConfigClick(Sender: TObject);
     procedure bbEditConfigClick(Sender: TObject);
     procedure bbResetClick(Sender: TObject);
+    procedure tbLeftChange(Sender: TObject);
+    procedure tbRightChange(Sender: TObject);
+    procedure bbAddMixerClick(Sender: TObject);
+    procedure bbRemMixerClick(Sender: TObject);
+    procedure bbClearMixerClick(Sender: TObject);
+    procedure lbMixerSettingsClick(Sender: TObject);
+    procedure bbUpClick(Sender: TObject);
+    procedure bbDownClick(Sender: TObject);
+    procedure btRebuildClick(Sender: TObject);
   private
     { Private-Deklarationen }
     NewIcons   : TAppIcons;
     FDosBoxApp : TDosBoxApp;
     LastDrive : string;
+    procedure GetCdDrives;
     procedure ChangeCdRom (IsIso : boolean);
+    procedure ShowMixerChannel (AIndex : integer);
     procedure ShowConfig;
   public
     { Public-Deklarationen }
@@ -403,9 +440,8 @@ begin
   AppFile:=''; Parameters:='';
   IconFile:=''; ManFile:='';
   Commands:=HardDrv+':;"CD \"';
-  Description:='';
-  MountCd:=true;
-  IsoImage:=true;
+  Description:=''; MixerChannels:='';
+  MountCd:=true; IsoImage:=true;
   LoadConfig;
   AutoEnd:=true; AppMapper:='';
   AppConfig:=false; ImgIndex:=-1; CodePage:=DefCodePage;
@@ -460,6 +496,7 @@ begin
   AppMapper:=ADosBoxApp.AppMapper;
   Commands:=ADosBoxApp.Commands;
   Description:=ADosBoxApp.Description;
+  MixerChannels:=ADosBoxApp.MixerChannels;
   MountCd:=ADosBoxApp.MountCd;
   IsoImage:=ADosBoxApp.IsoImage;
   AppConfig:=ADosBoxApp.AppConfig;
@@ -486,11 +523,27 @@ begin
 procedure TAppSettingsDialog.FormCreate(Sender: TObject);
 begin
   TranslateComponent(self);
-  with cbDrive do begin
-    BuildDriveList(Items,[dtCdRom]);
-    if Items.Count>0 then ItemIndex:=0;
-    end;
+  GetCdDrives;
   LastDrive:='';
+  with lbMixerSettings.Items do begin
+    QuoteChar:=Quote; Delimiter:=Semicolon;
+    end;
+  end;
+
+procedure TAppSettingsDialog.GetCdDrives;
+var
+  dl : TStringList;
+  i  : integer;
+begin
+  dl:=TStringList.Create;
+  BuildDriveList(dl,[dtCdRom]);
+  cbDrive.Clear;
+  with dl do begin
+    for i:=0 to Count-1 do cbDrive.Items.Add(Strings[i]+' ('+(Objects[i] as TDriveProperties).DriveName+')');
+    end;
+  with cbDrive do if Items.Count>0 then ItemIndex:=0;
+  FreeListObjects(dl);
+  dl.Free;
   end;
 
 procedure TAppSettingsDialog.ChangeCdRom (IsIso : boolean);
@@ -510,6 +563,97 @@ begin
     cbDrive.Visible:=false;
     pnIsoFile.Visible:=true;
     rbIsoIMage.Checked:=true;
+    end;
+  end;
+
+procedure TAppSettingsDialog.ShowMixerChannel (AIndex : integer);
+var
+  s,sc : string;
+  i,nl,nr : integer;
+begin
+  with lbMixerSettings do if (AIndex>=0) and (AIndex<Count) then begin
+    s:=Items[AIndex];
+    sc:=Trim(ReadNxtStr(s,Space));
+    for i:=0 to ChannelCount-1 do if AnsiSameText(sc,MixerChannels[i]) then Break;
+    if i>=ChannelCount then i:=ChannelCount-1;
+    cbChannels.ItemIndex:=i;
+    nl:=ReadNxtInt(s,Colon,100); nr:=ReadNxtInt(s,Colon,100);
+    cbConnect.Checked:=nl=nr;
+    tbLeft.Position:=nl; tbRight.Position:=nr;
+    end
+  else begin
+    cbChannels.ItemIndex:=ChannelCount-1; cbConnect.Checked:=true;
+    tbLeft.Position:=50; tbRight.Position:=50;
+    end;
+  lbMixerSettings.ItemIndex:=AIndex;
+  end;
+
+procedure TAppSettingsDialog.tbLeftChange(Sender: TObject);
+begin
+  if cbConnect.Checked then tbRight.Position:=tbLeft.Position;
+  end;
+
+procedure TAppSettingsDialog.tbRightChange(Sender: TObject);
+begin
+  if cbConnect.Checked then tbLeft.Position:=tbRight.Position;
+  end;
+
+procedure TAppSettingsDialog.lbMixerSettingsClick(Sender: TObject);
+begin
+  ShowMixerChannel(lbMixerSettings.ItemIndex);
+  end;
+
+procedure TAppSettingsDialog.bbAddMixerClick(Sender: TObject);
+
+  function IntRoundTo (val,n : integer) : integer;
+  begin
+    Result:=((val+n div 2) div n)*n;
+    end;
+
+begin
+  with lbMixerSettings do ItemIndex:=Items.Add(MixerChannels[cbChannels.ItemIndex]
+    +Space+IntToStr(IntRoundTo(tbLeft.Position,5))+Colon+IntToStr(IntRoundTo(tbRight.Position,5)));
+  end;
+
+procedure TAppSettingsDialog.bbRemMixerClick(Sender: TObject);
+var
+  n : integer;
+begin
+  with lbMixerSettings do begin
+    n:=ItemIndex;
+    Items.Delete(ItemIndex);
+    if n>Items.Count then ItemIndex:=Items.Count-1 else ItemIndex:=n;
+    ShowMixerChannel(ItemIndex);
+    end;
+  end;
+
+procedure TAppSettingsDialog.bbClearMixerClick(Sender: TObject);
+begin
+  if ConfirmDialog (_('Remove all mixer settings?')) then begin
+    lbMixerSettings.Clear;
+    ShowMixerChannel(-1);
+    end;
+  end;
+
+procedure TAppSettingsDialog.bbUpClick(Sender: TObject);
+var
+  n : integer;
+begin
+  with lbMixerSettings,Items do if (Count>0) and (ItemIndex>0) then begin
+    n:=ItemIndex;
+    Exchange(n,n-1);
+    ItemIndex:=n-1;
+    end;
+  end;
+
+procedure TAppSettingsDialog.bbDownClick(Sender: TObject);
+var
+  n : integer;
+begin
+  with lbMixerSettings,Items do if (Count>0) and (ItemIndex<Count-1) then begin
+    n:=ItemIndex;
+    Exchange(n,n+1);
+    ItemIndex:=n+1;
     end;
   end;
 
@@ -597,7 +741,7 @@ begin
     else InitialDir:=edAppPath.Text;
     DefaultExt:='iso';
     Filename:='';
-    Filter:=_('ISO images')+'|*.iso';
+    Filter:=_('ISO images')+'|*.iso;*.cue';
     Title:=SafeFormat(_('Select iso image to be mounted as drive %s'),[cbCdRomDrive.Text]);
     if Execute then edIsoFile.Text:=Filename;
     end;
@@ -717,6 +861,11 @@ begin
       false,true,false,frmMain.BasicSettings.RootPath,s) then edAppPath.Text:=s;
   end;
 
+procedure TAppSettingsDialog.btRebuildClick(Sender: TObject);
+begin
+  GetCdDrives;
+  end;
+
 procedure TAppSettingsDialog.cbHardDriveCloseUp(Sender: TObject);
 begin
   with edCommands do Text:=AnsiReplaceText(Text,LastDrive+':',cbHardDrive.Text[1]+':');
@@ -769,7 +918,9 @@ begin
     edIconFile.Text:=IconFile;
     edManFile.Text:=ManFile;
     edDescription.Text:=Description;
+    lbMixerSettings.Items.DelimitedText:=MixerChannels;
     cxAutoEnd.Checked:=AutoEnd;
+    ShowMixerChannel(0);
     ShowConfig;
     with rgConfig do if AppConfig then ItemIndex:=1 else ItemIndex:=0;
     with bbEditConfig do begin
@@ -778,6 +929,7 @@ begin
       end;
     imgIcon.Picture.Assign(Icons);
     NewIcons:=TAppIcons.CreateFrom(Icons);
+    pcSettings.ActivePage:=tsGeneral;
     Result:=ShowModal=mrOK;
     if Result then begin
       AppName:=edAppname.Text;
@@ -798,6 +950,7 @@ begin
       AppMapper:=edMapperFile.Text;
       ManFile:=edManFile.Text;
       Description:=edDescription.Text;
+      MixerChannels:=lbMixerSettings.Items.DelimitedText;
       FullScreen:=cxFullScreen.Checked;
       AutoEnd:=cxAutoEnd.Checked;
       MemSize:=MemSizeList[cbMemSize.ItemIndex];
