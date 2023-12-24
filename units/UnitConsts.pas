@@ -120,6 +120,7 @@ resourcestring
   rsLongCopyRight = '%s Dr. J. Rathlev'+sLineBreak+' 24222 Schwentinental, Germany';
   rsCopyRight = '%s Dr. J. Rathlev';
   rsNotAvail = 'not available';
+  rsNoName = 'unlabeled';
   rsConnectTo = 'Connect to ..';
   rsUnknown = '<Unknown>';
   rsAnyKey = 'Strike any key to continue ...';

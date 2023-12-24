@@ -409,6 +409,7 @@ begin
       DriveName:=Char(i+Ord('A'))+':\';
       DriveType:=TDriveType(GetDriveType(PChar(DriveName)));
       CheckForDriveAvailable(DriveName,VolName);
+      if length(VolName)=0 then VolName:=rsNoName;
       end;
     if dp.DriveType in UseTypes then DriveList.AddObject(dp.VolName,dp)
     else dp.Free;;
