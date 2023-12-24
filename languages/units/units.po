@@ -7,13 +7,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-02-17 16:16\n"
-"PO-Revision-Date: 2023-02-17 16:16\n"
+"POT-Creation-Date: 2023-12-23 17:15+0100\n"
+"PO-Revision-Date: 2023-12-23 17:15+0100\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: GgtTranslate 2.9.0\n"
+"X-Generator: GgtTranslate 3.1.0\n"
 
 #. Strings from ComPort
 #. Programmer's name for it: rsComNoError
@@ -375,37 +375,37 @@ msgstr ""
 
 #. Programmer's name for it: rsCopy
 #: FileConsts.pas:88
-msgid " (Copy)"
+msgid "Copy"
 msgstr ""
 
 #. Programmer's name for it: rsGZip
 #: FileConsts.pas:89
-msgid " (gzip)"
+msgid "gzip"
 msgstr ""
 
 #. Programmer's name for it: rsGUnzip
 #: FileConsts.pas:90
-msgid " (gunzip)"
+msgid "gunzip"
 msgstr ""
 
 #. Programmer's name for it: rsZip
 #: FileConsts.pas:91
-msgid " (Zip)"
+msgid "Zip"
 msgstr ""
 
 #. Programmer's name for it: rsUnzip
 #: FileConsts.pas:92
-msgid " (Unzip)"
+msgid "Unzip"
 msgstr ""
 
 #. Programmer's name for it: rsEnCrypt
 #: FileConsts.pas:93
-msgid " (Encrypt)"
+msgid "Encrypt"
 msgstr ""
 
 #. Programmer's name for it: rsDeCrypt
 #: FileConsts.pas:94
-msgid " (Decrypt)"
+msgid "Decrypt"
 msgstr ""
 
 #. Programmer's name for it: rsNoFileInfo
@@ -791,6 +791,40 @@ msgstr ""
 msgid "Current FTP directory: \"%s\""
 msgstr ""
 
+#. Certicate info
+#. Programmer's name for it: rsCertVersion
+#: FtpConsts.pas:44
+#. Misc.
+#. Programmer's name for it: rsVersion
+#: UnitConsts.pas:119
+msgid "Version"
+msgstr ""
+
+#. Programmer's name for it: rsSerialNr
+#: FtpConsts.pas:45
+msgid "Serial number"
+msgstr ""
+
+#. Programmer's name for it: rsIssuer
+#: FtpConsts.pas:46
+msgid "Issuer"
+msgstr ""
+
+#. Programmer's name for it: rsValidUntil
+#: FtpConsts.pas:47
+msgid "Valid until"
+msgstr ""
+
+#. Programmer's name for it: rsFingerprint
+#: FtpConsts.pas:48
+msgid "Fingerprint"
+msgstr ""
+
+#. Programmer's name for it: rsVerCertError
+#: FtpConsts.pas:49
+msgid "Error verifying server certificate"
+msgstr ""
+
 #. 'Fehler (öffnende/schließende Klammern)'
 #. Programmer's name for it: rsMathErrPar
 #: MathExpConsts.pas:22
@@ -920,7 +954,7 @@ msgstr ""
 msgid "%s is not a valid binary value"
 msgstr ""
 
-#. Strings from LangUtils
+#. "&" is required so that this entry is always the first when sorting
 #. Programmer's name for it: rsSystemDefault
 #: UnitConsts.pas:37
 msgid "&System default"
@@ -1041,12 +1075,6 @@ msgstr ""
 msgid "Unlicensed product"
 msgstr ""
 
-#. Misc.
-#. Programmer's name for it: rsVersion
-#: UnitConsts.pas:119
-msgid "Version"
-msgstr ""
-
 #. Programmer's name for it: rsLongCopyRight
 #: UnitConsts.pas:120
 msgid "%s Dr. J. Rathlev\n"
@@ -1063,18 +1091,23 @@ msgstr ""
 msgid "not available"
 msgstr ""
 
-#. Programmer's name for it: rsConnectTo
+#. Programmer's name for it: rsNoName
 #: UnitConsts.pas:123
+msgid "unlabeled"
+msgstr ""
+
+#. Programmer's name for it: rsConnectTo
+#: UnitConsts.pas:124
 msgid "Connect to .."
 msgstr ""
 
 #. Programmer's name for it: rsUnknown
-#: UnitConsts.pas:124
+#: UnitConsts.pas:125
 msgid "<Unknown>"
 msgstr ""
 
 #. Programmer's name for it: rsAnyKey
-#: UnitConsts.pas:125
+#: UnitConsts.pas:126
 msgid "Strike any key to continue ..."
 msgstr ""
 
