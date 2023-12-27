@@ -880,13 +880,13 @@ begin
       cl:=TConfigList.Create(sc);
       cl.AddSection(secSdl);
       cl.AddValue(cfgFull,LowerCase((BoolToStr(FullScreen,true))));
-      if FileExists(AppMapper) then cl.AddValue(cfgMapF,MakeQuotedStr(AppMapper,[' ']))
+      if FileExists(AppMapper) then cl.AddValue(cfgMapF,AppMapper)
       else begin
         if length(AppMapper)>0 then AppMapper:='';
-        with BasicSettings do if FileExists(MapperFile) then cl.AddValue(cfgMapF,MakeQuotedStr(MapperFile,[' ']));
+        with BasicSettings do if FileExists(MapperFile) then cl.AddValue(cfgMapF,MapperFile);
         end;
       cl.AddSection(secDBox);
-      with BasicSettings do if FileExists(LangFile) then cl.AddValue(cfgLang,MakeQuotedStr(LangFile,[' ']));
+      with BasicSettings do if FileExists(LangFile) then cl.AddValue(cfgLang,LangFile);
       if MemSize<>0 then cl.AddValue(cfgMSz,MemSize);
       cl.AddSection(secCPU);
       if Speed>=0 then begin
@@ -901,11 +901,11 @@ begin
       with BasicSettings do if length(KeyLayout)=0 then s:=sAuto else s:=KeyLayout;
       cl.AddValue(cfgKeyb,s);
       cl.AddSection(secExec);
-      cl.Add(cfgMount+Space+HardDrv+Space+MakeQuotedStr(AppPath,[Space]));
+      cl.Add(cfgMount+Space+HardDrv+Space+MakeQuotedStr(AppPath));
       if MountCd then begin
         if IsoImage then begin
           if FileExists(CdPath) then begin
-            s:=CfgImgMt+Space+CdDrv+Space+MakeQuotedStr(CdPath,[Space])+' -t cdrom';
+            s:=CfgImgMt+Space+CdDrv+Space+MakeQuotedStr(CdPath)+' -t cdrom';
             cl.Add(s);
             end;
           end
@@ -928,12 +928,12 @@ begin
     // start DosBox
       sa:=AddPath(BasicSettings.DosBoxPath,sDosBox);
       if FileExists(sa) then begin
-        s:=MakeQuotedStr(sa,[Space]);
+        s:=MakeQuotedStr(sa);
         if BasicSettings.HideCon then s:=s+' -noconsole';
         if AppConfig then sa:=AddPath(AppPath,sConfig)
         else sa:=BasicSettings.ConfFile;
-        if FileExists(sa) then s:=s+' -conf '+MakeQuotedStr(sa,[Space]);
-        s:=s+' -conf '+MakeQuotedStr(sc,[Space]); // overlay conf file
+        if FileExists(sa) then s:=s+' -conf '+MakeQuotedStr(sa);
+        s:=s+' -conf '+MakeQuotedStr(sc); // overlay conf file
   //    if length(AppFile)>0 then s:=s+Space+SetDirName(RootPath)+AppFile;
   //    if AutoEnd then s:=s+' -exit';
         StartProcess(s,AppPath);
@@ -992,17 +992,17 @@ begin
       AppMapper:=AddPath(AppPath,sMapper);
       if FileExists(sa) then CopyFileTS(sa,AppMapper);
       end;
-    cl.AddValue(cfgMapF,MakeQuotedStr(AppMapper,[Space]));
+    cl.AddValue(cfgMapF,AppMapper);
     with BasicSettings do begin
       cl.AddSection(secDBox);
-      if FileExists(LangFile) then cl.AddValue(cfgLang,MakeQuotedStr(LangFile,[Space]));
+      if FileExists(LangFile) then cl.AddValue(cfgLang,LangFile);
       cl.AddSection(secDos);
       if length(KeyLayout)=0 then s:='auto' else s:=KeyLayout;
       cl.AddValue(cfgKeyb,s);
       end;
     cl.AddSection(secExec);
     if DirectoryExists(AppPath) then cl.Add(cfgMount+Space+HardDrv+
-         Space+MakeQuotedStr(AppPath,[Space]));
+         Space+MakeQuotedStr(AppPath));
     cl.Add(cfgExit);   // auto end
     with cl do begin
       Save; Free;
@@ -1010,9 +1010,9 @@ begin
     // start DosBox and enter keymapper
     sa:=AddPath(BasicSettings.DosBoxPath,sDosBox);
     if FileExists(sa) then begin
-      s:=MakeQuotedStr(sa,[Space])+' -startmapper';
-      if FileExists(sCfg) then s:=s+' -conf '+MakeQuotedStr(sCfg,[Space]);
-      s:=s+' -conf '+MakeQuotedStr(sc,[Space]);
+      s:=MakeQuotedStr(sa)+' -startmapper';
+      if FileExists(sCfg) then s:=s+' -conf '+MakeQuotedStr(sCfg);
+      s:=s+' -conf '+MakeQuotedStr(sc);
       StartProcess(s,AppPath)
       end
     else ErrorDialog(SafeFormat(_('%s not found! Please adjust your global settings!'),[sDosBox]));
@@ -1026,10 +1026,10 @@ begin
   // start DosBox
   sc:=AddPath(BasicSettings.DosBoxPath,sDosBox);
   if FileExists(sc) then with BasicSettings do begin
-    sc:=MakeQuotedStr(sc,[Space]);
-    if FileExists(LangFile) then sc:=sc+' -lang '+MakeQuotedStr(LangFile,[Space]);
-    if FileExists(ConfFile) then sc:=sc+' -conf '+MakeQuotedStr(ConfFile,[Space]);
-    if length(KeyLayout)> 0 then sc:=sc+' -c '+MakeQuotedStr('KEYB '+KeyLayout,[Space]);
+    sc:=MakeQuotedStr(sc);
+    if FileExists(LangFile) then sc:=sc+' -lang '+MakeQuotedStr(LangFile);
+    if FileExists(ConfFile) then sc:=sc+' -conf '+MakeQuotedStr(ConfFile);
+    if length(KeyLayout)> 0 then sc:=sc+' -c '+MakeQuotedStr('KEYB '+KeyLayout);
     StartProcess(sc,RootPath)
     end
   else ErrorDialog(SafeFormat(_('%s not found! Please adjust your global settings!'),[sDosBox]));
