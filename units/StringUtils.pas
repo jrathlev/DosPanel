@@ -710,11 +710,9 @@ begin
 function FillSpace (len : integer) : string;
 var
   i : integer;
-  s : string;
 begin
-  s:='';
-  for i:=1 to len do s:=s+' ';
-  Result:=s;
+  Result:='';
+  for i:=1 to len do Result:=Result+' ';
   end;
 
 {------------------------------------------------------------------}
@@ -1233,15 +1231,15 @@ begin
   if length(s)>0 then begin
     i:=pos (Del,s);
     if i=0 then i:=succ(length(s));
-    ReadNxtStr:=copy(s,1,pred(i));
+    Result:=copy(s,1,pred(i));
     delete(s,1,i);
     end
-  else ReadNxtStr:='';
+  else Result:='';
   end;
 
 function ReadNxtStr (var s   : AnsiString;
                      Del     : AnsiChar;
-                     Default : AnsiString) : AnsiString; overload;
+                     Default : AnsiString) : AnsiString;
 var
   t : AnsiString;
 begin
@@ -1257,10 +1255,10 @@ begin
   if length(s)>0 then begin
     i:=pos (Del,s);
     if i=0 then i:=succ(length(s));
-    ReadNxtStr:=copy(s,1,pred(i));
+    Result:=copy(s,1,pred(i));
     delete(s,1,i);
     end
-  else ReadNxtStr:='';
+  else Result:='';
   end;
 
 function ReadNxtStr (var s   : String;

@@ -25,6 +25,15 @@ resourcestring
 { ------------------------------------------------------------------- }
 // Strings from ExtSysUtils
   rsFormatError  = 'Format error: ';
+  rsUnknownError = 'Unknown system error code';
+  rsErrorCode = 'Error code';
+  rsWindowsError = 'Windows error';
+  rsStorageError = 'Storage error';
+  rsRpcError = 'Remote procedure call error';
+  rsInterfaceError = 'Interface error';
+  rsDispatchError = 'Dispatch error';
+  rsPreWin32Error = 'Error in SHFileOperation';
+  rsShellExec = 'ShellExecute error';
 
 { ------------------------------------------------------------------- }
 // Strings from NumberUtils
@@ -56,17 +65,6 @@ resourcestring
   rsComStateError = 'Error setting COM port state';
   rsComFlushError = 'Error flushing COM buffers';
   rsComSetupError = 'Error initializing COM port';
-
-{ ------------------------------------------------------------------- }
-// Strings from WinUtils
-  rsUnknownError = 'Unknown system error code';
-  rsWindowsError = 'Windows error';
-  rsStorageError = 'Storage error';
-  rsRpcError = 'Remote procedure call error';
-  rsInterfaceError = 'Interface error';
-  rsDispatchError = 'Dispatch error';
-  rsPreWin32Error = 'Error in SHFileOperation';
-  rsShellExec = 'ShellExecute error';
 
 { ------------------------------------------------------------------- }
 // Strings from SystemInfo
@@ -113,6 +111,13 @@ resourcestring
   rsWebServer = 'Web Server Edition';
   rsWebServerC = 'Web Server Edition (core)';
   rsUnlicensed = 'Unlicensed product';
+
+{ ------------------------------------------------------------------- }
+// Strings from DateUtilEx
+  rsBegSpring = 'Beginning of spring';
+  rsBegSummer = 'Beginning of summer';
+  rsBegAutumn = 'Beginning of autumn';
+  rsBegWinter = 'Beginning of winter';
 
 { ------------------------------------------------------------------- }
 // Misc.
