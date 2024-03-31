@@ -31,7 +31,7 @@ uses
 const
   ProgName = 'DOS Panel';
   Vers = ' - Vers. 1.7';
-  CopRgt = '© 2018-2023 - Dr. J. Rathlev, D-24222 Schwentinental';
+  CopRgt = '© 2018-2024 - Dr. J. Rathlev, D-24222 Schwentinental';
   EMailAdr = 'kontakt(a)rathlev-home.de';
 
   ConfName = 'dospanel.conf';
