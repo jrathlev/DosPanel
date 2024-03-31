@@ -126,7 +126,7 @@ const
 procedure TWebBrowserWin.LoadFromIni (AIniname,ASection : string);
 begin
   FIniName:=AIniname; FSection:=ASection;
-  with TIniFile.Create(FIniName) do begin
+  with TMemIniFile.Create(FIniName) do begin
     with HForm do begin
       Left:=ReadInteger (FSection,IniLeft,10);
       Top:=ReadInteger (FSection,IniTop,10);
@@ -160,7 +160,7 @@ begin
 procedure TWebBrowserWin.FormDestroy(Sender: TObject);
 begin
   if (length(FIniname)>0) and (length(FSection)>0) then begin
-    with TIniFile.Create(FIniName) do begin
+    with TMemIniFile.Create(FIniName) do begin
       if WindowState=wsNormal then begin
         WriteInteger (FSection,IniLeft,Left);
         WriteInteger (FSection,IniTop,Top);
@@ -168,6 +168,7 @@ begin
         WriteInteger (FSection,IniHeight,Height);
         end;
       WriteInteger (FSection,IniState,ord(WindowState));
+      UpdateFile;
       Free;
       end;
     end;

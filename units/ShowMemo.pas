@@ -20,7 +20,8 @@
    Vers. 2 - July 2022: define compiler switch "ACCESSIBLE" to make dialog
                         messages accessible to screenreaders
    Vers. 3 - December 2023: code page selection added
-   last modified: December 2023
+             March 2024 : changed TMemIniFile
+   last modified: March 2024
    *)
 
 
@@ -300,7 +301,7 @@ var
   fc : TFontStyleToByte;
 begin
   if FileExists(FIniName) then begin
-    with TIniFile.Create(FIniName) do begin
+    with TMemIniFile.Create(FIniName) do begin
       WriteInteger(ViewSect,iniTop,Top);
       WriteInteger(ViewSect,iniLeft,Left);
       WriteInteger(ViewSect,iniHeight,Height);
@@ -311,6 +312,7 @@ begin
         fc.Style:=Style;
         WriteInteger(ViewSect,IniFontStyle,fc.Value);
         end;
+      UpdateFile;
       Free;
       end;
     end;
@@ -702,7 +704,7 @@ begin
           Text:=Enc.GetString(Buffer,Size,Length(Buffer)-Size);
         except
           on EEncodingError do begin
-            ErrorDialog(dgettext('dialogs','Invalid code page - Windows default is used!'));
+            ErrorDialog(BottomRightPos(EncBtn),dgettext('dialogs','Invalid code page - Windows default is used!'));
             with TEncoding.ANSI do begin
               FCodePage:=CodePage;
               Text:=GetString(Buffer,Size,Length(Buffer)-Size);
@@ -796,7 +798,7 @@ var
 begin
   if FileExists(AIniName) then begin
     FIniName:=AIniName; PosFromIni:=true;
-    with TIniFile.Create(FIniName) do begin
+    with TMemIniFile.Create(FIniName) do begin
       Top:=ReadInteger(ViewSect,iniTop,Top);
       Left:=ReadInteger(ViewSect,iniLeft,Left);
       Height:=ReadInteger(ViewSect,iniHeight,Height);
@@ -951,7 +953,7 @@ var
 begin
   IniFileName:=AIniName;
   if (length(IniFileName)>0) and (length(ASection)>0) then
-      with TIniFile.Create(IniFileName),Result do begin
+      with TMemIniFile.Create(IniFileName),Result do begin
     PrtName:=ReadString (ASection,IniPrtName,'');
     with Margins do begin
       Top:=ReadInteger(ASection,IniTopMarg,defTopMargin);
@@ -976,7 +978,7 @@ var
 begin
   IniFileName:=AIniName;
   if (length(IniFileName)>0) and (length(ASection)>0) then
-      with TIniFile.Create(IniFileName),ASettings do begin
+      with TMemIniFile.Create(IniFileName),ASettings do begin
     try
       WriteString(ASection,IniPrtName,PrtName);
       with Margins do begin
@@ -990,6 +992,7 @@ begin
       fc.Style:=FontStyle;
       WriteInteger(ASection,IniFontStyle,fc.Value);
       WriteInteger (ASection,IniOrientation,ord(Orientation));
+      UpdateFile;
     finally
       Free;
       end;
