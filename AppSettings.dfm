@@ -184,20 +184,20 @@ object AppSettingsDialog: TAppSettingsDialog
     Left = 355
     Top = 258
     Width = 176
-    Height = 183
+    Height = 228
     Anchors = [akTop, akRight]
     Caption = 'Options:'
     TabOrder = 6
     object Label6: TLabel
       Left = 10
-      Top = 97
+      Top = 147
       Width = 63
       Height = 13
       Caption = 'Memory size:'
     end
     object Label2: TLabel
       Left = 10
-      Top = 128
+      Top = 178
       Width = 96
       Height = 13
       Caption = 'Instructions per ms:'
@@ -218,10 +218,11 @@ object AppSettingsDialog: TAppSettingsDialog
       Caption = 'Close DOSBox automatically at end of execution'
       TabOrder = 1
       WordWrap = True
+      OnClick = cxAutoEndClick
     end
     object cbMemSize: TComboBox
       Left = 90
-      Top = 92
+      Top = 142
       Width = 76
       Height = 21
       Style = csDropDownList
@@ -237,7 +238,7 @@ object AppSettingsDialog: TAppSettingsDialog
     end
     object cbCycles: TComboBox
       Left = 25
-      Top = 145
+      Top = 195
       Width = 141
       Height = 21
       Style = csDropDownList
@@ -252,6 +253,15 @@ object AppSettingsDialog: TAppSettingsDialog
         '25 000'
         '50 000'
         'Use preset')
+    end
+    object cxAutoClose: TCheckBox
+      Left = 10
+      Top = 85
+      Width = 161
+      Height = 36
+      Caption = 'Close also DosPanel application automatically  '
+      TabOrder = 4
+      WordWrap = True
     end
   end
   object gbHardDrive: TGroupBox
@@ -418,6 +428,7 @@ object AppSettingsDialog: TAppSettingsDialog
       Height = 26
       Hint = 'Select ISO image'
       Anchors = [akTop, akRight]
+      Enabled = False
       Flat = True
       Glyph.Data = {
         96090000424D9609000000000000360000002800000028000000140000000100
@@ -633,7 +644,6 @@ object AppSettingsDialog: TAppSettingsDialog
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
-        ExplicitWidth = 281
       end
     end
     object rbDrive: TRadioButton
@@ -660,9 +670,9 @@ object AppSettingsDialog: TAppSettingsDialog
     end
   end
   object bbEditConfig: TBitBtn
-    Left = 120
+    Left = 160
     Top = 490
-    Width = 226
+    Width = 191
     Height = 31
     Anchors = [akRight, akBottom]
     Caption = 'Edit configuration'
@@ -749,9 +759,9 @@ object AppSettingsDialog: TAppSettingsDialog
     OnClick = bbEditConfigClick
   end
   object bbReset: TBitBtn
-    Left = 355
-    Top = 450
-    Width = 176
+    Left = 5
+    Top = 490
+    Width = 151
     Height = 31
     Anchors = [akTop, akRight]
     Caption = 'Default options'
@@ -842,7 +852,7 @@ object AppSettingsDialog: TAppSettingsDialog
     Top = 185
     Width = 346
     Height = 301
-    ActivePage = tsAudio
+    ActivePage = tsGeneral
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 4
     object tsGeneral: TTabSheet
@@ -1275,7 +1285,6 @@ object AppSettingsDialog: TAppSettingsDialog
         BevelOuter = bvNone
         ParentBackground = False
         TabOrder = 0
-        ExplicitTop = -5
         object Label3: TLabel
           Left = 15
           Top = 20

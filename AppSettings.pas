@@ -106,13 +106,15 @@ type
     IsoImage,
     FullScreen,
     AutoEnd,
-    AppConfig         : boolean;
+    AppConfig,
+    AutoClose         : boolean;
     CodePage,
     ImgIndex,
     MemSize,
     Speed             : integer;
     Icons             : TAppIcons;
     constructor Create (const AConfigFile : string; DefLargeImg,DefSmallImg : TPicture; DefCodePage : integer);
+    constructor CreateFrom (ADosBoxApp : TDosBoxApp);
     destructor Destroy; override;
     procedure Assign (ADosBoxApp : TDosBoxApp);
     procedure LoadIcons (const Filename : string);
@@ -188,6 +190,7 @@ type
     bbUp: TBitBtn;
     bbDown: TBitBtn;
     btRebuild: TSpeedButton;
+    cxAutoClose: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure btPathClick(Sender: TObject);
     procedure btExeFileClick(Sender: TObject);
@@ -212,6 +215,7 @@ type
     procedure bbUpClick(Sender: TObject);
     procedure bbDownClick(Sender: TObject);
     procedure btRebuildClick(Sender: TObject);
+    procedure cxAutoEndClick(Sender: TObject);
   private
     { Private-Deklarationen }
     NewIcons   : TAppIcons;
@@ -238,7 +242,7 @@ implementation
 {$R *.dfm}
 
 uses Winapi.ShellApi, System.StrUtils, System.IniFiles,
-  DosPanelMain, GnuGetText, WinUtils, MsgDialogs, FileCopy,
+  DosPanelMain, GnuGetText, WinUtils, MsgDialogs, FileCopy, ListUtils,
   PathUtils, ShellDirDlg, SelectFromListDlg, WinDevUtils, StringUtils;
 
 const
@@ -443,10 +447,19 @@ begin
   Description:=''; MixerChannels:='';
   MountCd:=true; IsoImage:=true;
   LoadConfig;
-  AutoEnd:=true; AppMapper:='';
+  AutoEnd:=true; AutoClose:=false; AppMapper:='';
   AppConfig:=false; ImgIndex:=-1; CodePage:=DefCodePage;
   DefLImg:=DefLargeImg; DefSImg:=DefSmallImg;
   InitIcons;
+  end;
+
+constructor TDosBoxApp.CreateFrom (ADosBoxApp : TDosBoxApp);
+begin
+  inherited Create;
+  DefLImg:=ADosBoxApp.DefLImg;
+  DefSImg:=ADosBoxApp.DefSImg;
+  InitIcons;
+  Assign(ADosBoxApp);
   end;
 
 destructor TDosBoxApp.Destroy;
@@ -502,6 +515,7 @@ begin
   AppConfig:=ADosBoxApp.AppConfig;
   FullScreen:=ADosBoxApp.FullScreen;
   AutoEnd:=ADosBoxApp.AutoEnd;
+  AutoClose:=ADosBoxApp.AutoClose;
   Speed:=ADosBoxApp.Speed;
   ImgIndex:=ADosBoxApp.ImgIndex;
   DefLImg:=ADosBoxApp.DefLImg;
@@ -663,7 +677,11 @@ var
 begin
   with FDosBoxApp do begin
     cxFullScreen.Checked:=FullScreen;
-    cxAutoEnd.Checked:=AuToEnd;
+    cxAutoEnd.Checked:=AutoEnd;
+    with cxAutoClose do begin
+      if AutoEnd then Checked:=AutoClose else Checked:=false;
+      Enabled:=AutoEnd;
+      end;
     edMapperFile.Text:=AppMapper;
     for i:=0 to High(MemSizeList) do if MemSize<=MemSizeList[i] then Break;
     with cbMemSize do if i>High(MemSizeList) then Itemindex:=1 else Itemindex:=i;
@@ -679,6 +697,12 @@ begin
         end;
       end;
     end;
+  end;
+
+procedure TAppSettingsDialog.cxAutoEndClick(Sender: TObject);
+begin
+  FDosBoxApp.AutoEnd:=cxAutoEnd.Checked;
+  ShowConfig;
   end;
 
 procedure TAppSettingsDialog.rbDriveClick(Sender: TObject);
@@ -812,7 +836,7 @@ begin
   if rgConfig.ItemIndex=1 then s:=AddPath(edAppPath.Text,sConfig) else s:='';
   with FDosBoxApp do begin
     LoadConfig(s);
-    AutoEnd:=true;
+    AutoEnd:=true; AutoClose:=false;
     end;
   ShowConfig;
   end;
@@ -894,8 +918,8 @@ begin
     Clear;
     for i:=0 to Categories.Count-1 do Items.AddObject(Categories[i],pointer(i));
     end;
-  FDosBoxApp:=DosBoxApp;
-  with DosBoxApp do begin
+  FDosBoxApp:=TDosBoxApp.CreateFrom(DosBoxApp);
+  with FDosBoxApp do begin
     edAppname.Text:=AppName;
     with cbCategory do ItemIndex:=Items.IndexOf(Category);
     edAppPath.Text:=AppPath;
@@ -920,6 +944,7 @@ begin
     edDescription.Text:=Description;
     lbMixerSettings.Items.DelimitedText:=MixerChannels;
     cxAutoEnd.Checked:=AutoEnd;
+    cxAutoClose.Checked:=AutoClose;
     ShowMixerChannel(0);
     ShowConfig;
     with rgConfig do if AppConfig then ItemIndex:=1 else ItemIndex:=0;
@@ -930,44 +955,47 @@ begin
     imgIcon.Picture.Assign(Icons);
     NewIcons:=TAppIcons.CreateFrom(Icons);
     pcSettings.ActivePage:=tsGeneral;
-    Result:=ShowModal=mrOK;
-    if Result then begin
-      AppName:=edAppname.Text;
-      Category:=cbCategory.Text;
-      if AnsiSameText(Category,MiscName) then Category:='';
-      if length(Category)>0 then
-        with cbCategory.Items do if IndexOf(Category)<0 then Add(Category);
-      AppPath:=edAppPath.Text;
-      HardDrv:=cbHardDrive.Text[1];
-      CdDrv:=cbCdRomDrive.Text[1];
-      MountCd:=gbCdDrive.Checked;
-      IsoImage:=rbIsoImage.Checked;
-      if IsoImage then CdPath:=edIsoFile.Text else CdPath:=cbDrive.Text;
-      AppFile:=edExeFile.Text;
-      Parameters:=edParam.Text;
-      Commands:=edCommands.Text;
-      IconFile:=edIconFile.Text;
-      AppMapper:=edMapperFile.Text;
-      ManFile:=edManFile.Text;
-      Description:=edDescription.Text;
-      MixerChannels:=lbMixerSettings.Items.DelimitedText;
-      FullScreen:=cxFullScreen.Checked;
-      AutoEnd:=cxAutoEnd.Checked;
-      MemSize:=MemSizeList[cbMemSize.ItemIndex];
-      case cbCycles.ItemIndex of
-      0 : Speed:=0;
-      1 : Speed:=maxCycles;
-      2 : Speed:=5000;
-      3 : Speed:=10000;
-      4 : Speed:=25000;
-      5 : Speed:=50000;
-      else Speed:=-1;
-        end;
-      AppConfig:=rgConfig.ItemIndex=1;
-      Icons.Assign(NewIcons);
-      end;
-    NewIcons.Free;
     end;
+  Result:=ShowModal=mrOK;
+  if Result then with FDosBoxApp do begin
+    AppName:=edAppname.Text;
+    Category:=cbCategory.Text;
+    if AnsiSameText(Category,MiscName) then Category:='';
+    if length(Category)>0 then
+      with cbCategory.Items do if IndexOf(Category)<0 then Add(Category);
+    AppPath:=edAppPath.Text;
+    HardDrv:=cbHardDrive.Text[1];
+    CdDrv:=cbCdRomDrive.Text[1];
+    MountCd:=gbCdDrive.Checked;
+    IsoImage:=rbIsoImage.Checked;
+    if IsoImage then CdPath:=edIsoFile.Text else CdPath:=cbDrive.Text;
+    AppFile:=edExeFile.Text;
+    Parameters:=edParam.Text;
+    Commands:=edCommands.Text;
+    IconFile:=edIconFile.Text;
+    AppMapper:=edMapperFile.Text;
+    ManFile:=edManFile.Text;
+    Description:=edDescription.Text;
+    MixerChannels:=lbMixerSettings.Items.DelimitedText;
+    FullScreen:=cxFullScreen.Checked;
+    AutoEnd:=cxAutoEnd.Checked;
+    AutoClose:=cxAutoClose.Checked;
+    MemSize:=MemSizeList[cbMemSize.ItemIndex];
+    case cbCycles.ItemIndex of
+    0 : Speed:=0;
+    1 : Speed:=maxCycles;
+    2 : Speed:=5000;
+    3 : Speed:=10000;
+    4 : Speed:=25000;
+    5 : Speed:=50000;
+    else Speed:=-1;
+      end;
+    AppConfig:=rgConfig.ItemIndex=1;
+    Icons.Assign(NewIcons);
+    DosBoxApp.Assign(FDosBoxApp);
+    end;
+  FDosBoxApp.Free;
+  NewIcons.Free;
   end;
 
 end.

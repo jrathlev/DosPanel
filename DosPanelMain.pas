@@ -31,7 +31,7 @@ uses
 const
   ProgName = 'DOS Panel';
   Vers = ' - Vers. 1.7';
-  CopRgt = '© 2018-2024 - Dr. J. Rathlev, D-24222 Schwentinental';
+  CopRgt = '© 2018-2025 - Dr. J. Rathlev, D-24222 Schwentinental';
   EMailAdr = 'kontakt(a)rathlev-home.de';
 
   ConfName = 'dospanel.conf';
@@ -195,7 +195,7 @@ implementation
 {$R *.dfm}
 
 uses Winapi.ShellApi, Winapi.ShlObj, System.StrUtils, System.Win.Registry,
-  GnuGetText, InitProg, IniFileUtils, WinUtils,
+  GnuGetText, InitProg, IniFileUtils, WinUtils, ListUtils,
   FileCopy, MsgDialogs, StringUtils, PathUtils, WinShell, WinExecute, NumberUtils,
   ShowMemo, TxtConvertDlg;
 
@@ -269,6 +269,7 @@ const
   iniAppCfg = 'AppConfig';
   iniFull   = 'FullScreen';
   iniAuto   = 'AutoEnd';
+  iniClose  = 'AutoClose';
   iniCycles = 'Cycles';
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -498,6 +499,7 @@ begin
           AppMapper:=MakeAbsolutePath(ExtractFilePath(BasicSettings.ConfFile),BasicSettings.MapperFile);
         FullScreen:=ReadBool(sec,iniFull,FullScreen);
         AutoEnd:=ReadBool(sec,iniAuto,true);
+        AutoClose:=ReadBool(sec,iniClose,false);
         MemSize:=ReadInteger(sec,iniMSize,MemSize);
         Speed:=ReadInteger(sec,iniCycles,Speed);
         end;
@@ -586,6 +588,7 @@ begin
         WriteString(sec,iniMap,AppMapper);
         WriteBool(sec,iniFull,FullScreen);
         WriteBool(sec,iniAuto,AutoEnd);
+        WriteBool(sec,iniClose,AutoClose);
         WriteInteger(sec,iniMSize,MemSize);
         WriteInteger(sec,iniCycles,Speed);
         end;
@@ -937,6 +940,7 @@ begin
   //    if length(AppFile)>0 then s:=s+Space+SetDirName(RootPath)+AppFile;
   //    if AutoEnd then s:=s+' -exit';
         StartProcess(s,AppPath);
+        if AutoClose then Close;
         end
       else ErrorDialog(SafeFormat(_('%s not found! Please adjust your global settings!'),[sDosBox]));
       end
