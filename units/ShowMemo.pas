@@ -21,7 +21,7 @@
                         messages accessible to screenreaders
    Vers. 3 - December 2023: code page selection added
              March 2024 : changed TMemIniFile
-   last modified: March 2024
+   last modified: August 2024
    *)
 
 
@@ -124,6 +124,7 @@ type
     procedure InitView (const FName : string);
     procedure GetSelectedIndex (n : integer);
     function GetCodepageIndex : integer;
+    procedure FindText (Reverse : boolean);
   public
     { Public-Deklarationen }
     TextName : string;
@@ -194,8 +195,7 @@ implementation
 
 {$R *.DFM}
 
-uses GnuGetText, PathUtils, System.IniFiles, System.StrUtils, WinUtils,
-  {$IFDEF ACCESSIBLE} ShowMessageDlg {$ELSE} MsgDialogs {$ENDIF};
+uses GnuGetText, PathUtils, System.IniFiles, System.StrUtils, WinUtils, ShowMessageDlg;
 
 var
   IniFileName  : string;
@@ -232,20 +232,22 @@ begin
   end;
 
 { ------------------------------------------------------------------- }
-function FindOptionsToSearchOptions (FOptions : TFindOptions) : TStringSearchOptions;
-begin
-  Result:=[];
-  if frDown in FOptions then Include(Result,soDown);
-  if frMatchCase in FOptions then Include(Result,soMatchCase);
-  if frWholeWord in FOptions then Include(Result,soWholeWord);
-  end;
-
 function SearchMemo(Memo: TMemo; SearchDown : boolean;
                     const SearchString: String;
-                    Options: TFindOptions): Boolean;
+                    Options: TFindOptions;
+                    Reverse : boolean = false): Boolean;
 var
   Buffer, P : PChar;
   Size      : integer;
+
+  function FindOptionsToSearchOptions (FOptions : TFindOptions) : TStringSearchOptions;
+  begin
+    Result:=[];
+    if (frDown in FOptions) xor Reverse then Include(Result,soDown);
+    if frMatchCase in FOptions then Include(Result,soMatchCase);
+    if frWholeWord in FOptions then Include(Result,soWholeWord);
+    end;
+
 begin
   Result := False;
   if (Length(SearchString) = 0) then Exit;
@@ -401,8 +403,8 @@ begin
 procedure TShowTextDialog.MemoKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (Shift=[ssCtrl]) and (Key=ord('F')) then SearchBtnClick(Sender);
-  if (Shift=[]) and (Key=VK_F3) then FindDialogFind(Sender);
+//  if (Shift=[ssCtrl]) and (Key=ord('F')) then SearchBtnClick(Sender);
+//  if (Shift=[]) and (Key=VK_F3) then FindDialogFind(Sender);
   if (Key=VK_DELETE)  and (Memo.SelLength>0) then begin
     if ConfirmDialog (Point(Left+200,Top+100),
                       dgettext('dialogs','Delete selected text?')) then begin
@@ -614,15 +616,23 @@ begin
 
 procedure TShowTextDialog.FindDialogFind(Sender: TObject);
 begin
+  FindText(false);
+  end;
+
+procedure TShowTextDialog.FindText (Reverse : boolean);
+begin
   with FindDialog do
-    if not SearchMemo(Memo,false,FindText,Options) then
+    if not SearchMemo(Memo,false,FindText,Options,Reverse) then
       ShowMessage(SafeFormat(dgettext('dialogs','"%s" not found!'),[FindText]))
-    else MemoChange(Sender);
+    else MemoChange(self);
   end;
 
 procedure TShowTextDialog.SearchBtnClick(Sender: TObject);
 begin
-  FindDialog.Execute;
+  with FindDialog do begin
+    Position:=TopRightPos(SearchBtn);
+    Execute;
+    end;
   end;
 
 procedure TShowTextDialog.UpdateBtnClick(Sender: TObject);
@@ -633,8 +643,9 @@ begin
 procedure TShowTextDialog.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (ssCtrl in Shift) and (Key=ord('F')) then FindDialog.Execute
-  else if (Shift=[]) and (Key=VK_F3) then FindDialogFind(Sender)
+  if (ssCtrl in Shift) and ((Key=ord('F')) or (Key=ord('f'))) then SearchBtnClick(Sender)
+  else if (Shift=[]) and (Key=VK_F3) then FindText(false)
+  else if (ssShift in Shift) and (Key=VK_F3) then FindText(true)
 {$IFDEF ACCESSIBLE}
   else if (Key=VK_F11) then begin
     with ActiveControl do if length(Hint)>0 then ShowHintInfo(Hint);
@@ -902,7 +913,7 @@ begin
       NextErrBtn.Visible:=false;
       end;
     if sbCodePage in Buttons then begin
-      if CodePageList.Count=0 then GetCodePageList(CodePageList);
+      if CodePageList.Count=0 then GetCodePageList(CodePageList,dgettext('dialogs','Automatic'));
       end;
     if FCodePage=0 then FCodePage:=CodePage;
     FDlgType:=DlgType;
@@ -1008,7 +1019,7 @@ procedure ShowTextFile (const Title,TextDatei,PrevCap1,NextCap1,SrchText1,PrevCa
 begin
   if not assigned(ShowTextDialog) then begin
     ShowtextDialog:=TShowtextDialog.Create(Application);
-    ShowtextDialog.LoadViewSettings(IniFileName);
+    if APos<>DesignPos then ShowtextDialog.LoadViewSettings(IniFileName);
     end;
   ShowtextDialog.Execute(Title,TextDatei,PrevCap1,NextCap1,SrchText1,PrevCap2,
     NextCap2,SrchText2,Filter,APos,Line,DlgType,Buttons,PrtSettings,CodePage);
@@ -1023,7 +1034,7 @@ procedure ShowTextFile (const Title,TextDatei,PrevCap1,NextCap1,SrchText1,PrevCa
 begin
   if not assigned(ShowTextDialog) then begin
     ShowtextDialog:=TShowtextDialog.Create(Application);
-    ShowtextDialog.LoadViewSettings(IniFileName);
+    if APos<>DesignPos then ShowtextDialog.LoadViewSettings(IniFileName);
     end;
   ShowtextDialog.Execute(Title,TextDatei,PrevCap1,NextCap1,SrchText1,PrevCap2,
     NextCap2,SrchText2,Filter,APos,Line,DlgType,Buttons,CodePage);

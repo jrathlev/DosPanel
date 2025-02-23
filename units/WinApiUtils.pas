@@ -15,7 +15,6 @@
 
    Vers. 1 - Sep. 2002
    Vers. 2 - Jan. 2009 : dyn. Einbindung von CreateProcessWithLogonW
-                         und GetxxxDefaultUILanguage
    Vers. 3 - Mar. 2010 : several constants from WinNT.h, WinBase.h, WinIoCtl.h
                          see: JclWin32.pas
    Vers. 4 - Jun. 2011 : SetThreadExecutionState, SetSuspendState
@@ -25,7 +24,7 @@
                          removed that are now handled in Winapi.Windows)
    Vers. 7.1 - July 2021 : LoadLibrary replaced by ExtLoadLibrary to handle FPU exceptions
 
-   last modified:  July 2021
+   last modified:  November 2024
    *)
 
 unit WinApiUtils;
@@ -38,8 +37,6 @@ const
   powrprof  = 'powrprof.dll';
   secur32 = 'Secur32.dll';
   wtsapi32 = 'Wtsapi32.dll';
-
-  UserError = $20000000;
 
 // Reason flags       (not used on Windows 2000, Windows NT and Windows Me/98/95)
 // Flags that end up in the event log code
@@ -386,6 +383,9 @@ type
     Dependencies : TDependencies;
     end;
 
+  TVersion = record
+    Major,Minor,Release,Build : integer;
+    end;
 
 //{$EXTERNALSYM GetTickCount64}
 //function GetTickCount64: ULONGLONG; stdcall;
@@ -480,6 +480,7 @@ function QueryShutDownReason (fHandle: hWnd; var Reason : string) : boolean;
 (*  Get Version Info from File *)
 function GetFileVersion (const Filename : string; var FileVersionInfo : TFileVersionInfo) : boolean;
 function GetFileVersionString (const Filename : string; var Version : string) : boolean;
+function GetFileVersionAsNumber (const Filename : string; var Version : TVersion) : boolean;
 function GetFileVersionName (const Filename,DefName,DefVers : string): string;
 function GetFileVersionRelease (const Filename,defVers : string) : string;
 function GetFileVersionCopyright (const Filename,defCopyright : string) : string;
@@ -975,12 +976,12 @@ begin
       with FileVersionInfo do for i:=1 to InfoNum do begin
         if VerQueryValue(Buf, PChar('\StringFileInfo\'+t+'\'+InfoStr[i]), Pointer(Value), Len) then begin
           case i of
-          1 : Company:=value;
-          2 : Description:=value;
-          3 : Version:=value;
-          4 : InternalName:=value;
-          5 : Copyright:=value;
-          6 : Comments:=value;
+          1 : Company:=TrimRight(value);
+          2 : Description:=TrimRight(value);
+          3 : Version:=TrimRight(value);
+          4 : InternalName:=TrimRight(value);
+          5 : Copyright:=TrimRight(value);
+          6 : Comments:=TrimRight(value);
             end;
           end;
         end;
@@ -1018,6 +1019,41 @@ begin
       Result:=true;
       end;
     end;
+  end;
+
+function GetFileVersionAsNumber (const Filename : string; var Version : TVersion) : boolean;
+var
+  s : string;
+  val : integer;
+
+  function ReadNxtInt (var s : String;
+                       var n : integer) : boolean;
+  var
+    i : integer;
+  begin
+    i:=pos ('.',s);
+    if i=0 then i:=succ(length(s));
+    Result:=TryStrToInt(copy(s,1,pred(i)),n);
+    delete(s,1,i);
+    end;
+
+begin
+  with Version do begin
+    Major:=0; Minor:=0; Release:=0; Build:=0; ;
+    end;
+  Result:=GetFileVersionString(Filename,s);
+  if Result then with Version do begin
+    if ReadNxtInt(s,val) then begin
+      Major:=val;
+      if ReadNxtInt(s,val) then begin
+        Minor:=val;
+        if ReadNxtInt(s,val) then begin
+          Release:=val;
+          if ReadNxtInt(s,val) then Build:=val;
+          end;
+        end;
+      end;
+    end
   end;
 
 function GetFileVersionName (const Filename,DefName,DefVers : string) : string;

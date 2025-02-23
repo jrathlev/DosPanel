@@ -23,10 +23,12 @@ object ListSelectDialog: TListSelectDialog
     Height = 242
     Style = lbOwnerDrawVariable
     Align = alClient
+    ExtendedSelect = False
     ItemHeight = 25
     Sorted = True
     TabOrder = 0
     OnClick = lbSelectClick
+    OnDrawItem = lbSelectDrawItem
     OnMeasureItem = lbSelectMeasureItem
   end
 end

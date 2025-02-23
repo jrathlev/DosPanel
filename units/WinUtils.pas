@@ -14,7 +14,8 @@
 
    New compilation: April 2015
    language dependend strings in UnitConsts
-   last modified: July 2023
+
+   last modified: August 2024
    *)
 
 unit WinUtils;
@@ -28,7 +29,6 @@ uses Winapi.Windows, System.SysUtils, System.Classes, System.Types, Vcl.Graphics
 const
   CenterPos : TPoint = (X : -1; Y : -1);
   DesignPos : TPoint = (X : 0; Y : -1);
-  defMaxHist : integer = 50;
 
   // Bildschirm-Auflösung bei der Programmentwicklung
   PixelsPerInchOnDesign = 96;
@@ -118,17 +118,22 @@ procedure AdjustFormPosition (AScreen : TScreen; AForm : TForm;
 // Get position of TopLeft to fit the window on the specified monitor
 function FitToMonitor (Mon : TMonitor; BoundsRect : TRect) : TPoint;
 
+{ ---------------------------------------------------------------- }
 // Calculate the maximum text width for multiline text
-function MaxTextWidth(const Text : string; Canvas : TCanvas) : integer;
+function MaxTextWidth(const Text : string; Canvas : TCanvas) : integer; overload;
+function MaxTextWidth(sl : TStrings; Canvas : TCanvas) : integer; overload;
 
 // calculate text width for given font
 function GetTextWidth(const Text : string; AFont : TFont) : integer;
-function GetMaxTextWidth(sl : TStrings; AFont : TFont) : integer; overload;
+function GetMaxTextWidth(AList : TStrings; AFont : TFont) : integer; overload;
 function GetMaxTextWidth(const Text : string; AFont : TFont) : integer; overload;
 function GetMaxTextExtent(const Text : string; AFont : TFont) : TSize;
 
 // Count number of lines in Text separated by sLineBreak
 function TextLineCount(const Text : string) : integer;
+
+// Shorten string to specified width
+function StripString (const s : string; Canvas : TCanvas; MaxWidth : Integer) : string;
 
 { ---------------------------------------------------------------- }
 // Scale button glyphs, images and image lists for High DPI awareness
@@ -144,7 +149,12 @@ procedure SetSpeedButtonGlyphs (AControl : TWinControl; BaseIndex : integer; Img
 procedure ScaleScreenFonts (OldDPI,NewDPI : integer);
 
 // Scale absolute pixel value
-function PixelScale (Value : integer; AForm : TForm) : integer;
+function PixelScale (Value : integer; AForm : TForm) : integer; overload;
+function PixelScale (Value : integer; mo : TMonitor) : integer; overload;
+function PixelScale (Value : TPoint; AForm : TForm) : TPoint; overload;
+function PixelScale (Value : TPoint; mo : TMonitor) : TPoint; overload;
+function PixelScale (x,y : integer; AForm : TForm) : TPoint; overload;
+function PixelScale (x,y : integer; mo : TMonitor) : TPoint; overload;
 
 // adjust Itemheight of owner drawn comboboxes
 procedure AdjustComboBoxes(AControl : TWinControl; OldDPI,NewDPI : integer);
@@ -192,55 +202,6 @@ procedure AdjustClientSize (AForm : TForm; AControl : TControl; Dist : integer =
 procedure AdjustClientWidth (AForm : TForm; AControl : TControl; Dist : integer = 5);
 
 { ---------------------------------------------------------------- }
-// History list management
-procedure LoadHistory (IniFile : TCustomIniFile; const Section,Ident : string;
-                       History : TStrings; MaxCount : integer; CvQuote : boolean = false); overload;
-procedure LoadHistory (IniFile : TCustomIniFile; const Section,Ident : string;
-                       History : TStrings; CvQuote : boolean = false); overload;
-procedure LoadHistory (const IniName,Section,Ident : string;
-                       History : TStrings; MaxCount : integer; CvQuote : boolean = false); overload;
-procedure LoadHistory (const IniName,Section,Ident : string;
-                       History : TStrings; CvQuote : boolean = false); overload;
-procedure LoadHistory (const IniName,Section : string;
-                       Combo : TComboBox; MaxHist : integer = 0; CvQuote : boolean = false); overload;
-
-procedure SaveHistory (IniFile : TCustomIniFile; const Section,Ident : string;
-                       Erase : boolean; History : TStrings; MaxCount : integer; CvQuote : boolean = false); overload;
-procedure SaveHistory (IniFile : TCustomIniFile; const Section,Ident : string;
-                       Erase : boolean; History : TStrings; CvQuote : boolean = false); overload;
-procedure SaveHistory (const IniName,Section,Ident : string;
-                       Erase : boolean; History : TStrings; MaxCount : integer; CvQuote : boolean = false); overload;
-procedure SaveHistory (const IniName,Section,Ident : string;
-                       Erase : boolean; History : TStrings; CvQuote : boolean = false); overload;
-procedure SaveHistory (const IniName,Section : string; Erase : boolean;
-                       Combo : TComboBox; MaxHist : integer = 0; CvQuote : boolean = false); overload;
-
-procedure AddToHistory (History : TStrings; const hs : string; MaxCount : integer); overload;
-procedure AddToHistory (History : TStrings; const hs : string); overload;
-procedure AddToHistory (Combo : TComboBox; const hs : string); overload;
-procedure AddToHistory (Combo : TComboBox); overload;
-procedure RemoveFromHistory (History : TStrings; const hs : string);
-
-{ ---------------------------------------------------------------- }
-// Entferne alle Objekte einer String-Liste oder einer ListView-Liste aus dem Speicher
-procedure FreeListObjects (Liste : TStrings);
-procedure FreeListViewData (Liste : TListItems);
-
-{ ---------------------------------------------------------------- }
-// Ausgewählten Eintrag in einer ListBox
-function GetSelectedItem (ListBox : TListBox) : string;
-
-{ ---------------------------------------------------------------- }
-// Listview-Index aus Caption ermitteln (wie IndexOf bei TListBox)
-function GetListViewIndex (lv : TListView; const ACaption : string): integer;
-
-// Subitem-Index aus der Mausposition ermitteln (nur vsReport)
-function GetColumnIndexAt (ListView : TListView; Pos : integer) : integer;
-
-// TopItem auf Index setzen (nur vsReport)
-procedure SetListViewTopItem (lv : TListView; AIndex : integer; Select : boolean);
-
-{ ---------------------------------------------------------------- }
 (* System herunterfahren *)
 function ExitFromWindows (Prompt : string; EwFlags,RsFlags : longword) : boolean;
 function ShutDownWindows (Prompt : string; Restart : boolean; RsFlags : longword) : boolean;
@@ -251,12 +212,14 @@ function ClearKeyboardBuffer : Integer;
 
 { ---------------------------------------------------------------- }
 // Liste der auf dem System vorhandenen Codepages erstellen
-function GetCodePageList (sl : TStrings) : boolean;
+function GetCodePageList (AList : TStrings; Default : string = '') : boolean;
+
+function GetLanguageList (AList : TStrings) : boolean;
 
 { =================================================================== }
 implementation
 
-uses WinApi.WinSpool, Winapi.Messages,  Winapi.CommCtrl, System.StrUtils, System.Math,
+uses WinApi.WinSpool, Winapi.Messages, Winapi.CommCtrl, System.StrUtils, System.Math,
   WinApiUtils, StringUtils, UnitConsts;
 
 const
@@ -444,10 +407,10 @@ begin
     mo:=MonitorFromPoint(Point(ALeft,ATop));
 //    mo:=MonitorFromRect(Rect(ALeft,ATop,ALeft+AWidth,ATop+AHeight));
     with mo.WorkareaRect do begin
-      if ALeft+AWidth>Right then ALeft:=Right-AWidth-20;
-      if ALeft<Left then ALeft:=Left+20;
-      if ATop+AHeight>Bottom then ATop:=Bottom-AHeight-30;
-      if ATop<Top then ATop:=Top+20;
+      if ALeft+AWidth>Right then ALeft:=Right-AWidth-PixelScale(20,mo);
+      if ALeft<Left then ALeft:=Left+PixelScale(20,mo);
+      if ATop+AHeight>Bottom then ATop:=Bottom-AHeight-PixelScale(30,mo);
+      if ATop<Top then ATop:=Top+PixelScale(20,mo);
       end;
     end;
   end;
@@ -468,7 +431,7 @@ procedure AdjustFormPosition (AScreen : TScreen; AForm : TForm;
           APos : TPoint; AtBottom : boolean = false);
 begin
   with AForm,APos do begin
-    if (Y < 0) or (X < 0) then Position:=poScreenCenter
+    if (Y < 0) or (X < 0) then Position:=poMainFormCenter // poScreenCenter
     else begin
       Position:=poDesigned;
       if X<0 then X:=Left;
@@ -484,12 +447,12 @@ begin
 function FitToMonitor (Mon : TMonitor; BoundsRect : TRect) : TPoint;
 begin
   with Result,Mon.WorkareaRect do begin
-    if BoundsRect.Right>Right then x:=Right-BoundsRect.Width-50
+    if BoundsRect.Right>Right then x:=Right-BoundsRect.Width-PixelScale(50,Mon)
     else x:=BoundsRect.Left;
-    if x<=Left then x:=Left+50;
-    if BoundsRect.Bottom>Bottom then y:=Bottom-BoundsRect.Height-50
+    if x<=Left then x:=Left+PixelScale(50,Mon);
+    if BoundsRect.Bottom>Bottom then y:=Bottom-BoundsRect.Height-PixelScale(50,Mon)
     else y:=BoundsRect.Top;
-    if y<=Top then y:=Top+50;
+    if y<=Top then y:=Top+PixelScale(50,Mon);
     end;
   end;
 
@@ -510,6 +473,15 @@ begin
     until (k=0) or (n>=length(Text));
   end;
 
+function MaxTextWidth(sl : TStrings; Canvas : TCanvas) : integer;
+var
+  i : integer;
+begin
+  Result:=0;
+  with sl do for i:=0 to Count-1 do
+    Result:=Max(Result,Canvas.TextWidth(Strings[i]));
+  end;
+
 // calculate text width and height for given font
 function GetTextWidth(const Text : string; AFont : TFont) : integer;
 var
@@ -519,8 +491,8 @@ begin
   with bm.Canvas do begin
     Font.Assign(AFont);
     Result:=TextWidth(Text);
-    Free;
     end;
+  bm.Free;
   end;
 
 function GetMaxTextWidth(const Text : string; AFont : TFont) : integer;
@@ -542,7 +514,7 @@ begin
   bm.Free;
   end;
 
-function GetMaxTextWidth(sl : TStrings; AFont : TFont) : integer;
+function GetMaxTextWidth(AList : TStrings; AFont : TFont) : integer;
 var
   i : integer;
   bm  : TBitmap;
@@ -550,7 +522,7 @@ begin
   Result:=0;
   bm:=TBitmap.Create;                      // prepare temp. canvas
   bm.Canvas.Font.Assign(AFont);
-  with sl do for i:=0 to Count-1 do begin
+  with AList do for i:=0 to Count-1 do begin
     Result:=Max(Result,bm.Canvas.TextWidth(Strings[i]));
     end;
   bm.Free;
@@ -581,6 +553,24 @@ begin
     until (n=0) or (n>=length(Text));
   end;
 
+// Shorten string to specified width
+function StripString (const s : string; Canvas : TCanvas; MaxWidth : Integer) : string;
+var
+  sw : string;
+begin
+  Result:=s;
+  if (length(Result)>3) then begin
+    sw:=copy(Result,1,3)+'...';
+    if (MaxWidth>Canvas.TextWidth(sw)) then begin
+      if (Canvas.TextWidth(Result)>MaxWidth) then begin
+        while Canvas.TextWidth(Result+'...')>MaxWidth do Delete(Result,length(Result),1);
+        Result:=Result+'...';
+        end
+      end
+    else Result:=sw;
+    end
+  end;
+
 { ------------------------------------------------------------------- }
 // procedures to adjust visible components for High DPI awareness
 // Scale button glyphs
@@ -589,28 +579,34 @@ var
   bm,bms,gl : TBitmap;
 begin
   if MulDiv(100,NewDPI,OldDPI)<MinScale then Exit;
-  bm:=TBitmap.Create;
-  if AControl is TBitBtn then begin
-    gl:=(AControl as TBitBtn).Glyph; bm.Assign(gl);
+  bm:=TBitmap.Create; gl:=nil;
+  if AControl is TBitBtn then with AControl as TBitBtn do begin
+    if not Glyph.Empty then begin
+      gl:=Glyph; bm.Assign(gl);
+      end;
     end
 // assign is required to work for 64-bit applications
-  else if AControl is TSpeedButton then begin
-    gl:=(AControl as TSpeedButton).Glyph; bm.Assign(gl);
-    end
-  else Exit;
-  bms:=TBitmap.Create;
-  try
-    with bms do begin
-      SetSize(MulDiv(bm.Width,NewDPI,OldDPI),MulDiv(bm.Height,NewDPI,OldDPI));
-      with Canvas do begin
-        FillRect(ClipRect);
-        StretchDraw(Rect(0,0,Width,Height),bm);
-        end;
+  else if AControl is TSpeedButton then with AControl as TSpeedButton do begin
+    if not Glyph.Empty then begin
+      gl:=Glyph; bm.Assign(gl);
       end;
-    gl.Assign(bms);
-  finally
-    bm.Free; bms.Free;
     end;
+  if assigned(gl) then begin
+    bms:=TBitmap.Create;
+    try
+      with bms do begin
+        SetSize(MulDiv(bm.Width,NewDPI,OldDPI),MulDiv(bm.Height,NewDPI,OldDPI));
+        with Canvas do begin
+          FillRect(ClipRect);
+          StretchDraw(Rect(0,0,Width,Height),bm);
+          end;
+        end;
+      gl.Assign(bms);
+    finally
+      bms.Free;
+      end;
+    end;
+  bm.Free;
   end;
 
 procedure ScaleButtonGlyphs (AControl : TWinControl; OldDPI,NewDPI : integer);
@@ -784,7 +780,36 @@ begin
   Result:=MulDiv(Value,AForm.Monitor.PixelsPerInch,PixelsPerInchOnDesign);
   end;
 
-{ --------------------------------------------------------------- }
+function PixelScale (Value : integer; mo : TMonitor) : integer;
+begin
+  Result:=MulDiv(Value,mo.PixelsPerInch,PixelsPerInchOnDesign);
+  end;
+
+function PixelScale (Value : TPoint; AForm : TForm) : TPoint;
+begin
+  with Result do begin
+    x:=PixelScale(Value.x,AForm); y:=PixelScale(Value.y,AForm);
+    end;
+  end;
+
+function PixelScale (x,y : integer; AForm : TForm) : TPoint;
+begin
+  Result:=PixelScale(Point(x,y),AForm);
+  end;
+
+function PixelScale (Value : TPoint; mo : TMonitor) : TPoint;
+begin
+  with Result do begin
+    x:=PixelScale(Value.x,mo); y:=PixelScale(Value.y,mo);
+    end;
+ end;
+
+function PixelScale (x,y : integer; mo : TMonitor) : TPoint;
+begin
+  Result:=PixelScale(Point(x,y),mo);
+  end;
+
+{ ---------------------------------------------------------------- }
 // Dateifilter-Index ermitteln (siehe TOpenDialog)
 function GetFilterIndex(AFilter,AExtension : string) : integer;
 var
@@ -972,231 +997,6 @@ begin
   AForm.ClientWidth:=w;
   end;
 
-{ ------------------------------------------------------------------- }
-// History list management
-const
-  iniHist = 'History';
-
-procedure LoadHistory (IniFile : TCustomIniFile; const Section,Ident : string;
-                       History : TStrings; MaxCount : integer; CvQuote : boolean);
-var
-  i : integer;
-  s,si : string;
-begin
-  with IniFile do begin
-    if SectionExists(Section) then begin
-      if length(Ident)=0 then si:=iniHist else si:=Ident;
-      History.Clear;
-      for i:=0 to MaxCount-1 do begin
-        s:=ReadString(Section,si+IntToStr(i),'');
-        if length(s)>0 then begin
-          if CvQuote then s:=ReplChars(s,'#',Quote);
-          History.Add(s);
-          end;
-        end;
-      end;
-    end;
-  end;
-
-procedure LoadHistory (IniFile : TCustomIniFile; const Section,Ident : string;
-                       History : TStrings; CvQuote : boolean);
-begin
-  LoadHistory(IniFile,Section,Ident,History,defMaxHist,CvQuote);
-  end;
-
-procedure LoadHistory (const IniName,Section,Ident : string;
-                       History : TStrings; MaxCount : integer; CvQuote : boolean);
-var
-  IniFile : TMemIniFile;
-begin
-  IniFile:=TMemIniFile.Create(IniName);
-  LoadHistory(IniFile,Section,Ident,History,MaxCount,CvQuote);
-  IniFile.Free;
-  end;
-
-procedure LoadHistory (const IniName,Section,Ident : string;
-                       History : TStrings; CvQuote : boolean); overload;
-begin
-  LoadHistory(IniName,Section,Ident,History,defMaxHist,CvQuote);
-  end;
-
-procedure LoadHistory (const IniName,Section : string;
-                       Combo : TComboBox; MaxHist : integer; CvQuote : boolean); overload;
-var
-  n : integer;
-begin
-  with Combo do begin
-    if MaxHist=0 then n:=DropDownCount else n:=MaxHist;
-    LoadHistory(IniName,Section,'',Items,n,CvQuote);
-    end;
-  end;
-
-procedure SaveHistory (IniFile : TCustomIniFile; const Section,Ident : string;
-                       Erase : boolean; History : TStrings; MaxCount : integer; CvQuote : boolean);
-var
-  i,n : integer;
-  s,si : string;
-begin
-  with IniFile do begin
-    if length(Ident)=0 then si:=iniHist else si:=Ident;
-    if Erase then EraseSection (Section);
-    with History do begin
-      if Count>MaxCount then n:=MaxCount else n:=Count;
-      for i:=0 to n-1 do begin
-        s:=Strings[i];
-        if CvQuote then s:=ReplChars(s,Quote,'#');
-        WriteString(Section,si+IntToStr(i),s);
-        end;
-      end;
-    end;
-  end;
-
-procedure SaveHistory (IniFile : TCustomIniFile; const Section,Ident : string;
-                       Erase : boolean; History : TStrings; CvQuote : boolean);
-begin
-  SaveHistory(IniFile,Section,Ident,Erase,History,defMaxHist,CvQuote);
-  end;
-
-procedure SaveHistory (const IniName,Section,Ident : string;
-                       Erase : boolean; History : TStrings; MaxCount : integer; CvQuote : boolean);
-var
-  IniFile : TMemIniFile;
-begin
-  IniFile:=TMemIniFile.Create(IniName);
-  SaveHistory(IniFile,Section,Ident,Erase,History,defMaxHist,CvQuote);
-  IniFile.UpdateFile;
-  IniFile.Free;
-  end;
-
-procedure SaveHistory (const IniName,Section,Ident : string;
-                       Erase : boolean; History : TStrings; CvQuote : boolean);
-begin
-  SaveHistory(IniName,Section,Ident,Erase,History,defMaxHist,CvQuote);
-  end;
-
-procedure SaveHistory (const IniName,Section : string; Erase : boolean;
-                       Combo : TComboBox; MaxHist : integer; CvQuote : boolean);
-var
-  n : integer;
-begin
-  with Combo do begin
-    if MaxHist=0 then n:=DropDownCount else n:=MaxHist;
-    SaveHistory(IniName,Section,'',Erase,Items,n,CvQuote);
-    end;
-  end;
-
-// move or add item "hs" to begin of history list
-procedure AddToHistory (History : TStrings; const hs : string; MaxCount : integer);
-var
-  n : integer;
-begin
-  if length(hs)>0 then with History do begin
-    n:=IndexOf(hs);
-    if n<0 then begin
-      if Count>=MaxCount then Delete (Count-1);
-      Insert (0,hs);
-      end
-    else begin
-      if n>0 then Move (n,0);
-      Strings[0]:=hs;  // update string anyway, e.g. if case was changed
-      end;
-    end;
-  end;
-
-procedure AddToHistory (History : TStrings; const hs : string);
-begin
-  AddToHistory (History,hs,defMaxHist);
-  end;
-
-procedure AddToHistory (Combo : TComboBox; const hs : string);
-begin
-  with Combo do begin
-    AddToHistory (Items,hs,DropDownCount);
-    if Items.Count>0 then ItemIndex:=0;
-    end;
-  end;
-
-procedure AddToHistory (Combo : TComboBox);
-begin
-  AddToHistory(Combo,Combo.Text);
-  end;
-
-procedure RemoveFromHistory (History : TStrings; const hs : string);
-var
-  n : integer;
-begin
-  if length(hs)>0 then with History do begin
-    n:=IndexOf(hs);
-    if n>=0 then Delete(n);
-    end;
-  end;
-
-//-----------------------------------------------------------------------------
-procedure FreeListObjects (Liste : TStrings);
-var
-  i : integer;
-begin
-  with Liste do begin
-    for i:=0 to Count-1 do if assigned(Objects[i]) then begin
-      try Objects[i].Free; except end;
-      Objects[i]:=nil;
-      end;
-    end;
-  end;
-
-procedure FreeListViewData (Liste : TListItems);
-var
-  i : integer;
-begin
-  with Liste do for i:=0 to Count-1 do with Item[i] do if Data<>nil then begin
-    TObject(Data).Free; Data:=nil;
-    end;
-  end;
-
-{ ---------------------------------------------------------------- }
-// Ausgewählten Eintrag in einer ListBox
-function GetSelectedItem (ListBox : TListBox) : string;
-begin
-  with ListBox do if ItemIndex>=0 then Result:=Items[ItemIndex]
-  else Result:='';
-  end;
-
-//-----------------------------------------------------------------------------
-// Listview-Index aus Caption ermitteln (wie IndexOf bei TListBox)
-function GetListViewIndex (lv : TListView; const ACaption : string): integer;
-begin
-  with lv.Items do for Result:=0 to Count-1 do
-    if AnsiSameText(Item[Result].Caption,ACaption) then Exit;
-  Result:=-1;
-  end;
-
-// Subitem-Index aus der Mausposition ermitteln (nur vsReport)
-function GetColumnIndexAt (ListView : TListView; Pos : integer) : integer;
-var
-  x : integer;
-begin
-  with ListView.Columns do begin
-    x:=0;
-    for Result:=0 to Count-1 do with Items[Result] do begin
-      if (Pos>=x) and (Pos<x+Width) then Exit;
-      x:=x+Width;
-      end;
-    end;
-  Result:=-1;
-  end;
-
-// TopItem auf Index setzen (nur vsReport)
-procedure SetListViewTopItem (lv : TListView; AIndex : integer; Select : boolean);
-var
-  n : integer;
-begin
-  with lv do if (AIndex>=0) and (Items.Count>0) and (AIndex<Items.Count) then begin
-    with TopItem.DisplayRect(drBounds)do n:=Top-Bottom;
-    Scroll(0,n*(TopItem.Index-AIndex));
-    if Select then ItemIndex:=AIndex;
-    end;
-  end;
-
 { ---------------------------------------------------------------- }
 (* System herunterfahren *)
 function ExitFromWindows (Prompt : string; EwFlags,RsFlags : longword) : boolean;
@@ -1266,7 +1066,7 @@ begin
 var
   CodePageList : TStringList;
 
-function CpEnumProc(CodePage : PChar) : Cardinal ; stdcall;
+function CpEnumProc (CodePage : PChar) : Cardinal; stdcall;
 var
    CpInfoEx : TCPInfoEx;
    s : string;
@@ -1279,19 +1079,39 @@ begin
     ReadNxtStr(s,' ');
     s:=Trim(s);
     s:=RemChar(CutChar(s,')'),'(');
-    CodePageList.AddObject(Format('%s - (%u)', [s,CpInfoEx.Codepage]), TObject(Cp));
+    CodePageList.AddObject(Format('%s - (%u)',[s,CpInfoEx.Codepage]),TObject(Cp));
     end;
   Result := 1;
   end;
 
-function GetCodePageList (sl : TStrings) : boolean;
+function GetCodePageList (AList : TStrings; Default : string) : boolean;
+begin
+  CodePageList:=TStringList.Create;
+  CodePageList.Sorted:=true;
+  if length(Default)>0 then CodePageList.AddObject(Space+Default,nil);
+  Result:=false;
+  try
+    Result:=EnumSystemCodePages(@CpEnumProc,CP_SUPPORTED);
+    if Result then AList.Assign(CodePageList);
+  finally
+    CodePageList.Free;
+    end;
+  end;
+
+function LangEnumProc (lpName : PChar; lParam : long_ptr) : boolean; stdcall;
+begin
+  CodePageList.AddObject(Format('%s - (%u)',[lpName,lParam]), TObject(lParam));
+  Result:=true;
+  end;
+
+function GetLanguageList (AList : TStrings) : boolean;
 begin
   CodePageList:=TStringList.Create;
   CodePageList.Sorted:=true;
   Result:=false;
   try
-    Result:=EnumSystemCodePages(@CpEnumProc, CP_SUPPORTED);
-    if Result then sl.Assign(CodePageList);
+    Result:=EnumUILanguages(@LangEnumProc,MUI_LANGUAGE_NAME,0);
+    if Result then AList.Assign(CodePageList);
   finally
     CodePageList.Free;
     end;

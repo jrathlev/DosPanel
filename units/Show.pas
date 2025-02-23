@@ -15,7 +15,7 @@
    Vers. 1 - Mai 2005
          1.1 - Mrz. 2006  - uses Sleep instead of TWaitTimer
          2 - July 2017
-   last modified: Nov. 2021
+   last modified: October 2024
    *)
 
 unit Show;
@@ -29,7 +29,6 @@ type
   TfrmShow = class(TForm)
     memShow: TMemo;
     panButtons: TPanel;
-    Panel2: TPanel;
     btnOK: TBitBtn;
   private
     { Private declarations }

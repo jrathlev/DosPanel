@@ -13,7 +13,7 @@ object ShowTextDialog: TShowTextDialog
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
-  Position = poDesigned
+  Position = poMainFormCenter
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
@@ -29,7 +29,6 @@ object ShowTextDialog: TShowTextDialog
     Height = 46
     Align = alTop
     TabOrder = 0
-    ExplicitWidth = 786
     DesignSize = (
       845
       46)
@@ -1380,7 +1379,6 @@ object ShowTextDialog: TShowTextDialog
       Spacing = 8
       TabOrder = 10
       OnClick = EndeBtnClick
-      ExplicitLeft = 650
     end
     object EncBtn: TBitBtn
       Left = 175
@@ -1518,7 +1516,6 @@ object ShowTextDialog: TShowTextDialog
       item
         Width = 50
       end>
-    ExplicitWidth = 786
   end
   object Memo: TMemo
     Left = 0
@@ -1540,7 +1537,6 @@ object ShowTextDialog: TShowTextDialog
     OnKeyDown = MemoKeyDown
     OnKeyUp = MemoKeyUp
     OnMouseDown = MemoMouseDown
-    ExplicitTop = 41
   end
   object PrintDialog: TPrintDialog
     Left = 530

@@ -24,6 +24,9 @@ interface
 
 uses Winapi.Windows, Vcl.Forms, System.Classes, System.SysUtils;
 
+const
+  UserError = $20000000;
+
 type
   EProcessError = class(Exception);
   TProcessFlag = (pfConsole,pfErrorOut,pfShowConsole,pfShowOutput,pfShowError);
@@ -93,7 +96,7 @@ begin
 // Options: Parameter der Befehlszeile
 // WorkDir: Arbeistverzeichnis
 // Flags: pfConsole     - ist eine Konsolen-Anwendung
-//        pfShowConsole - Konsolenfenszer anzeigen
+//        pfShowConsole - Konsolenfenster anzeigen
 //        pfShowOutput  - StdOut als Fenster anzeigen
 //        pfShowError   - Anzeige von Fehlern
 // WaitTime  > 0 : Warte auf das Ende des Prozesses für max. "WaitTime" in Millisekunden
@@ -233,6 +236,7 @@ begin
       if assigned(Output) then Output.Text:=s
       else if (pfShowOutput in Flags) and (length(s)>0) then ShowText(AppName,s);
       end;
+    FCancelProcess:=false;
     end
   else Result:=GetLastError;
   end;
