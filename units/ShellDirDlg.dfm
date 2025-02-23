@@ -14,6 +14,7 @@ object ShellDirDialog: TShellDirDialog
   KeyPreview = True
   OldCreateOrder = False
   OnActivate = FormActivate
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
@@ -39,6 +40,12 @@ object ShellDirDialog: TShellDirDialog
     Height = 406
     Align = alClient
     TabOrder = 0
+    object Shape1: TShape
+      Left = 280
+      Top = 170
+      Width = 65
+      Height = 65
+    end
     object ShellTreeView: TShellTreeView
       Left = 97
       Top = 1
@@ -50,6 +57,7 @@ object ShellDirDialog: TShellDirDialog
       UseShellImages = True
       Align = alClient
       AutoRefresh = False
+      ExpandOnLoad = False
       HideSelection = False
       Indent = 19
       ParentColor = False

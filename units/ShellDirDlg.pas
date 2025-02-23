@@ -71,6 +71,7 @@ type
     itmUpdate: TMenuItem;
     Splitter: TSplitter;
     laVolHint: TStaticText;
+    Shape1: TShape;
     procedure ShellTreeViewChange(Sender: TObject; Node: TTreeNode);
     procedure spbDesktopClick(Sender: TObject);
     procedure spbMyFilesClick(Sender: TObject);
@@ -96,10 +97,11 @@ type
     procedure cbxSelectedDirCloseUp(Sender: TObject);
     procedure cbxSelectedDirChange(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     FDefaultDir,FIniName,FIniSection : string;
-    DirList : TStringList;
+    DirList   : TStringList;
     procedure SaveToIni;
     function GetDiskInfo (const APath : string) : string;
     procedure ShowFiles (AShow : boolean);
@@ -134,16 +136,17 @@ implementation
 
 uses System.IniFiles, Vcl.Dialogs, System.StrUtils, Winapi.ShlObj, Winapi.Shellapi,
   Winapi.ActiveX, WinShell, WinUtils, {$IFDEF ACCESSIBLE} ShowMessageDlg {$ELSE} MsgDialogs {$ENDIF},
-  PathUtils, NumberUtils, GnuGetText, SelectDlg;
+  PathUtils, NumberUtils, GnuGetText, SelectDlg
+{$IFDEF Trace}
+  , FileUtils
+{$EndIf}
+  ;
 
 const
   FMaxLen = 15;
 
 var
   IniFileName,SectionName   : string;
-
-const
-  MaxHist = 15;
 
 { ------------------------------------------------------------------- }
 procedure TShellDirDialog.FormCreate(Sender: TObject);
@@ -155,7 +158,7 @@ begin
   FIniName:=''; FIniSection:='';
   FDefaultDir:='';
   DirList:=TStringList.Create;
-  cbxSelectedDir.MaxLength:=MaxHist;
+  cbxSelectedDir.DropDownCount:=FMaxLen;
   panRoot.ParentBackground:=false;
   Top:=(Screen.Height-Height) div 2;
   Left:=(Screen.Width-Width) div 2;
@@ -213,10 +216,14 @@ begin
   Top:=50; Left:=50;
   end;
 
-(* save posiition and history list *)
+(* save position and history list *)
+procedure TShellDirDialog.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  try SaveToIni; except end;
+  end;
+
 procedure TShellDirDialog.FormDestroy(Sender: TObject);
 begin
-  SaveToIni;
   DirList.Free;
   end;
 
@@ -305,15 +312,15 @@ begin
   if length(ADir)>0 then with DirList do begin
     n:=IndexOf(ADir);
     if n<0 then begin
-      if Count>=MaxHist then Delete (Count-1);
+      if Count>=FMaxLen then Delete (Count-1);
       Insert (0,ADir);
       end
     else begin
       if n>0 then Move (n,0);
       Strings[0]:=ADir;  // update string anyway, e.g. if case was changed
       end;
+    cbxSelectedDir.Items.Assign(DirList);
     end;
-  cbxSelectedDir.Items.Assign(DirList);
   end;
 
 (* delete directory from history list *)
@@ -475,8 +482,8 @@ begin
       end
     else begin
       if (Win32Platform=VER_PLATFORM_WIN32_NT) and (Win32MajorVersion>=6) then // IsVista or newer
-        err:=IShellDeleteDir (Application.Handle,SetDirName(s),true)<>NO_ERROR
-      else err:=ShellDeleteAll (Application.Handle,SetDirName(s),'',true)<>NO_ERROR;
+        err:=IShellDeleteDir (Application.Handle,SetDirName(s),true,false)<>NO_ERROR
+      else err:=ShellDeleteAll (Application.Handle,SetDirName(s),'',true,false)<>NO_ERROR;
       if not err then InfoDialog(SafeFormat(dgettext('dialogs','%s moved to Recycle Bin!'),[s]));
       end;
     if err then ErrorDialog(SafeFormat(dgettext('dialogs','Error deleting directory:'+sLineBreak+'%s!'),[s]));
@@ -625,6 +632,7 @@ begin
 
 procedure TShellDirDialog.cbxSelectedDirChange(Sender: TObject);
 begin
+  SelectDir(cbxSelectedDir.Text);
   btbOk.Enabled:=DirectoryExists(cbxSelectedDir.Text);
   end;
 
@@ -639,25 +647,32 @@ var
 begin
   s:=ADir;
   if length(s)=0 then s:=FDefaultDir;
-  spbComputer.Down:=true;
-  if (length(s)=0) or not DirectoryExists(s)then begin
-    s:=GetDesktopFolder(CSIDL_PERSONAL);
-    r:='rfMyComputer';
-//    r:='rfPersonal';
-    if length(s)=0 then s:=GetCurrentDir;
+  if length(s)=0 then begin  // no default
+    spbDesktop.Down:=true;
+    r:='rfDesktop';
     end
   else begin
-    if copy(s,1,2)='\\' then begin
-      r:='rfNetwork';
-//      r:='rfDesktop';
-      spbNetwork.Down:=true;
+    spbComputer.Down:=true;
+    if (length(s)=0) or not DirectoryExists(s)then begin
+      s:=GetDesktopFolder(CSIDL_PERSONAL);
+      r:='rfMyComputer';
+  //    r:='rfPersonal';
+      if length(s)=0 then s:=GetCurrentDir;
       end
-    else r:='rfMyComputer';
+    else begin
+      if copy(s,1,2)='\\' then begin
+        r:='rfNetwork';
+  //      r:='rfDesktop';
+        spbNetwork.Down:=true;
+        end
+      else r:='rfMyComputer';
+      end;
     end;
   with ShellTreeView do begin
     Root:=r;
     sleep(500);    // new Feb. 2021
-    Path:=s;
+    if length(s)>0 then Path:=s
+    else Selected:=nil;
     if assigned(Selected) then try Selected.Expand(false); except end;
     end;
   end;
@@ -680,12 +695,12 @@ begin
 //    SelectDir(HomeDir);
 //    Exit;
 //    end
-  SelectDir(Dir);
   with ShellListView do begin
     if Hidden then ObjectTypes:=ObjectTypes+[otHidden,otHiddenSystem]
     else ObjectTypes:=ObjectTypes-[otHidden,otHiddenSystem];
     ShowZip:=ZipAsFiles;
     end;
+  SelectDir(Dir);
   cbxSelectedDir.Text:=ShellTreeView.Path;
   laVolHint.Caption:=GetDiskInfo(cbxSelectedDir.Text);
   cbxFiles.Visible:=FileView;
