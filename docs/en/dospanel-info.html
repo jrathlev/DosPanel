@@ -15,7 +15,7 @@
   <td align="Left"><h2 style="margin-top:2pt;margin-bottom:2pt;">DosPanel - Windows-Desktop for DosBox</h2></td>
 </tr>
 <tr valign="top"">
-    <td><b>&copy; 2014-2023, J. Rathlev</a>, 24222 Schwentinental, Germany</b></td>
+    <td><b>&copy; 2014-2025, J. Rathlev</a>, 24222 Schwentinental, Germany</b></td>
 </tr>
 </table>
 <p>
@@ -50,7 +50,7 @@
   <area shape="rect" coords="4,121,393,262" href="#apps" alt="Application of a category" title="Application of a category">
   <area shape="rect" coords="321,56,350,88" href="#basic" alt="Basic settings" title="Basic settings">
 </map>
-<img src="images/dospanel.png" width="431" height="289" align="right" border="0" hspace="5" usemap="#dospanel">
+<img src="images/dospanel.png" width="426" height="297" align="right" border="0" hspace="5" usemap="#dospanel">
 <p>The program is a Windows frontend to the DOS emulator
   <i><a href="http://www.dosbox.com/news.php" target="_blank">DOSBox</a></i>
   to manage and run DOS applications and runs runs on all current Windows systems. 
@@ -132,6 +132,10 @@
     <dd><a href="#dup"><i>Duplicate </i></a> - Duplicate the selected DOS application</dd>
     <dd><a href="#delete"><i>Remove</i></a> - Remove a DOS application from 
       <strong>DosPanel</strong></dd>
+    <dd><a href="#showcon"><i>Console output</i></a> - Display the console output
+      of <em>DosBox</em> (only available for hidden console)</dd>
+     <dd><a href="#manual"><i>Show manual</i></a> - Show the manual of the selected
+       DOS application</dd>
     <dd><a href="#appmapper"><i>Adjust keymapper</i></a> - Starts the  
       <em>DOSBox</em> keymapper to make individual mappings of keys on keyboard
       and joystick.</dd>
@@ -141,10 +145,9 @@
     <dd><a href="#view"><i>List</i></a> - Show the DOS applications as list</dd>
     <dd><a href="#view"><i>Details</i></a> - Show the DOS applications as detailed list 
       (e.g. drive mappings)</dd>
+<img src="images/popmenu.png" width="162" height="200" align="right" border="0" hspace="5" usemap="#popmenu">
  <dt><b>Action</b></dt>
      <dd><a href="#start"><i>Run</i></a> - Run the selected DOS application</dd>
-     <dd><a href="#manual"><i>Show manual</i></a> - Show the manual of the selected
-       DOS application</dd>
      <dd><a href="#dosbox"><i>Run DOSBox</i></a> - Run <em>DOSBox</em> without any
        DOS application</dd>
      <dd><b><i>Convert text</i></b> - Convert text files to several code pages
@@ -156,12 +159,12 @@
 <map name="popmenu">
   <area shape="rect" coords="6,3,157,27" href="#start" alt="Starten">
   <area shape="rect" coords="4,30,161,50" href="#edit" alt="Bearbeiten">
-  <area shape="rect" coords="1,75,160,95" href="#delete" alt="Entfernen">
-  <area shape="rect" coords="0,96,154,113" href="#manual" alt="Handbuch">
-  <area shape="rect" coords="0,120,148,145" href="#appmapper" alt="Keymapper">
-  <area shape="rect" coords="6,51,155,73" href="#dup" alt="Duplicate">
+  <area shape="rect" coords="2,81,159,104" href="#delete" alt="Entfernen">
+  <area shape="rect" coords="5,109,151,136" href="showcon" alt="Console">
+  <area shape="rect" coords="5,139,157,163" href="#manual" alt="Handbuch">
+  <area shape="rect" coords="1,170,149,195" href="#appmapper" alt="Keymapper">
+  <area shape="rect" coords="6,54,155,76" href="#dup" alt="Duplicate">
 </map>
-<img src="images/popmenu.png" width="158" height="144" align="right" border="0" hspace="5" usemap="#popmenu">
 <h3>Context menu of an application</h3>
 <p>A right-click on the icon of an application will open a context menu. 
   A click on a region of the screenshot at right will lead to specific help for that 
@@ -169,7 +172,7 @@
 </p>
 <br clear="all">
   
-<hr style="text-align:left;width:400px;color:#FF0000;">
+<hr>
 <img src="images/basic-options.png" width="439" height="439" align="right" border="0" hspace="5">
 <h3><a name="basic">Basic settings</a></h3>
 <p>When starting <strong>DosPanel</strong> for the first time after the installation,
@@ -211,7 +214,7 @@
   </ul>
 <br clear="all">
 
-<hr style="text-align:left;width:400px;color:#FF0000;">
+<hr>
 <h3><a name="add">Configuration of a DOS application</a></h3>
 <img src="images/app-options.png" width="541" height="559" align="right" border="0" hspace="5">
 <h4><img src="images/app-add.png" width="20" height="20" border="0"> 
@@ -228,11 +231,13 @@
   <li><b>Category:</b> The name of the page where the application is displayed.
     If no category is specified, the application will be assigned to 
     <i>Miscellaneous</i>.</li>
-  <li><b>Mount drive to path:</b> Select a directory on the host system that will
+  <li><b><a name="appdir">Mount drive to path:</a></b> Select a directory on the host system that will
     be used as main drive in <em>DOSBox</em> (e.g <b>C:</b>).</li>
   <li><b>Mount CD drive:</b> If this option is activated, a virtual
     CD drive is connected to a physical drive of your host system or to an ISO image on your
-    host system (e.g. <b>D:</b>) when <em>DOSBox</em> is started.</li>
+    host system (e.g. <b>D:</b>) when <em>DOSBox</em> is started. It is possible
+    to specify several ISO images, between which you can switch in <em>DOSBox</em> 
+    using the key combination <i>Ctrl-F4</i> (see the <em>DOSBox</em> documentation).</li>
   <li><b>General settings:</b>
   <ul>
     <li style="margin-top:-5px;"><b>Application to be started:</b> Select the DOS application or the batch file
@@ -247,6 +252,7 @@
   <li><b>Mapper file:</b> Select the DOS application specific mapper file, if needed
     (<a href="#appmapper">more ..</a>). Usually this file is located in the
     main drive directory of the DOS application (see above).</li>
+  <img src="images/app-mixer.png" width="346" height="301" align="right" border="0" hspace="5">
   <li><b>Manual:</b> Select a file on your host system that contains a manual for 
     the selected DOS application. This may be any file type (e.g. text or PDF)
     and will be opened with the application assigned in Windows (e.g. <i>Adobe Reader</i> 
@@ -255,7 +261,6 @@
     that will be displayed in <strong>DosPanel</strong> when moving the mouse over
     the assigned icon.</li>
   </ul></li>
-  <img src="images/app-mixer.png" width="346" height="301" align="right" border="0" hspace="5">
   <li><b>Audio mixer</b><br>
     The internal <em>DOSBox</em> program <i>MIXER</i> can be used to adjust the volume 
     of the various sound sources individually. <i>DosPanel</i> provides a user-friendly 
@@ -274,6 +279,24 @@
       a setting from the list. It is also possible to
       delete the list completely and change the order of the entries.</li>
   </ul></li>
+
+  <img src="images/app-console.png" width="346" height="123" align="right" border="0" hspace="5">
+  <li><b><a name="showcon">Console</a></b><br>
+    When <em>DOSBox</em> is started, the <em>DOSBox console</em> is normally displayed 
+    in a second window. If desired, this can be disabled here for the selected application. 
+    The output from <em>DosBox</em> is then written to the files <i>stdout.txt</i> and 
+    <i>stderr.txt</i>, which are located in the 
+    <a href="#appdir">directory selected for the application</a>. If desired, these 
+    can be displayed via the <a href="#menu">context menu</a>.
+    <ul>
+      <li><b>Hide console:</b> The output of <em>DOSBox</em> is redirected to the 
+      files <i>stdout.txt</i> and <i>stderr.txt</i>.</li>
+      <li><b>Delete console output files when DosPanel is closed:</b> When <em>DosPanel</em> 
+      is closed, the files <i>stdout.txt</i> and <i>stderr.txt</i> are deleted, 
+      if they exist. This function is only available if the <i>Hide Console</i> option 
+      is enabled.</li>
+    </ul>
+    </li>
   <li><b>Select configuration:</b> The configuration provided by <em>DOSBox</em> is 
     always selected by default. If special settings are required for the respective 
     application, you can switch to <i>Application specific</i>. The basic configuration 
@@ -417,6 +440,6 @@
 </dl>
 
 <hr>
-<i>J. Rathlev, 24222 Schwentinental, Germany, December 2023</i>
+<i>J. Rathlev, 24222 Schwentinental, Germany, August 2025</i>
 </body>
 </html>

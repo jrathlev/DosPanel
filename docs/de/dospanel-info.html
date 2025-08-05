@@ -15,7 +15,7 @@
   <td align="Left"><h2 style="margin-top:2pt;margin-bottom:2pt;">DosPanel - Windows-Desktop für DosBox</h2></td>
 </tr>
 <tr valign="top"">
-    <td><b>&copy; 2014-2023, J. Rathlev</a>, D-24222 Schwentinental</b></td>
+    <td><b>&copy; 2014-2025, J. Rathlev</a>, D-24222 Schwentinental</b></td>
 </tr>
 </table>
 <p>
@@ -44,14 +44,14 @@
   <area shape="rect" coords="34,53,60,82" href="#edit" alt="Einstellungen der Anwendung bearbeiten" title="Einstellungen der Anwendung bearbeiten">
   <area shape="rect" coords="62,52,90,83" href="#delete" alt="Anwendung entfernen" title="Anwendung entfernen">
   <area shape="rect" coords="130,54,157,85" href="#start" alt="Anwendung in DOSBox starten" title="Anwendung in DOSBox starten">
-  <area shape="rect" coords="173,52,289,87" href="#view" alt="Anzeigeoptionen" title="Anzeigeoptionen">
+  <area shape="rect" coords="164,53,280,88" href="#view" alt="Anzeigeoptionen" title="Anzeigeoptionen">
   <area shape="rect" coords="100,53,129,85" href="#manual" alt="Handbuch anzeigen" title="Handbuch anzeigen">
   <area shape="rect" coords="291,53,318,86" href="#dosbox" alt="DOSBox ohne Anwendung starten" title="DOSBox ohne Anwendung starten">
   <area shape="rect" coords="5,91,385,114" href="#cats" alt="Kategorien" title="Kategorien">
   <area shape="rect" coords="11,125,384,258" href="#apps" alt="Anwendungen der Kategorie" title="Anwendungen der Kategorie">
   <area shape="rect" coords="322,53,350,86" href="#basic" alt="Grundeinstellungen" title="Grundeinstellungen">
 </map>
-<img src="images/dospanel.png" width="431" height="289" align="right" border="0" hspace="5" usemap="#dospanel">
+<img src="images/dospanel.png" width="426" height="293" align="right" border="0" hspace="5" usemap="#dospanel">
 <p>Das Programm stellt eine grafische Bedienoberfläche für den DOS-Emulator
   <i><a href="http://www.dosbox.com/news.php" target="_blank">DOSBox</a></i> bereit
   und funktioniert unter allen aktuellen Windows-Systemen. 
@@ -111,7 +111,7 @@
 <dd>Das Programm speichert die Programmeinstellungen in einer Datei <em>DosPanel.ini</em> 
   ab, die sich standardmäßig im Verzeichnis der Anwendungsdaten des Benutzers befindet.
   <ul>
-  <li><b>Vista, Windows 7 und 8:</b> <i>C:\Benutzer\&lt;Benutzername&gt;\AppData\Roaming</i>
+  <li><b>Windows 7 bis 11:</b> <i>C:\Benutzer\&lt;Benutzername&gt;\AppData\Roaming</i>
     oder <i>C:\Users\&lt;Benutzername&gt;\AppData\Roaming</i></li>
   <li><b>Windows 2000 und XP:</b> <i>C:\Dokumente und Einstellungen\&lt;Benutzername&gt;\Anwendungsdaten</i></li>
   </ul>
@@ -142,6 +142,10 @@
       DOS-Anwendung</dd>
     <dd><a href="#delete"><i>Entfernen</i></a> - Entfernen einer DOS-Anwendung
       aus <strong>DosPanel</strong></dd>
+    <dd><a href="#showcon"><i>Konsolenausgabe</i></a> - Anzeige der Konsolenausgabe
+      von <em>DosBox</em> (nur verfügbar bei versteckter Konsole)</dd>
+     <dd><a href="#manual"><i>Anleitung anzeigen</i></a> - Anzeige der zu einer
+       DOS-Anwendung ausgewählten Anleitung</dd>     
     <dd><a href="#appmapper"><i>Keymapper anpassen</i></a> - Startet den 
       <em>DOSBox</em>-Keymapper, um individuelle Anpassungen an der Zuordnung
       von Tasten auf der Tastatur und am Joystick vorzunehmen.</dd>
@@ -153,10 +157,9 @@
     <dd><a href="#view"><i>Liste</i></a> - Anzeige der DOS-Anwendungen als Liste</dd>
     <dd><a href="#view"><i>Details</i></a> - Anzeige der DOS-Anwendungen als
       Liste mit Detailinformationen (z.B. Laufwerkseinstellungen)</dd>
+<img src="images/popmenu.png" width="180" height="200" align="right" border="0" hspace="5" usemap="#popmenu">
  <dt><b>Aktion</b></dt>
      <dd><a href="#start"><i>Starten</i></a> - Starten einer DOS-Anwendung</dd>
-     <dd><a href="#manual"><i>Anleitung anzeigen</i></a> - Anzeige der zu einer
-       DOS-Anwendung ausgewählten Anleitung</dd>
      <dd><a href="#dosbox"><i>DOSBox starten</i></a> - <em>DOSBox</em> ohne
        DOS-Anwendung starten</dd>
      <dd><b><i>Text konvertieren</i></b> - Konvertieren von Textdateien
@@ -168,19 +171,19 @@
 <map name="popmenu">
   <area shape="rect" coords="6,3,157,27" href="#start" alt="Starten">
   <area shape="rect" coords="4,30,161,50" href="#edit" alt="Bearbeiten">
-  <area shape="rect" coords="4,73,163,93" href="#delete" alt="Entfernen">
-  <area shape="rect" coords="4,95,158,112" href="#manual" alt="Handbuch">
-  <area shape="rect" coords="3,117,151,142" href="#appmapper" alt="Keymapper">
-  <area shape="rect" coords="6,51,155,73" href="#dup" alt="Verdoppeln">
+  <area shape="rect" coords="4,83,163,103" href="#delete" alt="Entfernen">
+  <area shape="rect" coords="3,139,155,161" href="#manual" alt="Handbuch">
+  <area shape="rect" coords="5,169,153,194" href="#appmapper" alt="Keymapper">
+  <area shape="rect" coords="4,55,153,77" href="#dup" alt="Verdoppeln">
+  <area shape="rect" coords="3,110,160,137" href="#showcon" alt="Konsole">
 </map>
-<img src="images/popmenu.png" width="176" height="144" align="right" border="0" hspace="5" usemap="#popmenu">
 <h3>Kontext-Menü einer Anwendung</h3>
 <p>Nach einem Rechtsklick auf das Symbol einer Anwendung öffnet sich das rechts 
-  dargestellte Kontextmenü. Hilfe zu den Funktionen erhält man duch Klick auf die
+  dargestellte Kontextmenü. Hilfe zu den Funktionen erhält man durch Klick auf die
   Abbildung.</p>
 <br clear="all">
   
-<hr style="text-align:left;width:400px;color:#FF0000;">
+<hr>
 <img src="images/basic-options.png" width="439" height="439" align="right" border="0" hspace="5">
 <h3><a name="basic">Grundeinstellungen</a></h3>
 <p>Nach dem ersten Start sucht <strong>DosPanel</strong> nach einer 
@@ -213,9 +216,9 @@
     Tastatur) von Hand ausgewählt werden.</li>
     <li><b>In DOSBox verwendete Code-Seite:</b> Hier wird die für die Bildschirmausgabe
     in <em>DOSBox</em> zu verwendende Code-Seite ausgewählt.</li>
-    <li><b>Konsole verbergen:</b> Beim Start von <em>DOSBox</em> wird in einem zweiten
-    Fenster die <em>DOSBox-Konsole</em> angezeigt. Auf Wunsch kann diese hier 
-    abgeschaltet werden.</li>
+    <li><b>Konsole verbergen:</b> Voreinstellung für neu installierte Anwendungen, um
+      beim Start von <em>DOSBox</em> das normalerweise angezeigte Fenster mit 
+      der <em>DOSBox-Konsole</em> zu verbergen.</li>
   </ul> 
 <h4>Weitere Einstellungen</h4>
   <ul>
@@ -230,7 +233,7 @@
   </ul>
 <br clear="all">
 
-<hr style="text-align:left;width:400px;color:#FF0000;">
+<hr>
 <h3>Konfigurieren einer DOS-Anwendung</h3>
 <img src="images/app-options.png" width="541" height="559" align="right" border="0" hspace="5">
 <h4><a name="add"><img src="images/app-add.png" width="20" height="20" border="0"> 
@@ -238,7 +241,6 @@
 <p>Ein Klick auf diese Schaltfläche fügt eine neue DOS-Anwendung in <strong>DosPanel</strong>
   hinzu. In dem anschließenden Dialog werden die Einstellungen für diese Anwendung vorgenommen.
   Einzelheiten dazu findet man im nächsten Abschnitt.</p> 
-  
 
 <h4><a name="edit"><img src="images/app-edit.png" width="20" height="20" border="0">
   Einstellungen der ausgewählten Anwendung bearbeite</a>n</h4>
@@ -249,12 +251,15 @@
   <li><b>Kategorie:</b> Name der Seite, auf der die Anwendung in <strong>DosPanel</strong>
     angezeigt werden soll. Bei fehlender Kategorie wird die Anwendung unter <i>Verschiedenes</i>
     eingetragen.</li>
-  <li><b>Verbinde Laufwerk mit Pfad:</b> Auswahl eines Verzeichnisses auf dem Host-System, 
-    das in <em>DOSBox</em> als Hauptlaufwerk (hier <b>C:</b>) verwendet werden soll.</li>
+  <li><a name="appdir"><b>Verbinde Laufwerk mit Pfad:</b></a> Auswahl eines Verzeichnisses auf dem Host-System, 
+    das in <em>DOSBox</em> als Hauptlaufwerk (hier <b>C:</b>) verwendet werden soll
+    (Standard-Verzeichnis der Anwendung).</li>
   <li><b>CD-Laufwerk anbinden an:</b> Wenn diese Option aktiviert ist, wird  
     beim Start von <em>DOSBox</em> das ausgewählte CD-Laufwerk (hier <b>D:</b>) entweder 
     mit einem physikalischen Laufwerk des Host-Systems oder mit einem Iso-Image 
-    auf dem Host-System verbunden werden.</li>
+    auf dem Host-System verbunden. Es können mehrere Iso-Images angegeben werden,
+    zwischen denen in <em>DOSBox</em> mit der Tastenkombination <i>Strg-F4</i> umgeschaltet 
+    werden kann (siehe dazu die <em>DOSBox</em>-Dokumentation).</li>
   <li><b>Allgemeine Einstellungen</b>
   <ul>
     <li style="margin-top:-5px;"><b>Zu startende Anwendung:</b> Auswahl einer DOS-Anwendung oder einer Batch-Datei 
@@ -270,6 +275,7 @@
     <li><b>Mapper-Datei:</b> Hier wird die für die ausgewählte DOS-Anwendung angepasste 
       Tastaturmapper-Datei ausgewählt (<a href="#appmapper">siehe auch</a>). Sie befindet 
       sich normalerweise im Verzeichnis des Hauptlaufwerks der DOS-Anwendung (siehe oben).</li>
+  <img src="images/app-mixer.png" width="346" height="301" align="right" border="0" hspace="5">
     <li><b>Anleitung:</b> Auswahl einer Datei auf dem Host-System (z.B. Text oder PDF),
       die in <strong>DosPanel</strong> als Anleitung für die ausgewählte Anwendung
       angezeigt werden soll. Diese Datei wird automatisch mit der in Windows zugeordneten 
@@ -278,7 +284,6 @@
       <strong>DosPanel</strong> angezeigt wird, wenn man die Maus über das zugeordnete 
       Symbol bewegt.</li>   
   </ul></li>
-  <img src="images/app-mixer.png" width="346" height="301" align="right" border="0" hspace="5">
   <li><b>Audio-Mischpult</b><br>
     Mit dem internen <em>DOSBox</em>-Programm <i>MIXER</i> kann die Lautstärke der verschiedenen 
     Sound-Quellen individuell eingestellt werden. <i>DosPanel</i> stellt dafür ein
@@ -298,10 +303,27 @@
       die Liste komplett zu löschen und die Reihenfolge der Einträge zu ändern.</li>
   </ul>
   </li>
+  <img src="images/app-console.png" width="346" height="123" align="right" border="0" hspace="5">
+  <li><b><a name="showcon">Konsole</a></b><br>
+    Beim Start von <em>DOSBox</em> wird normalerweise in einem zweiten Fenster die 
+    <em>DOSBox-Konsole</em> angezeigt. Auf Wunsch kann diese hier für die ausgewählte
+    Anwendung abgeschaltet werden. Die Ausgabe von <em>DosBox</em> erfolgt dann in die
+    Dateien <i>stdout.txt</i> und <i>stderr.txt</i>, die sich im für die 
+    <a href="#appdir">Anwendung ausgewählten Verzeichnis</a> befinden. Auf Wunsch können
+    diese über das <a href="#menu">Kontextmenü</a> zur Anzeige gebracht werden. 
+    <ul>
+      <li><b>Konsole verbergen:</b> Die Ausgabe von <em>DOSBox</em> wird in die Dateien
+      <i>stdout.txt</i> und <i>stderr.txt</i> umgeleitet.</li>
+      <li><b>Konsolenausgabedateien löschen, wenn DosPanel geschlossen wird:</b> Beim 
+        Schließen von <strong>DosPanel</strong> werden, sofern vorhanden, die Dateien 
+        <i>stdout.txt</i> und <i>stderr.txt</i> gelöscht. Diese Funktion steht nur zur 
+        Verfügung, wenn die Option <i>Konsole verbergen</i> eingeschaltet ist.</li>
+    </ul>
+    </li>
   <li><b>Grundkonfiguration auswählen:</b> Per Voreinstellung wird immer die von <em>DOSBox</em>
     <a href="#basic">bereit gestellte Konfiguration</a> ausgewählt. Wenn für die jeweilige 
     Anwendung besondere Einstellungen erforderlich sind, kann man auf <i>Anwendungsspezifisch</i>
-    umschalten. Die Grundkonfiguration wird dann in das Verzeichnis der Anwendung 
+    umschalten. Die Grundkonfiguration wird dann in das <a href="#appdir">Verzeichnis der Anwendung</a> 
     kopiert und kann dort individuell bearbeiten werden (Klick auf <em>Konfiguration bearbeiten</em>).  
     </li>
   <li><b>Optionen:</b> Hier können einige weitere Einstellungen für <em>DOSBox</em>
@@ -377,7 +399,7 @@
 <p>Die <em>DOSBox</em> wird geöffnet, ohne eine spezielle DOS-Anwendung zu starten.</p>
 
 <hr>
-<img src="images/tp.png" width="541" height="539" align="right" border="0" hspace="5">
+<img src="images/tp.png" width="541" height="559" align="right" border="0" hspace="5">
 <h3><a name="sample">Beispiel-Konfiguration für Turbo-Pascal</a></h3>
 <p>Jeder, der die früher sehr verbreitete Turbo-Pascal-Entwicklungsumgebung
   auf 64-Bit-Versionen von Windows einsetzen will, kann dies sehr einfach mit
@@ -448,6 +470,6 @@
 </dl>
 
 <hr>
-<i>J. Rathlev, D-24222 Schwentinental, Dezember 2023</i>
+<i>J. Rathlev, D-24222 Schwentinental, August 2025</i>
 </body>
 </html>
