@@ -24,17 +24,20 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons,
-  Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Imaging.pngimage, CheckBoxes;
+  Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Imaging.pngimage, Vcl.Imaging.jpeg,
+  CheckBoxes;
 
 const
   defCycles = 4000;
   maxCycles = 1000000;
 
 type
-  TImgType = (imNone,imIco,imBmp,imPng);
+  TImgType = (imNone,imIco,imBmp,imPng,imJpg);
+  TConsoleMode = (cmHide,cmErase,cmOut,cmErr);
+  TConsoleModes = set of TConsoleMode;
 
 const
-  ImageExt : array[TImgType] of string = ('','ico','bmp','png');
+  ImageExt : array[TImgType] of string = ('','ico','bmp','png','jpg');
   ChannelCount = 7;
   MixerChannels : array[0..ChannelCount-1] of string = ('MASTER','DISNEY','SPKR','GUS','SB','FM','CDAUDIO');
 
@@ -112,6 +115,7 @@ type
     ImgIndex,
     MemSize,
     Speed             : integer;
+    ConsoleMode       : TConsoleModes;
     Icons             : TAppIcons;
     constructor Create (const AConfigFile : string; DefLargeImg,DefSmallImg : TPicture; DefCodePage : integer);
     constructor CreateFrom (ADosBoxApp : TDosBoxApp);
@@ -191,6 +195,10 @@ type
     bbDown: TBitBtn;
     btRebuild: TSpeedButton;
     cxAutoClose: TCheckBox;
+    tsConsole: TTabSheet;
+    paConsole: TPanel;
+    cbNoConsole: TCheckBox;
+    cbDelConFiles: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure btPathClick(Sender: TObject);
     procedure btExeFileClick(Sender: TObject);
@@ -216,6 +224,7 @@ type
     procedure bbDownClick(Sender: TObject);
     procedure btRebuildClick(Sender: TObject);
     procedure cxAutoEndClick(Sender: TObject);
+    procedure cbNoConsoleClick(Sender: TObject);
   private
     { Private-Deklarationen }
     NewIcons   : TAppIcons;
@@ -225,6 +234,7 @@ type
     procedure ChangeCdRom (IsIso : boolean);
     procedure ShowMixerChannel (AIndex : integer);
     procedure ShowConfig;
+    procedure ShowConsole;
   public
     { Public-Deklarationen }
     function Execute (Categories : TStrings;
@@ -412,11 +422,19 @@ begin
         Small:=GetSmallImage(DefSImg);
         end;
       end
-    else if ImgType=imPng then begin
+    else if (ImgType=imPng) then begin
       bj:=TPicture.Create;
       bj.LoadFromFile(Filename);
       Bitmap.PixelFormat:=pf16Bit;
       (bj.Graphic as TPngImage).AssignTo(Bitmap);
+      Small:=ScaleBitmap(Bitmap,16,16);
+      bj.Free;
+      end
+    else if (ImgType=imJpg) then begin
+      bj:=TPicture.Create;
+      bj.LoadFromFile(Filename);
+      Bitmap.PixelFormat:=pf16Bit;
+      Bitmap.Assign(bj.Graphic as TJpegImage);
       Small:=ScaleBitmap(Bitmap,16,16);
       bj.Free;
       end
@@ -445,7 +463,7 @@ begin
   IconFile:=''; ManFile:='';
   Commands:=HardDrv+':;"CD \"';
   Description:=''; MixerChannels:='';
-  MountCd:=true; IsoImage:=true;
+  ConsoleMode:=[]; MountCd:=true; IsoImage:=true;
   LoadConfig;
   AutoEnd:=true; AutoClose:=false; AppMapper:='';
   AppConfig:=false; ImgIndex:=-1; CodePage:=DefCodePage;
@@ -510,6 +528,7 @@ begin
   Commands:=ADosBoxApp.Commands;
   Description:=ADosBoxApp.Description;
   MixerChannels:=ADosBoxApp.MixerChannels;
+  ConsoleMode:=ADosBoxApp.ConsoleMode;
   MountCd:=ADosBoxApp.MountCd;
   IsoImage:=ADosBoxApp.IsoImage;
   AppConfig:=ADosBoxApp.AppConfig;
@@ -518,8 +537,8 @@ begin
   AutoClose:=ADosBoxApp.AutoClose;
   Speed:=ADosBoxApp.Speed;
   ImgIndex:=ADosBoxApp.ImgIndex;
-  DefLImg:=ADosBoxApp.DefLImg;
-  DefSImg:=ADosBoxApp.DefSImg;
+//  DefLImg:=ADosBoxApp.DefLImg;
+//  DefSImg:=ADosBoxApp.DefSImg;
   Icons.Assign(ADosBoxApp.Icons);
   end;
 
@@ -699,6 +718,15 @@ begin
     end;
   end;
 
+procedure TAppSettingsDialog.ShowConsole;
+begin
+  with FDosBoxApp do begin
+    cbNoConsole.Checked:=cmHide in ConsoleMode;
+    cbDelConFiles.Enabled:=cbNoConsole.Checked;
+    cbDelConFiles.Checked:=cmErase in ConsoleMode;
+    end;
+  end;
+
 procedure TAppSettingsDialog.cxAutoEndClick(Sender: TObject);
 begin
   FDosBoxApp.AutoEnd:=cxAutoEnd.Checked;
@@ -744,11 +772,12 @@ begin
 procedure TAppSettingsDialog.btIconFileClick(Sender: TObject);
 begin
   with OpenDialog do begin
+    Options:=Options-[ofAllowMultiSelect];
     if length(edIconFile.Text)>0 then InitialDir:=GetExistingParentPath(edIconFile.Text,frmMain.BasicSettings.RootPath)
     else InitialDir:=edAppPath.Text;
     DefaultExt:='ico';
     Filename:='';
-    Filter:=_('Image')+'|*.ico;*.bmp;*.png|'+_('Executables')+'|*.exe;*.dll|'+_('All')+'|*.*';
+    Filter:=_('Image')+'|*.ico;*.bmp;*.png;*.jpg|'+_('Executables')+'|*.exe;*.dll|'+_('All')+'|*.*';
     Title:=_('Select file with icon for this application');
     if Execute then begin
       edIconFile.Text:=Filename;
@@ -759,21 +788,30 @@ begin
   end;
 
 procedure TAppSettingsDialog.btIsoFileClick(Sender: TObject);
+var
+  i : integer;
+  s : string;
 begin
   with OpenDialog do begin
+    Options:=Options+[ofAllowMultiSelect];
     if length(edIsoFile.Text)>0 then InitialDir:=ExtractFilePath(edIsoFile.Text)
     else InitialDir:=edAppPath.Text;
     DefaultExt:='iso';
     Filename:='';
     Filter:=_('ISO images')+'|*.iso;*.cue';
     Title:=SafeFormat(_('Select iso image to be mounted as drive %s'),[cbCdRomDrive.Text]);
-    if Execute then edIsoFile.Text:=Filename;
+    if Execute then begin
+      s:='';
+      for i:=0 to Files.Count-1 do s:=s+MakeQuotedStr(Files[i])+Space;
+      edIsoFile.Text:=s;
+      end;
     end;
   end;
 
 procedure TAppSettingsDialog.btManFileClick(Sender: TObject);
 begin
   with OpenDialog do begin
+    Options:=Options-[ofAllowMultiSelect];
     if length(edManFile.Text)>0 then InitialDir:=ExtractFilePath(edManFile.Text)
     else InitialDir:=edAppPath.Text;
     DefaultExt:='txt';
@@ -790,6 +828,7 @@ var
   sp,sc : string;
 begin
   with OpenDialog do begin
+    Options:=Options-[ofAllowMultiSelect];
     if rgConfig.ItemIndex=0 then sc:=ExtractFilePath(FDosBoxApp.FConfigFile)
     else sc:=edAppPath.Text;
     sp:=ExtractFilePath(edMapperFile.Text);
@@ -836,7 +875,7 @@ begin
   if rgConfig.ItemIndex=1 then s:=AddPath(edAppPath.Text,sConfig) else s:='';
   with FDosBoxApp do begin
     LoadConfig(s);
-    AutoEnd:=true; AutoClose:=false;
+    AutoEnd:=true; AutoClose:=false; ConsoleMode:=[];
     end;
   ShowConfig;
   end;
@@ -859,6 +898,7 @@ begin
 procedure TAppSettingsDialog.btExeFileClick(Sender: TObject);
 begin
   with OpenDialog do begin
+    Options:=Options-[ofAllowMultiSelect];
     if length(edExeFile.Text)>0 then
       InitialDir:=SetDirName(edAppPath.Text)+ExtractFilePath(edExeFile.Text)
     else InitialDir:=edAppPath.Text;
@@ -894,6 +934,11 @@ procedure TAppSettingsDialog.cbHardDriveCloseUp(Sender: TObject);
 begin
   with edCommands do Text:=AnsiReplaceText(Text,LastDrive+':',cbHardDrive.Text[1]+':');
   LastDrive:=cbHardDrive.Text;
+  end;
+
+procedure TAppSettingsDialog.cbNoConsoleClick(Sender: TObject);
+begin
+  cbDelConFiles.Enabled:=cbNoConsole.Checked;
   end;
 
 procedure TAppSettingsDialog.edAppPathChange(Sender: TObject);
@@ -933,6 +978,7 @@ begin
       if n>=0 then ItemIndex:=n else ItemIndex:=3;
       end;
     ChangeCdRom(IsoImage);
+    // NoConsole
     gbCdDrive.Checked:=MountCd;
     if IsoImage then edIsoFile.Text:=CdPath
     else with cbDrive do ItemIndex:=Items.IndexOf(CdPath);
@@ -947,6 +993,7 @@ begin
     cxAutoClose.Checked:=AutoClose;
     ShowMixerChannel(0);
     ShowConfig;
+    ShowConsole;
     with rgConfig do if AppConfig then ItemIndex:=1 else ItemIndex:=0;
     with bbEditConfig do begin
       Visible:=FileExists(frmMain.BasicSettings.TextEditor);
@@ -976,6 +1023,9 @@ begin
     AppMapper:=edMapperFile.Text;
     ManFile:=edManFile.Text;
     Description:=edDescription.Text;
+    ConsoleMode:=[];
+    if cbNoConsole.Checked then include(ConsoleMode,cmHide);
+    if cbDelConFiles.Checked then include(ConsoleMode,cmErase);
     MixerChannels:=lbMixerSettings.Items.DelimitedText;
     FullScreen:=cxFullScreen.Checked;
     AutoEnd:=cxAutoEnd.Checked;

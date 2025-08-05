@@ -1,22 +1,26 @@
 #  Doesn't have any letters
 #. frmMain.MainMenu.itmGlobal.N2.Caption
 #: DosPanelMain.dfm:417
-#. frmMain.MainMenu.itmEntries.N5.Caption
+#. frmMain.MainMenu.itmEntries.N6.Caption
 #: DosPanelMain.dfm:439
+#. frmMain.MainMenu.itmEntries.N5.Caption
+#: DosPanelMain.dfm:452
 #. frmMain.MainMenu.itmEntries.N3.Caption
-#: DosPanelMain.dfm:445
+#: DosPanelMain.dfm:458
 #. frmMain.MainMenu.itmRun.N1.Caption
-#: DosPanelMain.dfm:485
+#: DosPanelMain.dfm:498
+#. frmMain.PopupMenu.N7.Caption
+#: DosPanelMain.dfm:1754
 #. frmMain.PopupMenu.N4.Caption
-#: DosPanelMain.dfm:1732
+#: DosPanelMain.dfm:1772
 msgid "-"
 msgstr ""
 
 #  Doesn't have any letters
 #. AppSettingsDialog.gbHardDrive.Label4.Caption
-#: AppSettings.dfm:334
+#: AppSettings.dfm:344
 #. AppSettingsDialog.gbCdDrive.Label5.Caption
-#: AppSettings.dfm:411
+#: AppSettings.dfm:421
 msgid "=>"
 msgstr ""
 
@@ -27,16 +31,16 @@ msgid "1.000"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:347
+#: AppSettings.dfm:357
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:425
+#: AppSettings.dfm:527
 msgid "A"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:348
+#: AppSettings.dfm:358
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:426
+#: AppSettings.dfm:528
 msgid "B"
 msgstr ""
 
@@ -46,11 +50,11 @@ msgid "BG         "
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Text
-#: AppSettings.dfm:344
+#: AppSettings.dfm:354
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:349
+#: AppSettings.dfm:359
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:427
+#: AppSettings.dfm:529
 msgid "C"
 msgstr ""
 
@@ -60,25 +64,25 @@ msgid "CZ243      "
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:350
+#: AppSettings.dfm:360
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Text
-#: AppSettings.dfm:423
+#: AppSettings.dfm:525
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:428
+#: AppSettings.dfm:530
 msgid "D"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:351
+#: AppSettings.dfm:361
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:429
+#: AppSettings.dfm:531
 msgid "E"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:352
+#: AppSettings.dfm:362
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:430
+#: AppSettings.dfm:532
 msgid "F"
 msgstr ""
 
@@ -88,9 +92,9 @@ msgid "FR         "
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:353
+#: AppSettings.dfm:363
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:431
+#: AppSettings.dfm:533
 msgid "G"
 msgstr ""
 
@@ -107,9 +111,9 @@ msgid "GR         "
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:354
+#: AppSettings.dfm:364
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:432
+#: AppSettings.dfm:534
 msgid "H"
 msgstr ""
 
@@ -124,9 +128,9 @@ msgid "HU         "
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:355
+#: AppSettings.dfm:365
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:433
+#: AppSettings.dfm:535
 msgid "I"
 msgstr ""
 
@@ -136,37 +140,37 @@ msgid "IT         "
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:356
+#: AppSettings.dfm:366
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:434
+#: AppSettings.dfm:536
 msgid "J"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:357
+#: AppSettings.dfm:367
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:435
+#: AppSettings.dfm:537
 msgid "K"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:358
+#: AppSettings.dfm:368
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:436
+#: AppSettings.dfm:538
 msgid "L"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:359
+#: AppSettings.dfm:369
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:437
+#: AppSettings.dfm:539
 msgid "M"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:360
+#: AppSettings.dfm:370
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:438
+#: AppSettings.dfm:540
 msgid "N"
 msgstr ""
 
@@ -181,16 +185,16 @@ msgid "NO     "
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:361
+#: AppSettings.dfm:371
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:439
+#: AppSettings.dfm:541
 msgid "O"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:362
+#: AppSettings.dfm:372
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:440
+#: AppSettings.dfm:542
 msgid "P"
 msgstr ""
 
@@ -200,16 +204,16 @@ msgid "PL     "
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:363
+#: AppSettings.dfm:373
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:441
+#: AppSettings.dfm:543
 msgid "Q"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:364
+#: AppSettings.dfm:374
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:442
+#: AppSettings.dfm:544
 msgid "R"
 msgstr ""
 
@@ -219,9 +223,9 @@ msgid "RU     "
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:365
+#: AppSettings.dfm:375
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:443
+#: AppSettings.dfm:545
 msgid "S"
 msgstr ""
 
@@ -246,9 +250,9 @@ msgid "SV"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:366
+#: AppSettings.dfm:376
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:444
+#: AppSettings.dfm:546
 msgid "T"
 msgstr ""
 
@@ -285,69 +289,69 @@ msgid "ToolButton3"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:367
+#: AppSettings.dfm:377
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:445
+#: AppSettings.dfm:547
 msgid "U"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:368
+#: AppSettings.dfm:378
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:446
+#: AppSettings.dfm:548
 msgid "V"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:369
+#: AppSettings.dfm:379
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:447
+#: AppSettings.dfm:549
 msgid "W"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:370
+#: AppSettings.dfm:380
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:448
+#: AppSettings.dfm:550
 msgid "X"
 msgstr ""
 
 #. AppSettingsDialog.gbHardDrive.cbHardDrive.Items.Strings
-#: AppSettings.dfm:371
+#: AppSettings.dfm:381
 #. AppSettingsDialog.gbCdDrive.cbCdRomDrive.Items.Strings
-#: AppSettings.dfm:449
+#: AppSettings.dfm:551
 msgid "Y"
 msgstr ""
 
 #  Doesn't have any letters
 #. AppSettingsDialog.gbOptions.cbCycles.Items.Strings
-#: AppSettings.dfm:250
+#: AppSettings.dfm:251
 msgid "5 000"
 msgstr ""
 
 #  Doesn't have any letters
 #. AppSettingsDialog.gbOptions.cbCycles.Items.Strings
-#: AppSettings.dfm:251
+#: AppSettings.dfm:252
 msgid "10 000"
 msgstr ""
 
 #  Doesn't have any letters
 #. AppSettingsDialog.gbOptions.cbCycles.Items.Strings
-#: AppSettings.dfm:252
+#: AppSettings.dfm:253
 msgid "25 000"
 msgstr ""
 
 #  Doesn't have any letters
 #. AppSettingsDialog.gbOptions.cbCycles.Items.Strings
-#: AppSettings.dfm:253
+#: AppSettings.dfm:254
 msgid "50 000"
 msgstr ""
 
 #  Doesn't have any letters
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.gbVolume.Label10.Caption
-#: AppSettings.dfm:1503
+#: AppSettings.dfm:1610
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.gbVolume.Label11.Caption
-#: AppSettings.dfm:1510
+#: AppSettings.dfm:1617
 msgid "100%"
 msgstr ""
 

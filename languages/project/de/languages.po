@@ -1,0 +1,162 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2025-06-16 22:50+0200\n"
+"PO-Revision-Date: 2025-06-16 22:50+0200\n"
+"Last-Translator: Somebody <your.email@address.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Delphi Get Text (3.1.2)\n"
+
+#. Programmer's name for it: rsSq
+#: languages.pas:30
+msgid "Albanian"
+msgstr "Albanisch"
+
+#. Programmer's name for it: rsBg
+#: languages.pas:7
+msgid "Bulgarian"
+msgstr "Bulgarisch"
+
+#. Programmer's name for it: rsZh
+#: languages.pas:35
+msgid "Chinese"
+msgstr "Chinesisch"
+
+#. Programmer's name for it: rsHr
+#: languages.pas:17
+msgid "Croatian"
+msgstr "Kroatisch"
+
+#. Programmer's name for it: rsCs
+#: languages.pas:8
+msgid "Czech"
+msgstr "Tschechisch"
+
+#. Programmer's name for it: rsDa
+#: languages.pas:9
+msgid "Danish"
+msgstr "Dänisch"
+
+#. Programmer's name for it: rsNl
+#: languages.pas:22
+msgid "Dutch"
+msgstr "Holländisch"
+
+#. Programmer's name for it: rsEn
+#: languages.pas:12
+msgid "English"
+msgstr "Englisch"
+
+#. Programmer's name for it: rsEt
+#: languages.pas:14
+msgid "Estonian"
+msgstr "Estnisch"
+
+#. Programmer's name for it: rsFi
+#: languages.pas:15
+msgid "Finnish"
+msgstr "Finnisch"
+
+#. Programmer's name for it: rsFr
+#: languages.pas:16
+msgid "French"
+msgstr "Französisch"
+
+#. Programmer's name for it: rsDe
+#: languages.pas:10
+msgid "German"
+msgstr "Deutsch"
+
+#. Programmer's name for it: rsEl
+#: languages.pas:11
+msgid "Greek"
+msgstr "Griechisch"
+
+#. Programmer's name for it: rsHu
+#: languages.pas:18
+msgid "Hungarian"
+msgstr "Ungarisch"
+
+#. Programmer's name for it: rsIt
+#: languages.pas:19
+msgid "Italian"
+msgstr "Italienisch"
+
+#. Programmer's name for it: rsLv
+#: languages.pas:21
+msgid "Latvian"
+msgstr "Lettisch"
+
+#. Programmer's name for it: rsLt
+#: languages.pas:20
+msgid "Lithuanian"
+msgstr "Litauisch"
+
+#. Programmer's name for it: rsNo
+#: languages.pas:23
+msgid "Norwegian"
+msgstr "Norwegisch"
+
+#. Programmer's name for it: rsPl
+#: languages.pas:24
+msgid "Polish"
+msgstr "Polnisch"
+
+#. Programmer's name for it: rsPt
+#: languages.pas:25
+msgid "Portuguese"
+msgstr "Portugiesisch (Br)"
+
+#. Programmer's name for it: rsRo
+#: languages.pas:26
+msgid "Romanian"
+msgstr "Rumänisch"
+
+#. Programmer's name for it: rsRu
+#: languages.pas:27
+msgid "Russian"
+msgstr "Russisch"
+
+#. Programmer's name for it: rsSr
+#: languages.pas:31
+msgid "Serbian"
+msgstr "Serbisch"
+
+#. Programmer's name for it: rsSk
+#: languages.pas:28
+msgid "Slovak"
+msgstr "Slowakisch"
+
+#. Programmer's name for it: rsSl
+#: languages.pas:29
+msgid "Slovenian"
+msgstr "Slowenisch"
+
+#. Programmer's name for it: rsEs
+#: languages.pas:13
+msgid "Spanish"
+msgstr "Spanisch"
+
+#. Programmer's name for it: rsSv
+#: languages.pas:32
+msgid "Swedish"
+msgstr "Schwedisch"
+
+#. Programmer's name for it: rsTr
+#: languages.pas:33
+msgid "Turkish"
+msgstr "Türkisch"
+
+#. Programmer's name for it: rsUk
+#: languages.pas:34
+msgid "Ukrainian"
+msgstr "Ukrainisch"
+

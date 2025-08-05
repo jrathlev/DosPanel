@@ -1,0 +1,917 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Delphi units\n"
+"POT-Creation-Date: 2025-07-20 12:19+0200\n"
+"PO-Revision-Date: 2025-07-20 12:24+0200\n"
+"Last-Translator: J. Rathlev <kontakt@rathlev-home.de>\n"
+"Language-Team: Xavier Lasserre <xavierlasserre@orange.fr>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.6\n"
+"X-Poedit-SourceCharset: iso-8859-1\n"
+
+msgid "No errors on COM connection"
+msgstr "Aucune erreur sur la connexion au port COM"
+
+msgid "Error opening COM port"
+msgstr "Erreur à l'ouverture du port COM"
+
+msgid "Error setting COM port state"
+msgstr "Erreur lors de la définition de l'état du port COM"
+
+msgid "Error flushing COM buffers"
+msgstr "Erreur de remise à zéro des mémoires"
+
+msgid "Error initializing COM port"
+msgstr "Erreur d'initialisation du port COM"
+
+msgid "Error opening \"%s\""
+msgstr "Erreur à l'ouverture \"%s\""
+
+msgid "Error creating \"%s\""
+msgstr "Erreur à la création du \"%s\""
+
+msgid "Error reading from \"%s\""
+msgstr "Erreur de lecture du \"%s\""
+
+msgid "Error extracting from \"%s\""
+msgstr "Erreur d'extraction du \"%s\""
+
+msgid "Error writing to \"%s\""
+msgstr "Erreur à l'écriture \"%s\""
+
+msgid "Error verifying \"%s\""
+msgstr "Erreur à la vérification \"%s\""
+
+msgid "Error closing \"%s\""
+msgstr "Erreur à la fermeture du \"%s\""
+
+msgid "Error setting attributes of \"%s\""
+msgstr "Erreur lors de la définition des attributs \"%s\""
+
+msgid "Error setting timestamps of \"%s\""
+msgstr "Erreur à l'écriture de l'horodateurs \"%s\""
+
+msgid "Error setting permissions of \"%s\""
+msgstr "Erreur lors de la définition de l'autorisation pour \"%s\""
+
+msgid "Error writing directory entry: \"%s\""
+msgstr "Erreur d'écriture entrée du répertoire : \"%s\""
+
+msgid "Error adding directory to \"%s\""
+msgstr "Erreur d'ajout de répertoire à \" %s\""
+
+msgid "Error adding file to \"%s\""
+msgstr "Erreur d'ajout de fichier à \" %s\""
+
+msgid "Error adding stream to \"%s\""
+msgstr "Erreur d'ajout de flux à \" %s\""
+
+msgid "Error comparing file from \"%s\" to \"%s\""
+msgstr "Erreur de comparaison du fichier de \" %s\" à \" %s\""
+
+msgid "Error writing end record"
+msgstr "Erreur d'écriture de l'enregistrement de fin"
+
+msgid "File not found: \"%s\""
+msgstr "Fichier non trouvé : \"%s\""
+
+msgid "System error: %s"
+msgstr "Erreur système : %s"
+
+msgid "No errors"
+msgstr "Aucune erreur"
+
+msgid "Error - "
+msgstr "Erreur - "
+
+msgid "Error(2) - "
+msgstr "Erreur(2) - "
+
+msgid "Warning - "
+msgstr "Avertissementement - "
+
+msgid "Info - "
+msgstr "Information - "
+
+msgid "Could not create file"
+msgstr "Impossible de créer le fichier"
+
+msgid "Could not open file"
+msgstr "Impossible d'ouvrir le fichier"
+
+msgid "Could not close file"
+msgstr "Impossible de fermer le fichier"
+
+msgid "Could not read from file"
+msgstr "Impossible de lire le fichier"
+
+msgid "Could not write to file"
+msgstr "Impossible d'écrire dans le fichier"
+
+msgid "Attributes could not be set"
+msgstr "Les attributs du fichier n'ont pas pu être définis"
+
+msgid "Low disk space"
+msgstr "Espace disque réduit"
+
+msgid "Illegal file header"
+msgstr "L'en-tête du fichier est illégal"
+
+msgid "Corrupt file"
+msgstr "Fichier corrompu"
+
+msgid "Encryption failed"
+msgstr "Échec de chiffrement"
+
+msgid "Decryption failed"
+msgstr "Échec de déchiffrement"
+
+msgid "Verification failed"
+msgstr "Échec de vérification"
+
+msgid "Path too long"
+msgstr "Chemin trop long"
+
+msgid "File not found"
+msgstr "Fichier non trouvé"
+
+msgid "Timestamp could not be set"
+msgstr "Impossible d'écrire dans l'horodateur"
+
+msgid "Error copying document summary"
+msgstr "Erreur à la copie des autres flux de données"
+
+msgid "Timeout error on copying file"
+msgstr "Délai d'expiration de la copie du fichier"
+
+msgid "Undefined stream"
+msgstr "Flux non défini"
+
+msgid "Permissions could not be copied"
+msgstr "Les autorisations ne peuvent pas être copiées"
+
+msgid "File already exists"
+msgstr "Ce fichier existe déjà"
+
+msgid "Size mismatch"
+msgstr "Incohérence de taille"
+
+msgid "Could not open destination file for verification"
+msgstr "Impossible d'ouvrir le fichier de destination pour vérification"
+
+msgid "Could not create directory"
+msgstr "Impossible de copier le dossier"
+
+msgid "Could not read from FTP"
+msgstr "Impossible de lire par FTP"
+
+msgid "Could not write to FTP"
+msgstr "Impossible d'écrire par FTP"
+
+msgid "Could not connect to FTP server"
+msgstr "Erreur de connexion au serveur FTP"
+
+msgid "FTP connection was closed by server"
+msgstr "Connexion FTP terminée"
+
+msgid "Could not open FTP data connection"
+msgstr "Impossible d'ouvrir la connexion FTP de données"
+
+msgid "Timeout error on copying file via FTP"
+msgstr "Délai d'expiration de la copie du fichier par FTP"
+
+msgid "Different content"
+msgstr "Contenu différent"
+
+msgid "Error creating new zip segment"
+msgstr "Erreur lors de la création d'un nouveau segment zip"
+
+msgid "Illegal zip signature"
+msgstr "Mauvaise signature zip"
+
+msgid "Could not extract file"
+msgstr "Impossible d'extraire le fichier"
+
+msgid "Unsupported file format"
+msgstr "Le format du fichier n'est pas supporté"
+
+msgid "Could not rename temporary file"
+msgstr "Impossible de renommer le fichier temporaire"
+
+msgid "Error reading next zip segment"
+msgstr "Erreur de lecture du prochain segment zip"
+
+msgid "Error copying alternate data streams"
+msgstr "Erreur de la copie des autres flux de données"
+
+msgid "Error deleting file"
+msgstr "Erreur d'effacement du fichier à \" %s\""
+
+msgid "Error renaming file"
+msgstr "Erreur de renommer du fichier"
+
+#. Programmer's name for it: rsZipFormat
+#: FileConsts.pas:85
+msgid "Invalid zip format"
+msgstr "Format zip non valide"
+
+msgid "Terminated by user"
+msgstr "Abandonné par l'utilisateur"
+
+msgid "Unknown error code ($%.8x)"
+msgstr "Code d'erreur inconnu ($%.8x)"
+
+msgid "Copy"
+msgstr "Copie"
+
+msgid "gzip"
+msgstr "gzip"
+
+msgid "gunzip"
+msgstr "gunzip"
+
+msgid "Zip"
+msgstr "Zip"
+
+msgid "Unzip"
+msgstr "Unzip"
+
+msgid "Encrypt"
+msgstr "Chiffrer"
+
+msgid "Decrypt"
+msgstr "Déchiffrer"
+
+msgid "File information not available"
+msgstr "Information sur le fichier indisponible"
+
+msgid "Description: "
+msgstr "Description : "
+
+msgid "Company: "
+msgstr "Société : "
+
+msgid "Copyright: "
+msgstr "Copyright : "
+
+msgid "File version: "
+msgstr "Version du fichier : "
+
+msgid "Last modified: "
+msgstr "Dernière modification : "
+
+msgid "Format error: "
+msgstr "Erreur de format : "
+
+msgid "Global info"
+msgstr "Informations globales"
+
+msgid "Document info"
+msgstr "Descriptif du document"
+
+msgid "User info"
+msgstr "Informations sur l'utilisateur"
+
+msgid "Audio info"
+msgstr "Informations sur l'audio"
+
+msgid "Video info"
+msgstr "Informations sur la vidéo"
+
+msgid "Image info"
+msgstr "Informations sur l'image"
+
+msgid "Media info"
+msgstr "Informations sur le média"
+
+msgid "Title"
+msgstr "Titre"
+
+msgid "Subject"
+msgstr "Sujet"
+
+msgid "Author"
+msgstr "Auteur"
+
+msgid "Keywords"
+msgstr "Mots clés"
+
+msgid "Comments"
+msgstr "Commentaires"
+
+msgid "Template"
+msgstr "Modèle"
+
+msgid "Last saved by"
+msgstr "Dernier enregistrement par"
+
+msgid "Revision Number"
+msgstr "Numéro de révision"
+
+msgid "Total editing time"
+msgstr "Durée totale d'édition"
+
+msgid "Last printed"
+msgstr "Imprimé en dernier"
+
+msgid "Content created"
+msgstr "Contenu créé"
+
+msgid "Date last saved"
+msgstr "Date du dernier enregistrement"
+
+msgid "Pages"
+msgstr "Pages"
+
+msgid "Word count"
+msgstr "Nombre de mots"
+
+msgid "Character count"
+msgstr "Nombre de caractères"
+
+msgid "Thumbnail"
+msgstr "Miniature"
+
+msgid "Program name"
+msgstr "Nom de programme"
+
+msgid "Security"
+msgstr "Sécurité"
+
+msgid "Category"
+msgstr "Catégorie"
+
+msgid "Presentation format"
+msgstr "Format de présentation"
+
+msgid "Byte count"
+msgstr "Nombre d'octet"
+
+msgid "Line count"
+msgstr "Nombre de lignes"
+
+msgid "Paragraph count"
+msgstr "Nombre de paragraphes"
+
+msgid "Slides"
+msgstr "Diapos"
+
+msgid "Notes"
+msgstr "Notes"
+
+msgid "Hidden elements"
+msgstr "Éléments cachés"
+
+msgid "Clips"
+msgstr "Clips"
+
+msgid "Scale"
+msgstr "Échelle"
+
+msgid "Heading pairs"
+msgstr "Paires d'en-têtes"
+
+msgid "Document parts"
+msgstr "Composants du document"
+
+msgid "Manager"
+msgstr "Manager"
+
+msgid "Company"
+msgstr "Société"
+
+msgid "Links to update"
+msgstr "Liens pour mettre à jour"
+
+msgid "Yes"
+msgstr "Oui"
+
+msgid "No"
+msgstr "Non"
+
+msgid "FTP connection"
+msgstr "Connexion FTP"
+
+msgid "Trying to connect to FTP server"
+msgstr "Tentative de connexion au serveur FTP"
+
+msgid "Connection to FTP server established"
+msgstr "La connexion au serveur FTP est établie"
+
+msgid "Connection to FTP server failed"
+msgstr "Erreur de connexion au serveur FTP"
+
+msgid "Connection to FTP server: %s:%u"
+msgstr "Connexion au serveur FTP : %s:%u"
+
+msgid ""
+"Connection to FTP server: %s:%u\n"
+"for user: %s\n"
+"requires a password!"
+msgstr ""
+"Connexion au serveur FTP : %s:%u\n"
+"pour client: %s\n"
+"requiert un mot de passe !"
+
+msgid ""
+"Connection to FTP proxy server: %s:%u\n"
+"for user: %s\n"
+"requires a password!"
+msgstr ""
+"Connexion au proxy du serveur FTP : %s:%u\n"
+"pour client : %s\n"
+"requiert un mot de passe!"
+
+msgid "FTP connection lost!"
+msgstr "FTP connexion perdue !"
+
+msgid "Trying to reconnect"
+msgstr "Essaie de se reconnecter"
+
+msgid "FTP welcome message:"
+msgstr "Message de bienvenue FTP :"
+
+msgid "FTP status query:"
+msgstr "Requête d'état du FTP :"
+
+msgid "Supported features: "
+msgstr "Fonctions prises en charge : "
+
+msgid "Response code: "
+msgstr "Code de réponse : "
+
+msgid "Last FTP response: "
+msgstr "Dernière réponse FTP : "
+
+msgid "Reported error: "
+msgstr "Erreur signalée : "
+
+msgid "Unexpected response to command: "
+msgstr "Réponse inattendue de commande : "
+
+msgid "Timeout on command: "
+msgstr "Délai d'expiration lors de la commande: "
+
+msgid "FTP root directory: \"%s\""
+msgstr "Répertoire racine FTP : \"%s\""
+
+msgid "Current FTP directory: \"%s\""
+msgstr "Répertoire actif FTP : \"%s\""
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Serial number"
+msgstr "N° de série"
+
+msgid "Issuer"
+msgstr "Émetteur"
+
+msgid "Valid until"
+msgstr "Valide jusqu'au"
+
+msgid "Fingerprint"
+msgstr "Empreinte digitale"
+
+msgid "Error verifying server certificate"
+msgstr "Erreur de vérification du certificat du serveur"
+
+msgid "Error (left/right parenthesis)"
+msgstr "Erreur (parenthèses gauche/droite)"
+
+msgid "Input error (missing left parenthesis)"
+msgstr "Erreur d'entrée (manquant parenthèse gauche)"
+
+msgid "Input error (empty parentheses)"
+msgstr "Erreur d'entrée (parenthèses vides)"
+
+msgid "Division by zero"
+msgstr "Division par zéro"
+
+msgid "Invalid argument"
+msgstr "Argument incorrect"
+
+msgid "Overflow on operation"
+msgstr "Opération à débordement"
+
+msgid "Invalid expression"
+msgstr "Expression non valide"
+
+msgid "Unexpected operator"
+msgstr "Opérateur inattendu"
+
+msgid "Missing operator"
+msgstr "Opérateur manquant"
+
+msgid "Power with invalid (negative) base"
+msgstr "Puissance avec base invalide (négative)"
+
+msgid "Zero to power of zero"
+msgstr "Zéro puissance zéro"
+
+msgid "Divide zero by zero"
+msgstr "Zéro divisé par zéro"
+
+msgid "Invalid combination of operands"
+msgstr "Combinaison incorrecte d'opérandes"
+
+msgid "Invalid character"
+msgstr "Caractère non valide"
+
+msgid "Invalid argument (potential overflow)"
+msgstr "Invalid argument (débordement potentiel)"
+
+msgid "Low memory (\"stack overflow\")"
+msgstr "Mémoire insuffisante (\"débordement de pile\")"
+
+msgid "Low memory (\"string overflow\")"
+msgstr "Mémoire insuffisante (\"dépassement d'espace de chaîne\")"
+
+msgid "Unknown error"
+msgstr "Erreur inconnue"
+
+msgid "Unknown system error code"
+msgstr "Code Erreur système inconnu"
+
+msgid "Error code"
+msgstr "Code d’erreur"
+
+msgid "Windows error"
+msgstr "Windows - Erreur"
+
+msgid "Storage error"
+msgstr "Erreur de stockage"
+
+msgid "Remote procedure call error"
+msgstr "Erreur d'appel de procédure distante"
+
+msgid "Interface error"
+msgstr "Erreur de l'interface"
+
+msgid "Dispatch error"
+msgstr "Erreur d'expédition"
+
+msgid "Error in SHFileOperation"
+msgstr "Erreur en SHFileOperation"
+
+msgid "ShellExecute error"
+msgstr "Erreur de ShellExecute"
+
+msgid "%s is not a valid hex value"
+msgstr "%s n'est pas une valeur hexadécimale valide"
+
+msgid "%s is not a valid octal value"
+msgstr "%s n'est pas une valeur octale valide"
+
+msgid "%s is not a valid binary value"
+msgstr "%s n'est pas une valeur binaire valide"
+
+msgid "&System default"
+msgstr "&Système par défaut"
+
+msgid "Changing language requires the program to be restarted!"
+msgstr "Le changement de langue exige le redémarrage du programme !"
+
+msgid "Illegal regular expression!"
+msgstr "Expression régulière non conforme !"
+
+msgid "Illegal mask!"
+msgstr "Masque non conforme!"
+
+msgid "Error executing process"
+msgstr "Erreur d'exécution du processus"
+
+msgid "Stdout pipe creation failed"
+msgstr "Création de tuyau Stdout échouée"
+
+msgid "DuplicateHandle failed"
+msgstr "La copie du Handle a échouée"
+
+msgid "Closing handle failed"
+msgstr "Erreur à la fermeture du handle"
+
+msgid "%s%s (Version %s, Build %d, %s)"
+msgstr "%s%s (Version %s, Build %d, %s)"
+
+msgid "%s (Version %s, %s)"
+msgstr "%s (Version %s, %s)"
+
+msgid "Windows 11"
+msgstr "Windows 11"
+
+msgid "Professional with Media Center"
+msgstr "Avec Media Center Professionnel"
+
+msgid "Server Enterprise for Itanium-based Systems"
+msgstr "Serveur Enterprise pour Système basé Itanium"
+
+msgid "Essential Server without Hyper-V"
+msgstr "Essential Server sans Hyper-V"
+
+msgid "Unlicensed product"
+msgstr "Produit sans licence"
+
+msgid "Beginning of spring"
+msgstr "Début du printemps"
+
+msgid "Beginning of summer"
+msgstr "Début de l'été"
+
+msgid "Beginning of autumn"
+msgstr "Début de l'automne"
+
+msgid "Beginning of winter"
+msgstr "Début de l'hiver"
+
+msgid "very weak"
+msgstr "très faible"
+
+msgid "weak"
+msgstr "faible"
+
+msgid "good"
+msgstr "bon"
+
+msgid "strong"
+msgstr "fort"
+
+msgid "very strong"
+msgstr "très fort"
+
+msgid ""
+"%s Dr. J. Rathlev\n"
+" 24222 Schwentinental, Germany"
+msgstr ""
+"%s Dr. J. Rathlev\n"
+" 24222 Schwentinental, Germany"
+
+msgid "%s Dr. J. Rathlev"
+msgstr "%s Dr. J. Rathlev"
+
+msgid "not available"
+msgstr "non valable"
+
+msgid "unlabeled"
+msgstr "innommé"
+
+msgid "Connect to .."
+msgstr "Connecter à .."
+
+msgid "<Unknown>"
+msgstr "<Inconnu>"
+
+msgid "Strike any key to continue ..."
+msgstr "Appuyez sur n'importe quelle touche pour continuer ..."
+
+msgid "Volume Shadow Copy could not be initialized on this system!"
+msgstr "Volume Shadow Copy n'a pas pu être initialisé sur ce système !"
+
+msgid "Initializing IVssBackupComponents Interface ..."
+msgstr "Initialisation de l'interface IVssBackupComponents ..."
+
+msgid "Initialize writer metadata ..."
+msgstr "Initialiser les métadonnées du rédacteur ..."
+
+msgid "Gathering writer metadata ..."
+msgstr "Collecte des métadonnées de l’écrivain ..."
+
+msgid "Gathering writer status ..."
+msgstr "Obtention du statut d’écrivain ..."
+
+msgid "Discover directly excluded components ..."
+msgstr "Découvrez les composants directement exclus..."
+
+msgid "Discover components that reside outside the shadow set ..."
+msgstr "Découvrez les composants qui résident en dehors du jeu d’ombres ..."
+
+msgid "Discover all excluded components ..."
+msgstr "Découvrez tous les composants exclus..."
+
+msgid "Discover excluded writers ..."
+msgstr "Découvrez les écrivains exclus..."
+
+msgid "Discover explicitly included components ..."
+msgstr "Découvrez les composants explicitement inclus ..."
+
+msgid "Select explicitly included components ..."
+msgstr "Sélectionnez les composants explicitement inclus ..."
+
+msgid "Saving the backup components document ..."
+msgstr "Sauvegarde du document des composants de sauvegarde ..."
+
+msgid "Add volumes to snapshot set ..."
+msgstr "Ajouter des volumes à Snapshot set ..."
+
+msgid "Preparing for backup ..."
+msgstr "Préparation à la sauvegarde ..."
+
+msgid "Creating the shadow copy ..."
+msgstr "Création du cliché instantané ..."
+
+msgid "Shadow copy set successfully created"
+msgstr "Création réussie d'un jeu de copies d'ombre"
+
+msgid "Querying all shadow copies in the system ..."
+msgstr "Interroger toutes les copies fantômes du système ..."
+
+msgid "Querying all shadow copies with the SnapshotSetID %s ..."
+msgstr ""
+"Interrogation de toutes les copies fantômes avec le SnapshotSetID %s ..."
+
+msgid "Creating shadow set {%s} ..."
+msgstr "Création d’un jeu d’ombres {%s} ..."
+
+msgid "Completing the backup ..."
+msgstr "Terminant la sauvegarde ..."
+
+msgid "Unknown"
+msgstr "Inconnu"
+
+msgid "Ready"
+msgstr "Prêt"
+
+msgid "Queued"
+msgstr "En attente"
+
+msgid "Running"
+msgstr "Exécution en cours"
+
+msgid "Disabled"
+msgstr "Désactivé"
+
+msgid "Start a program"
+msgstr "Démarrer un programme"
+
+msgid "File handler"
+msgstr "Fichier handler"
+
+msgid "Send an email"
+msgstr "Envoyer un courriel"
+
+msgid "Display a message"
+msgstr "Afficher un message"
+
+msgid "On an event"
+msgstr "Sur un événement"
+
+msgid "One time"
+msgstr "Une fois"
+
+msgid "Daily"
+msgstr "Chaque jour"
+
+msgid "Weekly"
+msgstr "Chaque semaine"
+
+msgid "Monthly"
+msgstr "Chaque mois"
+
+msgid "On idle"
+msgstr "Au ralenti"
+
+msgid "On task creation/modification"
+msgstr "Lors de la création/modification de tâches"
+
+msgid "At startup"
+msgstr "Au démarrage"
+
+msgid "At log on"
+msgstr "À l'ouverture de session"
+
+msgid "On session state change"
+msgstr "Au changement d'état de session"
+
+msgid "Custom trigger"
+msgstr "Déclencheur personnalisé"
+
+msgid "First"
+msgstr "Premier"
+
+msgid "Second"
+msgstr "Deuxième"
+
+msgid "Third"
+msgstr "Troisième"
+
+msgid "Fourth"
+msgstr "Quatrième"
+
+msgid "Fifth"
+msgstr "Cinquième"
+
+msgid "Last"
+msgstr "Dernier"
+
+msgid "second"
+msgstr "seconde"
+
+msgid "seconds"
+msgstr "secondes"
+
+msgid "every second"
+msgstr "chaque seconde"
+
+msgid "every %u seconds"
+msgstr "toutes les %u secondes"
+
+msgid "minute"
+msgstr "minute"
+
+msgid "minutes"
+msgstr "minutes"
+
+msgid "every minute"
+msgstr "chaque minute"
+
+msgid "every %u minutes"
+msgstr "toutes les %u minutes"
+
+msgid "hour"
+msgstr "heure"
+
+msgid "hours"
+msgstr "heures"
+
+msgid "every hour"
+msgstr "toutes les heures"
+
+msgid "every %u hours"
+msgstr "toutes les %u heures"
+
+msgid "day"
+msgstr "jour"
+
+msgid "%u days"
+msgstr "%u jours"
+
+msgid "every day"
+msgstr "chaque jour"
+
+msgid "every %u days"
+msgstr "tous les %u jours"
+
+msgid "At %0:s on %1:s"
+msgstr "À %0:s le %1:s"
+
+msgid "At %s every day"
+msgstr "À %s tous les jours"
+
+msgid "At %0:s every %1:u days"
+msgstr "À %0:s tous les %1:u jours"
+
+msgid "At %0:s every %1:s of every week, starting %2:s"
+msgstr "À %0:s tous les %1:s semaine, à partir du %2:s"
+
+msgid "At %0:s every %1:s of every %2:u weeks, starting %3:s"
+msgstr "À %0:s tous les %1:s chaque %2:u semaine, à partir du %3:s"
+
+msgid "At %0:s on %1:s of %2:s, starting %3:s"
+msgstr "À %0:s le %1:s de %2:s, à partir du %3:s"
+
+msgid "Runs on the %0:s %1:s, each %2:s starting %3:s"
+msgstr "S'exécute le %0:s %1:s, de chaque %2:s à partir du %3:s"
+
+msgid "At logon of any user"
+msgstr "À l'ouverture de session d'un utilisateur"
+
+msgid "At logon of %s"
+msgstr "À l'ouverture de session de %s"
+
+msgid "At system startup"
+msgstr "Au démarrage"
+
+msgid "When computer is idle"
+msgstr "Lorsque l’ordinateur est inactif"
+
+msgid ", starting at %0:s on %1:s"
+msgstr ", démarrage à %0:s le %1:s"
+
+msgid "When task is created or modified"
+msgstr "Lors de la création ou de la modification de la tâche"
+
+msgid " - After triggered, repeat every %0:s for a duration of %1:s"
+msgstr ""
+" - Après le déclenchement, répétez tous les %0:s pendant une durée de %1:s"
+
+msgid "deprecated"
+msgstr "déconseillée"
+
+msgid "Windows XP"
+msgstr "Windows XP"
+
+msgid "Windows Vista"
+msgstr "Windows Vista"
+
+msgid "Windows 7"
+msgstr "Windows 7"
+
+msgid "Windows 10"
+msgstr "Windows 10"

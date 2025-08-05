@@ -5,15 +5,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Delphi dialogs - German translation\n"
-"POT-Creation-Date: 2024-10-25 12:38+0200\n"
-"PO-Revision-Date: 2025-02-10 17:53+0100\n"
+"POT-Creation-Date: 2025-06-11 11:55+0200\n"
+"PO-Revision-Date: 2025-06-11 11:56+0200\n"
 "Last-Translator: J. Rathlev <kontakt@rathlev-home.de>\n"
 "Language-Team: J. Rathlev <info@rathlev-home.de>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 msgid "Show password"
@@ -307,23 +307,19 @@ msgstr "Rahmen um Etikett"
 msgid "Import/export format"
 msgstr "Import-/Exportformat"
 
-msgid "Character between columns"
-msgstr "Zeichen zwischen den Spalten"
-
-msgid "other"
-msgstr "anderes"
-
 msgid "Column width"
 msgstr "Spaltenbreite"
-
-msgid "fixed"
-msgstr "fest"
 
 msgid "variable"
 msgstr "variabel"
 
-msgid "Use embrace characters  (\")"
-msgstr "Mit Umschließungszeichen (\")"
+msgid "fixed"
+msgstr "fest"
+
+#. ExportDialog.rgDecimal.Items.Strings
+#: ExportDlg.dfm:264
+msgid "Period"
+msgstr "Punkt"
 
 msgid "Description:"
 msgstr "Beschreibung:"
@@ -700,6 +696,9 @@ msgstr "LPT-Auswahl"
 msgid "Printer (Port/Irq)"
 msgstr "Drucker (Port/Irq)"
 
+msgid "other"
+msgstr "anderes"
+
 msgid "Port addr.:"
 msgstr "Port-Adr.:"
 
@@ -768,6 +767,24 @@ msgstr "Alle auswählen"
 
 msgid "Select none"
 msgstr "Keine auswählen"
+
+msgid "All files (*.*)|*.*"
+msgstr "Alle Dateien (*.*)|*.*"
+
+#. OpenFilesDialog.paFiles.OKBtn.Caption
+#: OpenFilesDlg.dfm:281
+msgid "Add selected files"
+msgstr "Ausgewählte Dateien hinzufügen"
+
+#. OpenFilesDialog.paFiles.FilterBtn.Caption
+#: OpenFilesDlg.dfm:372
+msgid "Add selected filter"
+msgstr "Ausgewähltes Filter hinzufügen"
+
+#. OpenFilesDialog.paSubDir.leSubdir.EditLabel.Caption
+#: OpenFilesDlg.dfm:476
+msgid "Subdirectory:"
+msgstr "Unterverzeichnis:"
 
 msgid "Printer settings"
 msgstr "Drucker-Einstellungen"
@@ -859,8 +876,6 @@ msgstr "Farbe auswählen"
 msgid "Additional colors:"
 msgstr "Zusätzliche Farben:"
 
-#. SelectColorDialog.Label2.Caption
-#: SelectColorDlg.dfm:32
 msgid "Basic colors:"
 msgstr "Standardfarben:"
 
@@ -968,9 +983,6 @@ msgstr "Dateiname:"
 
 msgid "File type:"
 msgstr "Datei-Typ:"
-
-msgid "All files (*.*)|*.*"
-msgstr "Alle Dateien (*.*)|*.*"
 
 msgid "Show text"
 msgstr "Text anzeigen"
@@ -1252,6 +1264,19 @@ msgstr ""
 
 msgid "Edit mail recipient"
 msgstr "Mail-Empfänger bearbeiten"
+
+#: OpenFilesDlg.pas:73
+msgid "No files selected - close anyway?"
+msgstr "Keine Dateien ausgewählt - trotzdem schließen?"
+
+#. Build filter from all files in the selected directory
+#: OpenFilesDlg.pas:157
+msgid "all"
+msgstr "alle"
+
+#: OpenFilesDlg.pas:158
+msgid " files"
+msgstr "-Dateien"
 
 msgid "Canceled by user"
 msgstr "Vom Benutzer abgebrochen"

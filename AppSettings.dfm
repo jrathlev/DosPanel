@@ -259,7 +259,7 @@ object AppSettingsDialog: TAppSettingsDialog
       Top = 85
       Width = 161
       Height = 36
-      Caption = 'Close also DosPanel application automatically  '
+      Caption = 'Close also DosPanel application automatically'
       TabOrder = 4
       WordWrap = True
     end
@@ -1861,8 +1861,45 @@ object AppSettingsDialog: TAppSettingsDialog
         end
       end
     end
+    object tsConsole: TTabSheet
+      Caption = 'Console'
+      ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
+      object paConsole: TPanel
+        Left = 0
+        Top = 0
+        Width = 338
+        Height = 273
+        Align = alClient
+        BevelOuter = bvNone
+        ParentBackground = False
+        TabOrder = 0
+        object cbNoConsole: TCheckBox
+          Left = 15
+          Top = 26
+          Width = 181
+          Height = 17
+          Caption = 'Hide console'
+          TabOrder = 0
+          OnClick = cbNoConsoleClick
+        end
+        object cbDelConFiles: TCheckBox
+          Left = 15
+          Top = 55
+          Width = 291
+          Height = 31
+          Caption = 'Delete console output files when DosPanel is closed'
+          TabOrder = 1
+          WordWrap = True
+        end
+      end
+    end
   end
   object OpenDialog: TOpenDialog
+    Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
     Left = 440
     Top = 10
   end

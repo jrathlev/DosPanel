@@ -1,0 +1,590 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: DosPanel\n"
+"POT-Creation-Date: 2025-08-03 15:44+0200\n"
+"PO-Revision-Date: 2025-08-03 15:44+0200\n"
+"Last-Translator: J. Rathlev <kontakt@rathlev-home.de>\n"
+"Language-Team: J. Rathlev <kontakt@rathlev.home.de>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.6\n"
+"X-Poedit-SourceCharset: ISO-8859-1\n"
+
+msgid "Edit settings for DOS application"
+msgstr "Modifier les paramètres de l'application DOS"
+
+msgid "Category:"
+msgstr "Catégorie :"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Name:"
+msgstr "Nom :"
+
+msgid "Options:"
+msgstr "Options :"
+
+msgid "Memory size:"
+msgstr "Taille de la mémoire :"
+
+msgid "Instructions per ms:"
+msgstr "Instructions par ms :"
+
+msgid "Full screen"
+msgstr "Plein écran"
+
+msgid "Close DOSBox automatically at end of execution"
+msgstr "Fermer DOSBox automatiquement à la fin de l'exécution"
+
+msgid "16 MB"
+msgstr "16 MB"
+
+msgid "8 MB"
+msgstr "8 MB"
+
+msgid "32 MB"
+msgstr "32 MB"
+
+msgid "48 MB"
+msgstr "48 MB"
+
+msgid "64 MB"
+msgstr "64 MB"
+
+msgid "Set automatically"
+msgstr "Définir automatiquement"
+
+msgid "Set to maximum"
+msgstr "Réglé au maximum"
+
+msgid "Use preset"
+msgstr "Utilisez le préréglage"
+
+msgid "Close also DosPanel application automatically"
+msgstr "Fermer également l'application DosPanel automatiquement"
+
+msgid "Mount drive to path:"
+msgstr "Monter l'entraînement jusqu'au chemin :"
+
+msgid "Select configuration"
+msgstr "Sélectionner la configuration"
+
+msgid "Global"
+msgstr "Global"
+
+msgid "Application specific"
+msgstr "Spécifique à l’application"
+
+msgid "Mount CD drive:"
+msgstr "Monter le lecteur de CD :"
+
+msgid "Select ISO image"
+msgstr "Sélectionner l'image ISO"
+
+msgid "to physical drive"
+msgstr "vers le lecteur physique"
+
+msgid "to ISO image"
+msgstr "vers une image ISO"
+
+msgid "Edit configuration"
+msgstr "Modifier la configuration"
+
+msgid "Default options"
+msgstr "Options par défaut"
+
+msgid "General settings"
+msgstr "Paramètres généraux"
+
+msgid "Edit commands"
+msgstr "Modifier les commandes"
+
+msgid "Select executable to run on startup"
+msgstr "Sélectionner l'exécutable à lancer au démarrage"
+
+msgid "Select icon"
+msgstr "Sélectionnez une icône"
+
+msgid "Select manual"
+msgstr "Sélectionner le manuel"
+
+msgid "Select mapper file"
+msgstr "Sélectionner le fichier mappeur"
+
+msgid "Additional commands on startup:"
+msgstr "Commandes supplémentaires au démarrage :"
+
+msgid "Description:"
+msgstr "Description :"
+
+msgid "Application to be started:"
+msgstr "Application à démarrer :"
+
+msgid "Icon file:"
+msgstr "Fichier d'icônes :"
+
+msgid "Manual:"
+msgstr "Manuel :"
+
+msgid "Mapper file:"
+msgstr "Fichier de mappage :"
+
+msgid "Parameters:"
+msgstr "Paramètres :"
+
+msgid "Audio mixer"
+msgstr "Mélangeur audio"
+
+msgid "Channel:"
+msgstr "Canal:"
+
+msgid "Master"
+msgstr "Maître"
+
+msgid "Disney"
+msgstr "Disney"
+
+msgid "Speaker"
+msgstr "L'enceinte"
+
+msgid "Gravis UltraSound"
+msgstr "Gravis UltraSound"
+
+msgid "Sound Blaster"
+msgstr "Sound Blaster"
+
+msgid "FM Stereo"
+msgstr "FM Stéréo"
+
+msgid "CD Audio"
+msgstr "CD Audio"
+
+msgid "Add channel"
+msgstr "Ajouter un canal"
+
+msgid "Add"
+msgstr "Ajouter"
+
+msgid "Remove selected channel"
+msgstr "Supprimer le canal sélectionné"
+
+msgid "Remove"
+msgstr "Enlever"
+
+msgid "Remove all channels"
+msgstr "Supprimer tous les canaux"
+
+msgid "Volume control:"
+msgstr "Réglage du volume :"
+
+msgid "Left:"
+msgstr "A gauche :"
+
+msgid "Right:"
+msgstr "A droite :"
+
+msgid "Connect sliders"
+msgstr "Connecter les curseurs"
+
+msgid "Move selected channel up"
+msgstr "Déplacer le canal sélectionné vers le haut"
+
+msgid "Move selected channel down"
+msgstr "Déplacer le canal sélectionné vers le bas"
+
+msgid "Console"
+msgstr "Console"
+
+msgid "Hide console"
+msgstr "Cacher la console"
+
+msgid "Delete console output files when DosPanel is closed"
+msgstr ""
+"Supprimer les fichiers de sortie de la console lorsque DosPanel est fermé"
+
+msgid "Manage DOSBox applications"
+msgstr "Gérer les applications DOSBox"
+
+msgid "Name"
+msgstr "Nom"
+
+msgid "Path"
+msgstr "Chemin"
+
+msgid "Application"
+msgstr "Application"
+
+msgid "Parameters"
+msgstr "Paramètres"
+
+msgid "ISO image"
+msgstr "Image ISO"
+
+msgid "Manual"
+msgstr "Manuel"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "&Global"
+msgstr "&Global"
+
+msgid "&Language"
+msgstr "&Langue"
+
+msgid "A&pplication"
+msgstr "A&pplication"
+
+msgid "&Console output"
+msgstr "Sortie de la &console"
+
+msgid "&View"
+msgstr "&Vue"
+
+msgid "&Action"
+msgstr "&Action"
+
+msgid "&Help"
+msgstr "&Aide"
+
+msgid "&Exit"
+msgstr "&Quitter"
+
+msgid "Close DOSPanel"
+msgstr "Fermer le DOSPanel"
+
+msgid "Program"
+msgstr "Programme"
+
+msgid "&New"
+msgstr "&Nouveau"
+
+msgid "Add new application"
+msgstr "Ajouter nouvelle candidature"
+
+msgid "&Edit"
+msgstr "&Edit"
+
+msgid "Edit settings of selected application"
+msgstr "Modifier les paramètres de l'application sélectionnée"
+
+msgid "&Remove"
+msgstr "&Supprimer"
+
+msgid "Remove selected application"
+msgstr "Supprimer l'application sélectionnée"
+
+msgid "View"
+msgstr "Affichage"
+
+msgid "&Large icons"
+msgstr "&Grandes icônes"
+
+msgid "Show large icons"
+msgstr "Afficher les grandes icônes"
+
+msgid "&Small icons"
+msgstr "&Petites icônes"
+
+msgid "Show small icons"
+msgstr "Afficher les petites icônes"
+
+msgid "&List"
+msgstr "&Liste"
+
+msgid "Show list"
+msgstr "Afficher la liste"
+
+msgid "&Details"
+msgstr "&Détails:"
+
+msgid "Show details"
+msgstr "Afficher les détails"
+
+msgid "&Settings"
+msgstr "&Paramètres"
+
+msgid "Global settings"
+msgstr "Paramètres globaux"
+
+msgid "Action"
+msgstr "Action"
+
+msgid "&Run"
+msgstr "E&xécuter"
+
+msgid "Run selected DOS application"
+msgstr "Exécuter l'application DOS sélectionnée"
+
+msgid "Show &manual"
+msgstr "Show &manuel"
+
+msgid "Show manual of selected application"
+msgstr "Afficher le manuel de l'application sélectionnée"
+
+msgid "Run &DOSbox"
+msgstr "Exécuter &DOSbox"
+
+msgid "Start DOSBox without application"
+msgstr "Démarrer DOSBox sans application"
+
+msgid "&About"
+msgstr "&À propos"
+
+msgid "&Convert text"
+msgstr "&Convertir le texte"
+
+msgid "Convert Unicode text to OEM"
+msgstr "Convertir un texte Unicode en OEM"
+
+msgid "Adjust &keymapper"
+msgstr "Ajuster &keymapper"
+
+msgid "&Duplicate"
+msgstr "&Duplicate"
+
+msgid "Duplicate current application"
+msgstr "Dupliquer la demande actuelle"
+
+msgid "&Documentation"
+msgstr "&Documentation"
+
+msgid "Show program help"
+msgstr "Afficher l'aide au programme"
+
+msgid "Show &standard output"
+msgstr "Afficher la sortie de &standard"
+
+msgid "Show &error output"
+msgstr "Afficher la sortie d'&erreur"
+
+msgid "Settings for DOSBox"
+msgstr "Paramètres pour DOSBox"
+
+msgid "Select language file"
+msgstr "Sélectionner le fichier de langue"
+
+msgid "Edit mapper file"
+msgstr "Modifier le fichier de mappage"
+
+msgid "Global configuration file:"
+msgstr "Fichier de configuration globale :"
+
+msgid "Language file:"
+msgstr "Fichier de langue :"
+
+msgid "Default key mapper file:"
+msgstr "Fichier de mappeur de clés par défaut :"
+
+msgid "Path to DOSBox:"
+msgstr "Chemin d'accès à DOSBox :"
+
+msgid "Root path to DOS applications:"
+msgstr "Chemin racine des applications DOS :"
+
+msgid "Code page used in DOSBox"
+msgstr "Page de code utilisée dans DOSBox"
+
+msgid "Keyboard layout"
+msgstr "Mise en page du clavier"
+
+msgid "Detect automatically"
+msgstr "Détection automatique"
+
+msgid "Set to"
+msgstr "Définir à"
+
+msgid "Text editor:"
+msgstr "Editeur de texte :"
+
+msgid "Start DosPanel automatically"
+msgstr "Démarrage automatique de DosPanel"
+
+msgid "Convert Unicode text"
+msgstr "Convertir un texte Unicode"
+
+msgid "Select text file to be converted"
+msgstr "Sélectionner le fichier texte à convertir"
+
+msgid "Close"
+msgstr "Fermer"
+
+msgid "Convert"
+msgstr "Convertir"
+
+msgid "Convert to code page"
+msgstr "Convertir en page de code"
+
+msgid "Filename:"
+msgstr "Nom du fichier:"
+
+msgid "Miscellaneous"
+msgstr "Divers"
+
+msgid "No physical CD drives available!"
+msgstr "Aucun lecteur de CD physique n'est disponible !"
+
+msgid "Remove all mixer settings?"
+msgstr "Supprimer tous les paramètres du mélangeur ?"
+
+msgid "Image"
+msgstr "Image"
+
+msgid "Executables"
+msgstr "Exécutables"
+
+msgid "All"
+msgstr "Tous"
+
+msgid "Select file with icon for this application"
+msgstr "Sélectionner le fichier avec l'icône pour cette application"
+
+msgid "ISO images"
+msgstr "Images ISO"
+
+msgid "Select iso image to be mounted as drive %s"
+msgstr "Sélectionner l'image iso à monter en tant que lecteur %s"
+
+msgid "Text files"
+msgstr "Fichiers texte"
+
+msgid "HTML files"
+msgstr "Fichiers HTML"
+
+msgid "PDF files"
+msgstr "Fichiers PDF"
+
+msgid "Select manual for this application"
+msgstr "Sélectionner le manuel pour cette application"
+
+msgid "DOSBox key mapper files"
+msgstr "Fichiers de conversion des touches DOSBox"
+
+msgid "Select key mapper file"
+msgstr "Sélectionner le fichier de mappeur de clés"
+
+msgid ""
+"No application specific configuration found!\n"
+"Copy global configuration to application path?"
+msgstr ""
+"Aucune configuration spécifique à l'application n'a été trouvée !\n"
+"Copier la configuration globale dans le chemin de l'application ?"
+
+msgid "Edit startup commands"
+msgstr "Modifier les commandes de démarrage"
+
+msgid "List of commands"
+msgstr "Liste des commandes"
+
+msgid "Batch files"
+msgstr "Fichiers de commandes"
+
+msgid "Select executable for startup"
+msgstr "Sélection d'un exécutable pour le démarrage"
+
+msgid ""
+"The executable file must be located beneath the root path:\n"
+"%s\n"
+"Please try again!"
+msgstr ""
+"Le fichier exécutable doit être situé sous le chemin racine :\n"
+"%s\n"
+"Veuillez réessayer !"
+
+msgid "Select path to be mounted as drive %s"
+msgstr "Sélectionner le chemin à monter en tant que lecteur %s"
+
+msgid "Run DOSBox applications"
+msgstr "Exécuter des applications DOSBox"
+
+msgid " \"%s\": File \"%s\" is empty!"
+msgstr " \"%s\" : Le fichier \"%s\" est vide !"
+
+msgid " \"%s\": File \"%s\" not found!"
+msgstr " \"%s\" : Fichier \"%s\" introuvable !"
+
+msgid "dospanel-en.chm"
+msgstr "dospanel-en.chm"
+
+msgid "Help not available on this system!"
+msgstr "L'aide n'est pas disponible sur ce système !"
+
+msgid "Help file not found!"
+msgstr "Fichier d'aide introuvable !"
+
+msgid "Remove application \"%s\" from panel?"
+msgstr "Supprimer l'application \"%s\" du tableau de bord ?"
+
+msgid "Basic configuration file not found! Start application anyway?"
+msgstr ""
+"Fichier de configuration de base introuvable ! Lancer quand même "
+"l'application ?"
+
+msgid "%s not found! Please adjust your global settings!"
+msgstr "%s introuvable ! Veuillez ajuster vos paramètres globaux !"
+
+msgid ""
+"Application path not found:\n"
+"%s"
+msgstr ""
+"Chemin d'accès à l'application introuvable :\n"
+"%s"
+
+msgid "Manual for "
+msgstr "Manuel pour"
+
+msgid "Manual not found (%s)!"
+msgstr "Manuel non trouvé (%s) !"
+
+msgid ""
+"DosBox.exe not found in the specified directory!\n"
+"Adjust setting?"
+msgstr ""
+"DosBox.exe n'a pas été trouvé dans le répertoire spécifié !\n"
+"Ajuster les paramètres ?"
+
+msgid ""
+"Root path to DOS applications not found!\n"
+"Adjust setting?"
+msgstr ""
+"Le chemin racine des applications DOS est introuvable !\n"
+"Ajuster les paramètres ?"
+
+msgid "DOSBox configuration files"
+msgstr "Fichiers de configuration DOSBox"
+
+msgid "Select basic configuration file"
+msgstr "Sélection du fichier de configuration de base"
+
+msgid "DOSBox language files"
+msgstr "Fichiers de langue DOSBox"
+
+msgid "Select DOSBox program directory"
+msgstr "Sélectionner le répertoire du programme DOSBox"
+
+msgid "Select root path to DOS applications"
+msgstr "Sélectionner le chemin d'accès aux applications DOS"
+
+msgid "Programs"
+msgstr "Programmes"
+
+msgid "Select text editor"
+msgstr "Sélectionner l'éditeur de texte"
+
+msgid "Save converted text as"
+msgstr "Enregistrer le texte converti en"
+
+msgid "File not found: %s"
+msgstr "Le fichier n'a pas été trouvé : %s"

@@ -1,5 +1,7 @@
 program DosPanel;
 
+{$R 'Languages.res' 'Languages.rc'}
+
 uses
   GnuGetText in 'units\GnuGetText.pas',
   LangUtils in 'units\LangUtils.pas',
@@ -18,7 +20,7 @@ uses
 
 begin
   TP_GlobalIgnoreClass(TFont);
-  InitTranslation('','',['delphi10','units']);
+  InitTranslation(['delphi10','units']);
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TfrmMain, frmMain);

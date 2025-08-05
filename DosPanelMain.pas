@@ -40,6 +40,8 @@ const
   defConf = 'dosbox-%s.conf';
   defLang = 'german-%s.lang';
   defMap  = 'mapper-%s.map';
+  sStdOut = 'stdout.txt';
+  sStdErr = 'stderr.txt';
 
 type
   TConfigList = class(TStringList)
@@ -132,6 +134,16 @@ type
     actHelpFile: TAction;
     tbSettings: TToolButton;
     tbExit: TToolButton;
+    N6: TMenuItem;
+    itmConsole: TMenuItem;
+    itmStdOut: TMenuItem;
+    itmStdErr: TMenuItem;
+    piConsole: TMenuItem;
+    piStdOut: TMenuItem;
+    piStdErr: TMenuItem;
+    actStdOut: TAction;
+    actStdErr: TAction;
+    N7: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actExitExecute(Sender: TObject);
@@ -165,6 +177,8 @@ type
       Selected: Boolean);
     procedure actDuplicateExecute(Sender: TObject);
     procedure actHelpFileExecute(Sender: TObject);
+    procedure actStdOutExecute(Sender: TObject);
+    procedure actStdErrExecute(Sender: TObject);
   private
     { Private-Deklarationen }
     ProgVersName,
@@ -177,6 +191,7 @@ type
     Apps             : TObjectList;
     procedure SaveToIni;
     procedure SetViewStyle (AViewStyle : TViewStyle);
+    procedure ShowFile (const Filename : string);
     procedure UpdateView (const NAppName : string);
     procedure UpdateAutoStart;
     function CurrentAppIndex : integer;
@@ -195,7 +210,7 @@ implementation
 {$R *.dfm}
 
 uses Winapi.ShellApi, Winapi.ShlObj, System.StrUtils, System.Win.Registry,
-  GnuGetText, InitProg, IniFileUtils, WinUtils, ListUtils,
+  GnuGetText, InitProg, IniFileUtils, WinUtils, ListUtils, Show,
   FileCopy, MsgDialogs, StringUtils, PathUtils, WinShell, WinExecute, NumberUtils,
   ShowMemo, TxtConvertDlg;
 
@@ -265,6 +280,7 @@ const
   iniIcon   = 'IconFile';
   iniMan    = 'Manual';
   iniDesc   = 'Description';
+  iniConMd    = 'ConsoleMode';
   iniMixer  = 'Mixer';
   iniAppCfg = 'AppConfig';
   iniFull   = 'FullScreen';
@@ -296,8 +312,8 @@ begin
   InitPaths(AppDataPath,UserPath,ProgPath);
   InitVersion(ProgName,Vers,CopRgt,3,3,ProgVersName,ProgVersDate);
   IniName:=Erweiter(AppDataPath,PrgName,IniExt);
-  Languages:=TLanguageList.Create(PrgPath,LangName);
   ReadOptions;
+  Languages:=TLanguageList.Create(PrgPath);
   with Languages do begin
     Menu:=itmLanguage;
     LoadLanguageNames(SelectedLanguage);
@@ -370,6 +386,7 @@ begin
 procedure TfrmMain.FormShow(Sender: TObject);
 var
   i,n,k    : integer;
+  w        : word;
   sp,sc,si,
   sec,s,sv : string;
   na       : TDosBoxApp;
@@ -479,6 +496,11 @@ begin
         else s:=Category;
         if (length(sc)=0) and AnsiSameText(AppName,CurApp) then sc:=s;
         AppPath:=ReadString(sec,iniRoot,'');
+        w:=ReadInteger(sec,iniConMd,-1);
+        if w<0 then begin
+          if BasicSettings.HideCon then ConsoleMode:=[cmHide,cmErase] else ConsoleMode:=[];
+          end
+        else WordToSet(w,@ConsoleMode);
         MountCd:=ReadBool(sec,iniMount,MountCd);
         CdPath:=ReadString(sec,iniCdPath,'');
         IsoImage:=ReadBool(sec,iniIso,true);
@@ -529,7 +551,18 @@ begin
   end;
 
 procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  i : integer;
+  s : string;
 begin
+//  DefaultInstance.DebugLogToFile('ggt.log');
+  with Apps do for i:=0 to Count-1 do with (Items[i] as TDosBoxApp) do
+      if cmErase in ConsoleMode then begin
+    s:=AddPath(AppPath,sStdOut);
+    if FileExists(s) then DeleteFile(s);
+    s:=AddPath(AppPath,sStdErr);
+    if FileExists(s) then DeleteFile(s);
+    end;
   UpdateAutoStart;
   with HtManWin do begin
     if Visible then Close;
@@ -571,6 +604,7 @@ begin
         WriteString(sec,iniAName,AppName);
         WriteString(sec,iniCat,Category);
         WriteString(sec,iniRoot,AppPath);
+        WriteInteger(sec,iniConMd,SetToWord(@ConsoleMode));
         WriteBool(sec,iniMount,MountCd);
         WriteString(sec,iniCdPath,CdPath);
         WriteString(sec,iniHd,HardDrv);
@@ -670,12 +704,22 @@ begin
 
 procedure TfrmMain.lvAppsSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
+var
+  b : boolean;
+  n : integer;
 begin
   actRun.Enabled:=assigned(lvApps.Selected);
   actEditProgram.Enabled:=actRun.Enabled;
   actRemProgram.Enabled:=actRun.Enabled;
   actShowMan.Enabled:=actRun.Enabled;
   actMapper.Enabled:=actRun.Enabled;
+  b:=actRun.Enabled;
+  if b then begin
+    n:=CurrentAppIndex;
+    if (n>=0) then b:=cmHide in (Apps[n] as TDosBoxApp).ConsoleMode;
+    end;
+  itmConsole.Visible:=b;
+  piConsole.Visible:=b;
   end;
 
 procedure TfrmMain.piDrawItem(Sender: TObject; ACanvas: TCanvas;
@@ -687,6 +731,26 @@ begin
     end;
   end;
 
+procedure TfrmMain.ShowFile (const Filename : string);
+var
+  sl : TStringList;
+  n  : integer;
+  sn : string;
+begin
+  n:=CurrentAppIndex;
+  if (n>=0) then with Apps[n] as TDosBoxApp do begin
+    sn:=AddPath(AppPath,Filename);
+    if FileExists(sn) then begin
+      sl:= TStringList.Create;
+      sl.LoadFromFile(sn);
+      if sl.Count>0 then ShowText(AppName+': '+Filename,sl.Text)
+      else ErrorDialog (CenterPos,_('Application')+SafeFormat(_(' "%s": File "%s" is empty!'),[AppName,Filename]));
+      sl.Free;
+      end
+    else ErrorDialog (CenterPos,_('Application')+SafeFormat(_(' "%s": File "%s" not found!'),[AppName,Filename]));
+    end;
+  end;
+
 procedure TfrmMain.actExitExecute(Sender: TObject);
 begin
   Close;
@@ -694,7 +758,7 @@ begin
 
 procedure TfrmMain.actInfoExecute(Sender: TObject);
 begin
-  InfoDialog(ProgName,ProgVersName+' - '+ProgVersDate+#13+
+  InfoDialog(CenterPos,ProgName,ProgVersName+' - '+ProgVersDate+#13+
            VersInfo.CopyRight+#13+'E-Mail: '+EmailAdr);
   end;
 
@@ -707,10 +771,10 @@ begin
     try
       HtmlHelp(GetDesktopWindow,pchar(s),HH_DISPLAY_TOPIC,0);
     except
-      ErrorDialog (CursorPos,_('Help not available on this system!'));
+      ErrorDialog (CenterPos,_('Help not available on this system!'));
       end;
     end
-  else ErrorDialog (CursorPos,_('Help file not found!'));
+  else ErrorDialog (CenterPos,_('Help file not found!'));
   end;
 
 procedure TfrmMain.actSettingsExecute(Sender: TObject);
@@ -826,7 +890,7 @@ begin
     s:=Caption; n:=integer(Data);
     end
   else n:=-1;
-  if (n>=0) and ConfirmDialog(SafeFormat(_('Remove application "%s" from panel?'),[s])) then begin
+  if (n>=0) and ConfirmDialog(CenterPos,SafeFormat(_('Remove application "%s" from panel?'),[s])) then begin
     with Apps[n] as TDosBoxApp do if length(Category)=0 then s:=MiscName
     else s:=Category;
     with tcCats,Tabs do begin
@@ -855,6 +919,16 @@ begin
   lvApps.Arrange(arDefault);
   end;
 
+procedure TfrmMain.actStdErrExecute(Sender: TObject);
+begin
+  ShowFile(sStdErr);
+  end;
+
+procedure TfrmMain.actStdOutExecute(Sender: TObject);
+begin
+  ShowFile(sStdOut);
+  end;
+
 procedure TfrmMain.actListExecute(Sender: TObject);
 begin
   SetViewStyle(vsList);
@@ -876,7 +950,7 @@ begin
   if (n>=0) then with Apps[n] as TDosBoxApp do begin
   // check for basic configuration (local or global)
     ok:=(AppConfig and FileExists(AddPath(AppPath,sConfig))) or FileExists(BasicSettings.ConfFile);
-    if not ok and not ConfirmDialog(_('Basic configuration file not found! Start application anyway?')) then Exit;
+    if not ok and not ConfirmDialog(CenterPos,_('Basic configuration file not found! Start application anyway?')) then Exit;
   // write overlay conf file
     if DirectoryExists(AppPath) then begin
       sc:=AddPath(AppPath,ConfName);
@@ -904,19 +978,19 @@ begin
       with BasicSettings do if length(KeyLayout)=0 then s:=sAuto else s:=KeyLayout;
       cl.AddValue(cfgKeyb,s);
       cl.AddSection(secExec);
-      cl.Add(cfgMount+Space+HardDrv+Space+MakeQuotedStr(AppPath));
-      if MountCd then begin
-        if IsoImage then begin
-          if FileExists(CdPath) then begin
-            s:=CfgImgMt+Space+CdDrv+Space+MakeQuotedStr(CdPath)+' -t cdrom';
-            cl.Add(s);
-            end;
-          end
-        else cl.Add(CfgMount+Space+CdDrv+Space+CdPath+' -t cdrom');
-        end;
       if length(MixerChannels)>0 then begin
         s:=MixerChannels;
         while length(s)>0 do cl.Add('MIXER '+ReadNxtQuotedStr(s,Semicolon,Quote));
+        end;
+      cl.Add(cfgMount+Space+HardDrv+Space+MakeQuotedStr(AppPath));
+      if MountCd then begin
+        if IsoImage then begin
+//          if FileExists(CdPath) then begin
+            s:=CfgImgMt+Space+CdDrv+Space+CdPath+' -t cdrom';
+            cl.Add(s);
+//            end;
+          end
+        else cl.Add(CfgMount+Space+CdDrv+Space+CdPath+' -t cdrom');
         end;
       s:=Commands;
       while length(s)>0 do cl.Add(ReadNxtQuotedStr(s,Semicolon,Quote));
@@ -932,7 +1006,8 @@ begin
       sa:=AddPath(BasicSettings.DosBoxPath,sDosBox);
       if FileExists(sa) then begin
         s:=MakeQuotedStr(sa);
-        if BasicSettings.HideCon then s:=s+' -noconsole';
+        if cmHide in ConsoleMode then s:=s+' -noconsole';
+//        if BasicSettings.HideCon then s:=s+' -noconsole';
         if AppConfig then sa:=AddPath(AppPath,sConfig)
         else sa:=BasicSettings.ConfFile;
         if FileExists(sa) then s:=s+' -conf '+MakeQuotedStr(sa);
@@ -942,9 +1017,9 @@ begin
         StartProcess(s,AppPath);
         if AutoClose then Close;
         end
-      else ErrorDialog(SafeFormat(_('%s not found! Please adjust your global settings!'),[sDosBox]));
+      else ErrorDialog(CenterPos,SafeFormat(_('%s not found! Please adjust your global settings!'),[sDosBox]));
       end
-    else ErrorDialog(SafeFormat(_('Application path not found:'+sLineBreak+'%s'),[AppPath]));
+    else ErrorDialog(CenterPos,SafeFormat(_('Application path not found:'+sLineBreak+'%s'),[AppPath]));
     end;
   end;
 
@@ -986,7 +1061,8 @@ begin
   if (n>=0) then with Apps[n] as TDosBoxApp do begin
   // check for basic configuration (local or global)
     if AppConfig then sCfg:=AddPath(AppPath,sConfig) else sCfg:=BasicSettings.ConfFile;
-    if not FileExists(sCfg) and not ConfirmDialog(_('Basic configuration file not found! Start application anyway?')) then Exit;
+    if not FileExists(sCfg) and
+      not ConfirmDialog(CenterPos,_('Basic configuration file not found! Start application anyway?')) then Exit;
   // write overlay conf file
     sc:=SetDirName(AppPath)+ConfName;
     cl:=TConfigList.Create(sc);
@@ -1019,7 +1095,7 @@ begin
       s:=s+' -conf '+MakeQuotedStr(sc);
       StartProcess(s,AppPath)
       end
-    else ErrorDialog(SafeFormat(_('%s not found! Please adjust your global settings!'),[sDosBox]));
+    else ErrorDialog(CenterPos,SafeFormat(_('%s not found! Please adjust your global settings!'),[sDosBox]));
     end;
   end;
 
@@ -1036,7 +1112,7 @@ begin
     if length(KeyLayout)> 0 then sc:=sc+' -c '+MakeQuotedStr('KEYB '+KeyLayout);
     StartProcess(sc,RootPath)
     end
-  else ErrorDialog(SafeFormat(_('%s not found! Please adjust your global settings!'),[sDosBox]));
+  else ErrorDialog(CenterPos,SafeFormat(_('%s not found! Please adjust your global settings!'),[sDosBox]));
   end;
 
 end.
