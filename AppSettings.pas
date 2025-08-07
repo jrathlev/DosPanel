@@ -572,7 +572,8 @@ begin
   BuildDriveList(dl,[dtCdRom]);
   cbDrive.Clear;
   with dl do begin
-    for i:=0 to Count-1 do cbDrive.Items.Add(Strings[i]+' ('+(Objects[i] as TDriveProperties).DriveName+')');
+    for i:=0 to Count-1 do with Objects[i] as TDriveProperties do
+      cbDrive.Items.Add(DriveName+' ('+VolName+')');
     end;
   with cbDrive do if Items.Count>0 then ItemIndex:=0;
   FreeListObjects(dl);

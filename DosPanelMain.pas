@@ -990,7 +990,7 @@ begin
             cl.Add(s);
 //            end;
           end
-        else cl.Add(CfgMount+Space+CdDrv+Space+CdPath+' -t cdrom');
+        else cl.Add(CfgMount+Space+CdDrv+Space+copy(CdPath,1,3)+' -t cdrom');
         end;
       s:=Commands;
       while length(s)>0 do cl.Add(ReadNxtQuotedStr(s,Semicolon,Quote));

@@ -1276,6 +1276,10 @@ object AppSettingsDialog: TAppSettingsDialog
     object tsAudio: TTabSheet
       Caption = 'Audio mixer'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object paAudio: TPanel
         Left = 0
         Top = 0
