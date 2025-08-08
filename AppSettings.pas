@@ -795,7 +795,10 @@ var
 begin
   with OpenDialog do begin
     Options:=Options+[ofAllowMultiSelect];
-    if length(edIsoFile.Text)>0 then InitialDir:=ExtractFilePath(edIsoFile.Text)
+    if length(edIsoFile.Text)>0 then begin
+      s:=edIsoFile.Text;
+      InitialDir:=ExtractFilePath(ReadNxtQuotedStr(s,Space,Quote));
+      end
     else InitialDir:=edAppPath.Text;
     DefaultExt:='iso';
     Filename:='';

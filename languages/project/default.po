@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-08-03 15:44+0200\n"
-"PO-Revision-Date: 2025-08-03 15:44+0200\n"
+"POT-Creation-Date: 2025-08-08 12:33+0200\n"
+"PO-Revision-Date: 2025-08-08 12:33+0200\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -258,104 +258,104 @@ msgid "Audio mixer"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.Label3.Caption
-#: AppSettings.dfm:1297
+#: AppSettings.dfm:1293
 msgid "Channel:"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Text
-#: AppSettings.dfm:1307
+#: AppSettings.dfm:1303
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Items.Strings
-#: AppSettings.dfm:1309
+#: AppSettings.dfm:1305
 msgid "Master"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Items.Strings
-#: AppSettings.dfm:1310
+#: AppSettings.dfm:1306
 msgid "Disney"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Items.Strings
-#: AppSettings.dfm:1311
+#: AppSettings.dfm:1307
 msgid "Speaker"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Items.Strings
-#: AppSettings.dfm:1312
+#: AppSettings.dfm:1308
 msgid "Gravis UltraSound"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Items.Strings
-#: AppSettings.dfm:1313
+#: AppSettings.dfm:1309
 msgid "Sound Blaster"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Items.Strings
-#: AppSettings.dfm:1314
+#: AppSettings.dfm:1310
 msgid "FM Stereo"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Items.Strings
-#: AppSettings.dfm:1315
+#: AppSettings.dfm:1311
 msgid "CD Audio"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.bbAddMixer.Hint
-#: AppSettings.dfm:1322
+#: AppSettings.dfm:1318
 msgid "Add channel"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.bbAddMixer.Caption
-#: AppSettings.dfm:1323
+#: AppSettings.dfm:1319
 msgid "Add"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.bbRemMixer.Hint
-#: AppSettings.dfm:1413
+#: AppSettings.dfm:1409
 msgid "Remove selected channel"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.bbRemMixer.Caption
-#: AppSettings.dfm:1414
+#: AppSettings.dfm:1410
 msgid "Remove"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.bbClearMixer.Hint
-#: AppSettings.dfm:1504
+#: AppSettings.dfm:1500
 msgid "Remove all channels"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.gbVolume.Caption
-#: AppSettings.dfm:1603
+#: AppSettings.dfm:1599
 msgid "Volume control:"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.gbVolume.Label7.Caption
-#: AppSettings.dfm:1638
+#: AppSettings.dfm:1634
 msgid "Left:"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.gbVolume.Label8.Caption
-#: AppSettings.dfm:1645
+#: AppSettings.dfm:1641
 msgid "Right:"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.gbVolume.cbConnect.Caption
-#: AppSettings.dfm:1652
+#: AppSettings.dfm:1648
 msgid "Connect sliders"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.bbUp.Hint
-#: AppSettings.dfm:1691
+#: AppSettings.dfm:1687
 msgid "Move selected channel up"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.bbDown.Hint
-#: AppSettings.dfm:1781
+#: AppSettings.dfm:1777
 msgid "Move selected channel down"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsConsole.Caption
-#: AppSettings.dfm:1869
+#: AppSettings.dfm:1865
 msgid "Console"
 msgstr ""
 
@@ -391,6 +391,9 @@ msgstr ""
 #: DosPanelMain.dfm:234
 #: DosPanelMain.pas:747
 #: DosPanelMain.pas:750
+#. check for availability
+#: DosPanelMain.pas:960
+#: DosPanelMain.pas:967
 msgid "Application"
 msgstr ""
 
@@ -764,32 +767,32 @@ msgstr ""
 msgid "Filename:"
 msgstr ""
 
-#: AppSettings.pas:263
+#: AppSettings.pas:264
 msgid "Miscellaneous"
 msgstr ""
 
-#: AppSettings.pas:582
+#: AppSettings.pas:592
 msgid "No physical CD drives available!"
 msgstr ""
 
-#: AppSettings.pas:656
+#: AppSettings.pas:666
 msgid "Remove all mixer settings?"
 msgstr ""
 
-#: AppSettings.pas:771
+#: AppSettings.pas:781
 msgid "Image"
 msgstr ""
 
-#: AppSettings.pas:771
-#: AppSettings.pas:898
+#: AppSettings.pas:781
+#: AppSettings.pas:911
 msgid "Executables"
 msgstr ""
 
-#: AppSettings.pas:771
-#: AppSettings.pas:811
-#: AppSettings.pas:829
-#: AppSettings.pas:898
-#: DosPanelMain.pas:1040
+#: AppSettings.pas:781
+#: AppSettings.pas:824
+#: AppSettings.pas:842
+#: AppSettings.pas:911
+#: DosPanelMain.pas:1054
 #: Settings.pas:209
 #: Settings.pas:222
 #: Settings.pas:235
@@ -799,74 +802,74 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: AppSettings.pas:772
+#: AppSettings.pas:782
 msgid "Select file with icon for this application"
 msgstr ""
 
-#: AppSettings.pas:792
+#: AppSettings.pas:805
 msgid "ISO images"
 msgstr ""
 
-#: AppSettings.pas:793
+#: AppSettings.pas:806
 msgid "Select iso image to be mounted as drive "
 "%s"
 msgstr ""
 
-#: AppSettings.pas:810
+#: AppSettings.pas:823
 msgid "Text files"
 msgstr ""
 
-#: AppSettings.pas:810
+#: AppSettings.pas:823
 msgid "HTML files"
 msgstr ""
 
-#: AppSettings.pas:811
+#: AppSettings.pas:824
 msgid "PDF files"
 msgstr ""
 
-#: AppSettings.pas:812
+#: AppSettings.pas:825
 msgid "Select manual for this application"
 msgstr ""
 
-#: AppSettings.pas:829
+#: AppSettings.pas:842
 #: Settings.pas:235
 msgid "DOSBox key mapper files"
 msgstr ""
 
-#: AppSettings.pas:830
+#: AppSettings.pas:843
 #: Settings.pas:236
 msgid "Select key mapper file"
 msgstr ""
 
-#: AppSettings.pas:847
+#: AppSettings.pas:860
 msgid "No application specific configuration found!\n"
 "Copy global configuration to application "
 "path?"
 msgstr ""
 
-#: AppSettings.pas:884
+#: AppSettings.pas:897
 msgid "Edit startup commands"
 msgstr ""
 
-#: AppSettings.pas:884
+#: AppSettings.pas:897
 msgid "List of commands"
 msgstr ""
 
-#: AppSettings.pas:898
+#: AppSettings.pas:911
 msgid "Batch files"
 msgstr ""
 
-#: AppSettings.pas:899
+#: AppSettings.pas:912
 msgid "Select executable for startup"
 msgstr ""
 
-#: AppSettings.pas:904
+#: AppSettings.pas:917
 msgid "The executable file must be located beneath the root path:\n"
 "%s\n"
 "Please try again!"
 msgstr ""
 
-#: AppSettings.pas:915
+#: AppSettings.pas:928
 msgid "Select path to be mounted as drive %s"
 msgstr ""
 
@@ -880,6 +883,7 @@ msgid " \"%s\": File \"%s\" is empty!"
 msgstr ""
 
 #: DosPanelMain.pas:750
+#: DosPanelMain.pas:960
 msgid " \"%s\": File \"%s\" not found!"
 msgstr ""
 
@@ -902,31 +906,36 @@ msgstr ""
 #. check for basic configuration (local or global)
 #: DosPanelMain.pas:953
 #. check for basic configuration (local or global)
-#: DosPanelMain.pas:1065
+#: DosPanelMain.pas:1079
 msgid "Basic configuration file not found! Start application "
 "anyway?"
 msgstr ""
 
+#: DosPanelMain.pas:968
+msgid " \"%s\": Please insert the associated CD into drive "
+"\"%s\"!"
+msgstr ""
+
 #. if AutoEnd then s:=s+' -exit';
-#: DosPanelMain.pas:1020
+#: DosPanelMain.pas:1034
 #. start DosBox and enter keymapper
-#: DosPanelMain.pas:1098
+#: DosPanelMain.pas:1112
 #. start DosBox
-#: DosPanelMain.pas:1115
+#: DosPanelMain.pas:1129
 msgid "%s not found! Please adjust your global "
 "settings!"
 msgstr ""
 
-#: DosPanelMain.pas:1022
+#: DosPanelMain.pas:1036
 msgid "Application path not found:\n"
 "%s"
 msgstr ""
 
-#: DosPanelMain.pas:1034
+#: DosPanelMain.pas:1048
 msgid "Manual for "
 msgstr ""
 
-#: DosPanelMain.pas:1044
+#: DosPanelMain.pas:1058
 msgid "Manual not found (%s)!"
 msgstr ""
 

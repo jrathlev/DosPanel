@@ -349,9 +349,9 @@ msgstr ""
 
 #  Doesn't have any letters
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.gbVolume.Label10.Caption
-#: AppSettings.dfm:1610
+#: AppSettings.dfm:1606
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.gbVolume.Label11.Caption
-#: AppSettings.dfm:1617
+#: AppSettings.dfm:1613
 msgid "100%"
 msgstr ""
 

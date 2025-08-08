@@ -210,7 +210,7 @@ implementation
 {$R *.dfm}
 
 uses Winapi.ShellApi, Winapi.ShlObj, System.StrUtils, System.Win.Registry,
-  GnuGetText, InitProg, IniFileUtils, WinUtils, ListUtils, Show,
+  GnuGetText, InitProg, IniFileUtils, WinUtils, ListUtils, Show, WinDevUtils,
   FileCopy, MsgDialogs, StringUtils, PathUtils, WinShell, WinExecute, NumberUtils,
   ShowMemo, TxtConvertDlg;
 
@@ -954,6 +954,22 @@ begin
   // write overlay conf file
     if DirectoryExists(AppPath) then begin
       sc:=AddPath(AppPath,ConfName);
+      if MountCd then begin   // check for availability
+        if IsoImage then begin
+          if not FileExists(CdPath) then begin
+            ErrorDialog (CenterPos,_('Application')+SafeFormat(_(' "%s": File "%s" not found!'),[AppName,CdPath]));
+            Exit;
+            end
+          end
+        else begin
+          sa:=copy(CdPath,1,3); ok:=true;
+          while ok and not CheckForDriveAvailable(sa,s) do begin
+            ok:=ConfirmRetryDialog(CenterPos,_('Application')
+                +SafeFormat(_(' "%s": Please insert the associated CD into drive "%s"!'),[AppName,sa]));
+            end;
+          if not ok then Exit;
+          end;
+        end;
       cl:=TConfigList.Create(sc);
       cl.AddSection(secSdl);
       cl.AddValue(cfgFull,LowerCase((BoolToStr(FullScreen,true))));
@@ -985,10 +1001,8 @@ begin
       cl.Add(cfgMount+Space+HardDrv+Space+MakeQuotedStr(AppPath));
       if MountCd then begin
         if IsoImage then begin
-//          if FileExists(CdPath) then begin
-            s:=CfgImgMt+Space+CdDrv+Space+CdPath+' -t cdrom';
-            cl.Add(s);
-//            end;
+          s:=CfgImgMt+Space+CdDrv+Space+CdPath+' -t cdrom';
+          cl.Add(s);
           end
         else cl.Add(CfgMount+Space+CdDrv+Space+copy(CdPath,1,3)+' -t cdrom');
         end;
