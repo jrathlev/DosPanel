@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: DosPanel\n"
-"POT-Creation-Date: 2025-08-08 12:33+0200\n"
-"PO-Revision-Date: 2025-08-08 12:35+0200\n"
+"POT-Creation-Date: 2025-08-10 11:29+0200\n"
+"PO-Revision-Date: 2025-08-10 11:30+0200\n"
 "Last-Translator: J. Rathlev <kontakt@rathlev-home.de>\n"
 "Language-Team: J. Rathlev <kontakt@rathlev.home.de>\n"
 "Language: fr\n"
@@ -105,8 +105,8 @@ msgstr "Modifier la configuration"
 msgid "Default options"
 msgstr "Options par défaut"
 
-msgid "General settings"
-msgstr "Paramètres généraux"
+msgid "General"
+msgstr "Général"
 
 msgid "Edit commands"
 msgstr "Modifier les commandes"
@@ -119,9 +119,6 @@ msgstr "Sélectionnez une icône"
 
 msgid "Select manual"
 msgstr "Sélectionner le manuel"
-
-msgid "Select mapper file"
-msgstr "Sélectionner le fichier mappeur"
 
 msgid "Additional commands on startup:"
 msgstr "Commandes supplémentaires au démarrage :"
@@ -138,11 +135,11 @@ msgstr "Fichier d'icônes :"
 msgid "Manual:"
 msgstr "Manuel :"
 
-msgid "Mapper file:"
-msgstr "Fichier de mappage :"
-
 msgid "Parameters:"
 msgstr "Paramètres :"
+
+msgid "Additional commands before exit:"
+msgstr "Commandes supplémentaires avant la sortie :"
 
 msgid "Audio mixer"
 msgstr "Mélangeur audio"
@@ -204,15 +201,24 @@ msgstr "Déplacer le canal sélectionné vers le haut"
 msgid "Move selected channel down"
 msgstr "Déplacer le canal sélectionné vers le bas"
 
+msgid "Other"
+msgstr "Autre"
+
+msgid "Select keymapper file"
+msgstr "Sélectionner fichier de keymapper"
+
+msgid "Keymapper file:"
+msgstr "Fichier de keymapper :"
+
 msgid "Console"
 msgstr "Console"
-
-msgid "Hide console"
-msgstr "Cacher la console"
 
 msgid "Delete console output files when DosPanel is closed"
 msgstr ""
 "Supprimer les fichiers de sortie de la console lorsque DosPanel est fermé"
+
+msgid "Hide console"
+msgstr "Cacher la console"
 
 msgid "Manage DOSBox applications"
 msgstr "Gérer les applications DOSBox"
@@ -370,14 +376,17 @@ msgstr "Afficher la sortie de &standard"
 msgid "Show &error output"
 msgstr "Afficher la sortie d'&erreur"
 
+msgid "Select mapper file"
+msgstr "Sélectionner le fichier de keymapper"
+
 msgid "Settings for DOSBox"
 msgstr "Paramètres pour DOSBox"
 
 msgid "Select language file"
 msgstr "Sélectionner le fichier de langue"
 
-msgid "Edit mapper file"
-msgstr "Modifier le fichier de mappage"
+msgid "Edit keymapper file"
+msgstr "Modifier le fichier keymapper"
 
 msgid "Global configuration file:"
 msgstr "Fichier de configuration globale :"
@@ -385,8 +394,8 @@ msgstr "Fichier de configuration globale :"
 msgid "Language file:"
 msgstr "Fichier de langue :"
 
-msgid "Default key mapper file:"
-msgstr "Fichier de mappeur de clés par défaut :"
+msgid "Default keymapper file:"
+msgstr "Fichier keymapper par défaut:"
 
 msgid "Path to DOSBox:"
 msgstr "Chemin d'accès à DOSBox :"
@@ -469,11 +478,8 @@ msgstr "Fichiers PDF"
 msgid "Select manual for this application"
 msgstr "Sélectionner le manuel pour cette application"
 
-msgid "DOSBox key mapper files"
-msgstr "Fichiers de conversion des touches DOSBox"
-
-msgid "Select key mapper file"
-msgstr "Sélectionner le fichier de mappeur de clés"
+msgid "DOSBox keymapper files"
+msgstr "Fichiers de DOSBox keymapper"
 
 msgid ""
 "No application specific configuration found!\n"
@@ -482,8 +488,11 @@ msgstr ""
 "Aucune configuration spécifique à l'application n'a été trouvée !\n"
 "Copier la configuration globale dans le chemin de l'application ?"
 
-msgid "Edit startup commands"
-msgstr "Modifier les commandes de démarrage"
+msgid "Edit commands on startup"
+msgstr "Éditer les commandes au démarrage"
+
+msgid "Edit commands before exit"
+msgstr "Modifier les commandes avant de quitter"
 
 msgid "List of commands"
 msgstr "Liste des commandes"
@@ -572,7 +581,7 @@ msgid "Select basic configuration file"
 msgstr "Sélection du fichier de configuration de base"
 
 msgid "DOSBox language files"
-msgstr "Fichiers de langue DOSBox"
+msgstr "Fichiers de DOSBox langue"
 
 msgid "Select DOSBox program directory"
 msgstr "Sélectionner le répertoire du programme DOSBox"

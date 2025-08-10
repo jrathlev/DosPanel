@@ -479,7 +479,7 @@ object DosBoxSetDialog: TDosBoxSetDialog
       Top = 153
       Width = 26
       Height = 26
-      Hint = 'Select mapper file'
+      Hint = 'Select keymapper file'
       Anchors = [akTop, akRight]
       Flat = True
       Glyph.Data = {
@@ -607,7 +607,7 @@ object DosBoxSetDialog: TDosBoxSetDialog
       Top = 153
       Width = 26
       Height = 26
-      Hint = 'Edit mapper file'
+      Hint = 'Edit keymapper file'
       Anchors = [akTop, akRight]
       Flat = True
       Glyph.Data = {
@@ -702,9 +702,9 @@ object DosBoxSetDialog: TDosBoxSetDialog
       Width = 351
       Height = 21
       Anchors = [akLeft, akTop, akRight]
-      EditLabel.Width = 115
+      EditLabel.Width = 112
       EditLabel.Height = 13
-      EditLabel.Caption = 'Default key mapper file:'
+      EditLabel.Caption = 'Default keymapper file:'
       TabOrder = 4
     end
     object edPath: TLabeledEdit

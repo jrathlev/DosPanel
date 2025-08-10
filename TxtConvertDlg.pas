@@ -14,7 +14,7 @@
    the specific language governing rights and limitations under the License.
 
    J. Rathlev, Sep. 2014
-   last modified: Dec. 2017
+   last modified: August 2025
    *)
 
 unit TxtConvertDlg;

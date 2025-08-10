@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: DosPanel\n"
-"POT-Creation-Date: 2025-08-08 12:33+0200\n"
-"PO-Revision-Date: 2025-08-08 12:35+0200\n"
+"POT-Creation-Date: 2025-08-10 11:29+0200\n"
+"PO-Revision-Date: 2025-08-10 11:29+0200\n"
 "Last-Translator: J. Rathlev <kontakt@rathlev-home.de>\n"
 "Language-Team: J. Rathlev <info@rathlev.home.de>\n"
 "Language: de\n"
@@ -104,8 +104,8 @@ msgstr "Konfiguration bearbeiten"
 msgid "Default options"
 msgstr "Standard-Optionen"
 
-msgid "General settings"
-msgstr "Allgemeine Einstellungen"
+msgid "General"
+msgstr "Allgemein"
 
 msgid "Edit commands"
 msgstr "Befehle bearbeiten"
@@ -118,9 +118,6 @@ msgstr "Symbol auswählen"
 
 msgid "Select manual"
 msgstr "Anleitung auswählen"
-
-msgid "Select mapper file"
-msgstr "Mapper-Datei auswählen"
 
 msgid "Additional commands on startup:"
 msgstr "Zusätzliche Befehle beim Start:"
@@ -137,11 +134,11 @@ msgstr "Symbol-Datei:"
 msgid "Manual:"
 msgstr "Anleitung:"
 
-msgid "Mapper file:"
-msgstr "Mapper-Datei:"
-
 msgid "Parameters:"
 msgstr "Parameter:"
+
+msgid "Additional commands before exit:"
+msgstr "Zusätzliche Befehle vor dem Beenden:"
 
 msgid "Audio mixer"
 msgstr "Audio-Mischpult"
@@ -203,14 +200,23 @@ msgstr "Ausgewählten Kanal nach oben"
 msgid "Move selected channel down"
 msgstr "Ausgewählten Kanal nach unten"
 
+msgid "Other"
+msgstr "Weitere"
+
+msgid "Select keymapper file"
+msgstr "Keymapper-Datei auswählen"
+
+msgid "Keymapper file:"
+msgstr "Keymapper-Datei:"
+
 msgid "Console"
 msgstr "Konsole"
 
-msgid "Hide console"
-msgstr "Konsole verbergen"
-
 msgid "Delete console output files when DosPanel is closed"
 msgstr "Konsolenausgabedateien löschen, wenn DosPanel geschlossen wird"
+
+msgid "Hide console"
+msgstr "Konsole verbergen"
 
 msgid "Manage DOSBox applications"
 msgstr "DOSBox-Anwendungen verwalten"
@@ -368,14 +374,17 @@ msgstr "&Standardausgabe anzeigen"
 msgid "Show &error output"
 msgstr "&Fehlerausgabe anzeigen"
 
+msgid "Select mapper file"
+msgstr "Mapper-Datei auswählen"
+
 msgid "Settings for DOSBox"
 msgstr "Einstellungen für DOSBox"
 
 msgid "Select language file"
 msgstr "Sprachdatei auswählen"
 
-msgid "Edit mapper file"
-msgstr "Mapper-Datei bearbeiten"
+msgid "Edit keymapper file"
+msgstr "Keymapper-Datei bearbeiten"
 
 msgid "Global configuration file:"
 msgstr "Globale Konfigurationsdatei:"
@@ -383,8 +392,8 @@ msgstr "Globale Konfigurationsdatei:"
 msgid "Language file:"
 msgstr "Sprach-Datei:"
 
-msgid "Default key mapper file:"
-msgstr "Standard-Tastaturmapper-Datei:"
+msgid "Default keymapper file:"
+msgstr "Standard-Keymapper-Datei:"
 
 msgid "Path to DOSBox:"
 msgstr "Pfad zu DOSBox:"
@@ -467,11 +476,8 @@ msgstr "PDF-Dateien"
 msgid "Select manual for this application"
 msgstr "Anleitung für diese Anwendung auswählen"
 
-msgid "DOSBox key mapper files"
+msgid "DOSBox keymapper files"
 msgstr "DOSBox-Keymapper-Dateien"
-
-msgid "Select key mapper file"
-msgstr "Mapper-Datei auswählen"
 
 msgid ""
 "No application specific configuration found!\n"
@@ -480,8 +486,11 @@ msgstr ""
 "Keine anwendungsspezifische Konfiguration gefunden!\n"
 "Globale Konfiguration in den Anwendungspfad kopieren?"
 
-msgid "Edit startup commands"
-msgstr "Zusätzliche Start-Befehle bearbeiten"
+msgid "Edit commands on startup"
+msgstr "Befehle beim Starten bearbeiten"
+
+msgid "Edit commands before exit"
+msgstr "Befehle vor dem Beenden bearbeiten"
 
 msgid "List of commands"
 msgstr "Liste der Befehle"

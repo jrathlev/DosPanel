@@ -14,7 +14,7 @@
    the specific language governing rights and limitations under the License.
 
    J. Rathlev, Dec. 2011
-   last modified: December 2023
+   last modified: August 2025
    *)
 
 unit DosPanelMain;
@@ -280,7 +280,7 @@ const
   iniIcon   = 'IconFile';
   iniMan    = 'Manual';
   iniDesc   = 'Description';
-  iniConMd    = 'ConsoleMode';
+  iniConMd  = 'ConsoleMode';
   iniMixer  = 'Mixer';
   iniAppCfg = 'AppConfig';
   iniFull   = 'FullScreen';
@@ -411,15 +411,13 @@ var
   begin
     if (length(TextEditor)=0) or not FileExists(TextEditor) then begin
       with TRegistry.Create do begin
-        Access:=KEY_READ;
         RootKey:=HKEY_CLASSES_ROOT;
         s:='';
         try
-          if OpenKey('.txt',false) then begin
+          if OpenKeyReadOnly('.txt') then begin
             s:=ReadString('');
             CloseKey;
-            if OpenKey(s+'\shell\open\Command',false) then s:=ReadString('')
-            else s:='';
+            if OpenKeyReadOnly(s+'\shell\open\Command') then s:=ReadString('') else s:='';
             s:=AnsiReplaceText(ReadNxtQuotedStr(s,#32,'"'),'%SystemRoot%',WindowsDirectory);
             end;
         finally
@@ -448,7 +446,7 @@ begin
     si:=PrgPath+ExtractFileName(IniName);    // try in DosPanel.exe path
     if not FileExists(si) then si:=IniName;
     end;
-  with TUnicodeIniFile.CreateForRead(IniName) do begin
+  with TUnicodeIniFile.CreateForRead(si) do begin
     Left:=ReadInteger (CfgSekt,IniLeft,50);
     Top:=ReadInteger (CfgSekt,IniTop,50);
     Height:=ReadInteger(CfgSekt,iniHeight,Height);
@@ -508,7 +506,13 @@ begin
         CdDrv:=ReadString(sec,iniCD,'D')[1];
         AppFile:=ReadString(sec,iniApp,'');
         Parameters:=ReadString(sec,iniPar,'');
-        Commands:=AnsiDequotedStr(ReadString(sec,iniCmd,UpCase(HardDrv)+':;"CD \"'),'#');
+        si:=AnsiDequotedStr(ReadString(sec,iniCmd,UpCase(HardDrv)+':;CD \'),'#');
+        // remove quotes from older versions
+        Commands:='';
+        while length(si)>0 do begin
+          if not Commands.IsEmpty then Commands:=Commands+Semicolon;
+          Commands:=Commands+ReadNxtQuotedStr(si,Semicolon,Quote);
+          end;
         IconFile:=ReadString(sec,iniIcon,'');
         LoadIcons(IconFile);
         ManFile:=ReadString(sec,iniMan,'');
@@ -956,7 +960,7 @@ begin
       sc:=AddPath(AppPath,ConfName);
       if MountCd then begin   // check for availability
         if IsoImage then begin
-          if not FileExists(CdPath) then begin
+          if not FileExists(GetNxtQuotedStr(CdPath,Space,Quote)) then begin
             ErrorDialog (CenterPos,_('Application')+SafeFormat(_(' "%s": File "%s" not found!'),[AppName,CdPath]));
             Exit;
             end
@@ -1007,11 +1011,13 @@ begin
         else cl.Add(CfgMount+Space+CdDrv+Space+copy(CdPath,1,3)+' -t cdrom');
         end;
       s:=Commands;
-      while length(s)>0 do cl.Add(ReadNxtQuotedStr(s,Semicolon,Quote));
+      while length(s)>0 do cl.Add(ReadNxtStr(s,Semicolon));
       if length(AppFile)>0 then begin
         if AnsiSameText(GetExt(AppFile),'bat') then s:='CALL '+AppFile else s:=AppFile;
         cl.Add(s+Space+Parameters);
         end;
+      s:=ExitCommands;
+      while length(s)>0 do cl.Add(ReadNxtStr(s,Semicolon));
       if AutoEnd then cl.Add(cfgExit);
       with cl do begin
         Save; Free;

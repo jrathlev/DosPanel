@@ -14,7 +14,7 @@
    the specific language governing rights and limitations under the License.
 
    J. Rathlev, Dec. 2011
-   last modified: Dec. 2023
+   last modified: August 2025
    *)
 
 unit AppSettings;
@@ -100,7 +100,8 @@ type
     AppName,Category,
     AppPath,CdPath,
     AppFile,Parameters,
-    Commands,AppMapper,
+    Commands,ExitCommands,
+    AppMapper,
     IconFile,ManFile,
     Description,
     MixerChannels     : string;
@@ -195,10 +196,13 @@ type
     bbDown: TBitBtn;
     btRebuild: TSpeedButton;
     cxAutoClose: TCheckBox;
-    tsConsole: TTabSheet;
-    paConsole: TPanel;
+    tsOther: TTabSheet;
+    paOther: TPanel;
     cbNoConsole: TCheckBox;
     cbDelConFiles: TCheckBox;
+    edExitCommands: TLabeledEdit;
+    btExitCommands: TSpeedButton;
+    gbConsole: TGroupBox;
     procedure FormCreate(Sender: TObject);
     procedure btPathClick(Sender: TObject);
     procedure btExeFileClick(Sender: TObject);
@@ -225,6 +229,7 @@ type
     procedure btRebuildClick(Sender: TObject);
     procedure cxAutoEndClick(Sender: TObject);
     procedure cbNoConsoleClick(Sender: TObject);
+    procedure btExitCommandsClick(Sender: TObject);
   private
     { Private-Deklarationen }
     NewIcons   : TAppIcons;
@@ -235,6 +240,7 @@ type
     procedure ShowMixerChannel (AIndex : integer);
     procedure ShowConfig;
     procedure ShowConsole;
+    function EditCommands (const Prompt : string; var Cmd : string) : boolean;
   public
     { Public-Deklarationen }
     function Execute (Categories : TStrings;
@@ -462,6 +468,7 @@ begin
   AppFile:=''; Parameters:='';
   IconFile:=''; ManFile:='';
   Commands:=HardDrv+':;"CD \"';
+  ExitCommands:='';
   Description:=''; MixerChannels:='';
   ConsoleMode:=[]; MountCd:=true; IsoImage:=true;
   LoadConfig;
@@ -526,6 +533,7 @@ begin
   CodePage:=ADosBoxApp.CodePage;
   AppMapper:=ADosBoxApp.AppMapper;
   Commands:=ADosBoxApp.Commands;
+  ExitCommands:=ADosBoxApp.ExitCommands;
   Description:=ADosBoxApp.Description;
   MixerChannels:=ADosBoxApp.MixerChannels;
   ConsoleMode:=ADosBoxApp.ConsoleMode;
@@ -839,8 +847,8 @@ begin
     if length(sp)>0 then InitialDir:=sp else InitialDir:=sc;
     DefaultExt:='map';
     Filename:='';
-    Filter:=_('DOSBox key mapper files')+'|*.map;*.txt|'+_('All')+'|*.*';
-    Title:=_('Select key mapper file');
+    Filter:=_('DOSBox keymapper files')+'|*.map;*.txt|'+_('All')+'|*.*';
+    Title:=_('Select keymapper file');
     if Execute then edMapperFile.Text:=Filename;
 //      if AnsiSameText(ExtractFilePath(Filename),sc) then edMapperFile.Text:=ExtractFileName(Filename)
 //      else edMapperFile.Text:=Filename;
@@ -886,16 +894,38 @@ begin
 
 procedure TAppSettingsDialog.btCommandsClick(Sender: TObject);
 var
-  sl : TStringList;
   s  : string;
 begin
+  s:=edCommands.Text;
+  if EditCommands(_('Edit commands on startup'),s) then edCommands.Text:=s;
+  end;
+
+procedure TAppSettingsDialog.btExitCommandsClick(Sender: TObject);
+var
+  s  : string;
+begin
+  s:=edExitCommands.Text;
+  if EditCommands(_('Edit commands before exit'),s) then edExitCommands.Text:=s;
+  end;
+
+function TAppSettingsDialog.EditCommands (const Prompt : string; var Cmd : string) : boolean;
+var
+  sl : TStringList;
+  s  : string;
+  i  : integer;
+begin
   sl:=TStringList.Create;
-  with sl do begin
-    QuoteChar:=Quote; Delimiter:=Semicolon;
-    DelimitedText:=edCommands.Text;
+  s:=Cmd; Result:=false;
+  while length(s)>0 do sl.Add(ReadNxtStr(s,Semicolon));
+  if SelectFromListDialog.Execute(CursorPos,Prompt,_('List of commands'),'',
+              [soEdit,soOrder],1,tcNone,'',sl,s)=mrOK then begin
+    s:='';
+    with sl do for i:=0 to Count-1 do begin
+      if not s.IsEmpty then s:=s+Semicolon;
+      s:=s+Strings[i];
+      end;
+    Cmd:=s; Result:=true;
     end;
-  if SelectFromListDialog.Execute(CursorPos,_('Edit startup commands'),_('List of commands'),'',
-              [soEdit,soOrder],1,tcNone,'',sl,s)=mrOK then edCommands.Text:=sl.DelimitedText;
   sl.Free;
   end;
 
@@ -936,8 +966,11 @@ begin
 
 procedure TAppSettingsDialog.cbHardDriveCloseUp(Sender: TObject);
 begin
-  with edCommands do Text:=AnsiReplaceText(Text,LastDrive+':',cbHardDrive.Text[1]+':');
-  LastDrive:=cbHardDrive.Text;
+  if not LastDrive.IsEmpty then begin
+    with edCommands do Text:=AnsiReplaceText(Text,LastDrive+':',cbHardDrive.Text[1]+':');
+    with edExitCommands do Text:=AnsiReplaceText(Text,LastDrive+':',cbHardDrive.Text[1]+':');
+    LastDrive:=cbHardDrive.Text;
+    end;
   end;
 
 procedure TAppSettingsDialog.cbNoConsoleClick(Sender: TObject);
@@ -989,6 +1022,7 @@ begin
     edExeFile.Text:=AppFile;
     edParam.Text:=Parameters;
     edCommands.Text:=Commands;
+    edExitCommands.Text:=ExitCommands;
     edIconFile.Text:=IconFile;
     edManFile.Text:=ManFile;
     edDescription.Text:=Description;
@@ -1023,6 +1057,7 @@ begin
     AppFile:=edExeFile.Text;
     Parameters:=edParam.Text;
     Commands:=edCommands.Text;
+    ExitCommands:=edExitCommands.Text;
     IconFile:=edIconFile.Text;
     AppMapper:=edMapperFile.Text;
     ManFile:=edManFile.Text;

@@ -14,7 +14,7 @@
    the specific language governing rights and limitations under the License.
 
    J. Rathlev, Dec. 2011
-   last modified: Dec. 2017
+   last modified: August 2025
    *)
 
 unit Settings;
@@ -232,8 +232,8 @@ begin
     else InitialDir:=frmMain.LocPath;
     DefaultExt:='map';
     Filename:='';
-    Filter:=_('DOSBox key mapper files')+'|*.map;*.txt|'+_('All')+'|*.*';
-    Title:=_('Select key mapper file');
+    Filter:=_('DOSBox keymapper files')+'|*.map;*.txt|'+_('All')+'|*.*';
+    Title:=_('Select keymapper file');
     if Execute then edMapperFile.Text:=Filename;
     end;
   end;

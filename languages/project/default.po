@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-08-08 12:33+0200\n"
-"PO-Revision-Date: 2025-08-08 12:33+0200\n"
+"POT-Creation-Date: 2025-08-10 11:29+0200\n"
+"PO-Revision-Date: 2025-08-10 11:29+0200\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -185,11 +185,13 @@ msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsGeneral.Caption
 #: AppSettings.dfm:859
-msgid "General settings"
+msgid "General"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsGeneral.paSettings.btCommands.Hint
 #: AppSettings.dfm:877
+#. AppSettingsDialog.pcSettings.tsGeneral.paSettings.btExitCommands.Hint
+#: AppSettings.dfm:1136
 msgid "Edit commands"
 msgstr ""
 
@@ -204,172 +206,182 @@ msgid "Select icon"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsGeneral.paSettings.btManFile.Hint
-#: AppSettings.dfm:1072
+#: AppSettings.dfm:1071
 msgid "Select manual"
 msgstr ""
 
-#. AppSettingsDialog.pcSettings.tsGeneral.paSettings.btMapper.Hint
-#: AppSettings.dfm:1137
-#. DosBoxSetDialog.btEditor.Hint
-#: Settings.dfm:28
-#. DosBoxSetDialog.gbDosBox.btMapper.Hint
-#: Settings.dfm:482
-msgid "Select mapper file"
-msgstr ""
-
 #. AppSettingsDialog.pcSettings.tsGeneral.paSettings.edCommands.EditLabel.Caption
-#: AppSettings.dfm:1205
+#: AppSettings.dfm:1203
 msgid "Additional commands on startup:"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsGeneral.paSettings.edDescription.EditLabel.Caption
-#: AppSettings.dfm:1216
+#: AppSettings.dfm:1214
 msgid "Description:"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsGeneral.paSettings.edExeFile.EditLabel.Caption
-#: AppSettings.dfm:1227
+#: AppSettings.dfm:1225
 msgid "Application to be started:"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsGeneral.paSettings.edIconFile.EditLabel.Caption
-#: AppSettings.dfm:1238
+#: AppSettings.dfm:1236
 msgid "Icon file:"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsGeneral.paSettings.edManFile.EditLabel.Caption
-#: AppSettings.dfm:1249
+#: AppSettings.dfm:1247
 msgid "Manual:"
 msgstr ""
 
-#. AppSettingsDialog.pcSettings.tsGeneral.paSettings.edMapperFile.EditLabel.Caption
-#: AppSettings.dfm:1260
-msgid "Mapper file:"
-msgstr ""
-
 #. AppSettingsDialog.pcSettings.tsGeneral.paSettings.edParam.EditLabel.Caption
-#: AppSettings.dfm:1271
+#: AppSettings.dfm:1258
 msgid "Parameters:"
 msgstr ""
 
+#. AppSettingsDialog.pcSettings.tsGeneral.paSettings.edExitCommands.EditLabel.Caption
+#: AppSettings.dfm:1269
+msgid "Additional commands before exit:"
+msgstr ""
+
 #. AppSettingsDialog.pcSettings.tsAudio.Caption
-#: AppSettings.dfm:1277
+#: AppSettings.dfm:1275
 msgid "Audio mixer"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.Label3.Caption
-#: AppSettings.dfm:1293
+#: AppSettings.dfm:1291
 msgid "Channel:"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Text
-#: AppSettings.dfm:1303
+#: AppSettings.dfm:1301
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Items.Strings
-#: AppSettings.dfm:1305
+#: AppSettings.dfm:1303
 msgid "Master"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Items.Strings
-#: AppSettings.dfm:1306
+#: AppSettings.dfm:1304
 msgid "Disney"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Items.Strings
-#: AppSettings.dfm:1307
+#: AppSettings.dfm:1305
 msgid "Speaker"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Items.Strings
-#: AppSettings.dfm:1308
+#: AppSettings.dfm:1306
 msgid "Gravis UltraSound"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Items.Strings
-#: AppSettings.dfm:1309
+#: AppSettings.dfm:1307
 msgid "Sound Blaster"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Items.Strings
-#: AppSettings.dfm:1310
+#: AppSettings.dfm:1308
 msgid "FM Stereo"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.cbChannels.Items.Strings
-#: AppSettings.dfm:1311
+#: AppSettings.dfm:1309
 msgid "CD Audio"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.bbAddMixer.Hint
-#: AppSettings.dfm:1318
+#: AppSettings.dfm:1316
 msgid "Add channel"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.bbAddMixer.Caption
-#: AppSettings.dfm:1319
+#: AppSettings.dfm:1317
 msgid "Add"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.bbRemMixer.Hint
-#: AppSettings.dfm:1409
+#: AppSettings.dfm:1407
 msgid "Remove selected channel"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.bbRemMixer.Caption
-#: AppSettings.dfm:1410
+#: AppSettings.dfm:1408
 msgid "Remove"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.bbClearMixer.Hint
-#: AppSettings.dfm:1500
+#: AppSettings.dfm:1498
 msgid "Remove all channels"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.gbVolume.Caption
-#: AppSettings.dfm:1599
+#: AppSettings.dfm:1597
 msgid "Volume control:"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.gbVolume.Label7.Caption
-#: AppSettings.dfm:1634
+#: AppSettings.dfm:1632
 msgid "Left:"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.gbVolume.Label8.Caption
-#: AppSettings.dfm:1641
+#: AppSettings.dfm:1639
 msgid "Right:"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.gbVolume.cbConnect.Caption
-#: AppSettings.dfm:1648
+#: AppSettings.dfm:1646
 msgid "Connect sliders"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.bbUp.Hint
-#: AppSettings.dfm:1687
+#: AppSettings.dfm:1685
 msgid "Move selected channel up"
 msgstr ""
 
 #. AppSettingsDialog.pcSettings.tsAudio.paAudio.bbDown.Hint
-#: AppSettings.dfm:1777
+#: AppSettings.dfm:1775
 msgid "Move selected channel down"
 msgstr ""
 
-#. AppSettingsDialog.pcSettings.tsConsole.Caption
-#: AppSettings.dfm:1865
+#. AppSettingsDialog.pcSettings.tsOther.Caption
+#: AppSettings.dfm:1863
+msgid "Other"
+msgstr ""
+
+#. AppSettingsDialog.pcSettings.tsOther.paOther.btMapper.Hint
+#: AppSettings.dfm:1884
+#. DosBoxSetDialog.gbDosBox.btMapper.Hint
+#: Settings.dfm:482
+#: AppSettings.pas:851
+#: Settings.pas:236
+msgid "Select keymapper file"
+msgstr ""
+
+#. AppSettingsDialog.pcSettings.tsOther.paOther.edMapperFile.EditLabel.Caption
+#: AppSettings.dfm:1951
+msgid "Keymapper file:"
+msgstr ""
+
+#. AppSettingsDialog.pcSettings.tsOther.paOther.gbConsole.Caption
+#: AppSettings.dfm:1959
 msgid "Console"
 msgstr ""
 
-#. AppSettingsDialog.pcSettings.tsConsole.paConsole.cbNoConsole.Caption
-#: AppSettings.dfm:1885
+#. AppSettingsDialog.pcSettings.tsOther.paOther.gbConsole.cbDelConFiles.Caption
+#: AppSettings.dfm:1966
+msgid "Delete console output files when DosPanel is "
+"closed"
+msgstr ""
+
+#. AppSettingsDialog.pcSettings.tsOther.paOther.gbConsole.cbNoConsole.Caption
+#: AppSettings.dfm:1975
 #. DosBoxSetDialog.gbDosBox.cbConsole.Caption
 #: Settings.dfm:674
 msgid "Hide console"
-msgstr ""
-
-#. AppSettingsDialog.pcSettings.tsConsole.paConsole.cbDelConFiles.Caption
-#: AppSettings.dfm:1894
-msgid "Delete console output files when DosPanel is "
-"closed"
 msgstr ""
 
 #. frmMain.Caption
@@ -389,11 +401,11 @@ msgstr ""
 
 #. frmMain.lvApps.Caption
 #: DosPanelMain.dfm:234
-#: DosPanelMain.pas:747
-#: DosPanelMain.pas:750
+#: DosPanelMain.pas:751
+#: DosPanelMain.pas:754
 #. check for availability
-#: DosPanelMain.pas:960
-#: DosPanelMain.pas:967
+#: DosPanelMain.pas:964
+#: DosPanelMain.pas:971
 msgid "Application"
 msgstr ""
 
@@ -665,6 +677,11 @@ msgstr ""
 msgid "Show &error output"
 msgstr ""
 
+#. DosBoxSetDialog.btEditor.Hint
+#: Settings.dfm:28
+msgid "Select mapper file"
+msgstr ""
+
 #. DosBoxSetDialog.gbDosBox.Caption
 #: Settings.dfm:220
 msgid "Settings for DOSBox"
@@ -678,7 +695,7 @@ msgstr ""
 
 #. DosBoxSetDialog.gbDosBox.btEditMapper.Hint
 #: Settings.dfm:610
-msgid "Edit mapper file"
+msgid "Edit keymapper file"
 msgstr ""
 
 #. DosBoxSetDialog.gbDosBox.edConfFile.EditLabel.Caption
@@ -693,7 +710,7 @@ msgstr ""
 
 #. DosBoxSetDialog.gbDosBox.edMapperFile.EditLabel.Caption
 #: Settings.dfm:707
-msgid "Default key mapper file:"
+msgid "Default keymapper file:"
 msgstr ""
 
 #. DosBoxSetDialog.gbDosBox.edPath.EditLabel.Caption
@@ -763,36 +780,36 @@ msgid "Convert to code page"
 msgstr ""
 
 #. TxtConvertDialog.edTextfile.EditLabel.Caption
-#: TxtConvertDlg.dfm:236
+#: TxtConvertDlg.dfm:235
 msgid "Filename:"
 msgstr ""
 
-#: AppSettings.pas:264
+#: AppSettings.pas:270
 msgid "Miscellaneous"
 msgstr ""
 
-#: AppSettings.pas:592
+#: AppSettings.pas:600
 msgid "No physical CD drives available!"
 msgstr ""
 
-#: AppSettings.pas:666
+#: AppSettings.pas:674
 msgid "Remove all mixer settings?"
 msgstr ""
 
-#: AppSettings.pas:781
+#: AppSettings.pas:789
 msgid "Image"
 msgstr ""
 
-#: AppSettings.pas:781
-#: AppSettings.pas:911
+#: AppSettings.pas:789
+#: AppSettings.pas:941
 msgid "Executables"
 msgstr ""
 
-#: AppSettings.pas:781
-#: AppSettings.pas:824
-#: AppSettings.pas:842
-#: AppSettings.pas:911
-#: DosPanelMain.pas:1054
+#: AppSettings.pas:789
+#: AppSettings.pas:832
+#: AppSettings.pas:850
+#: AppSettings.pas:941
+#: DosPanelMain.pas:1060
 #: Settings.pas:209
 #: Settings.pas:222
 #: Settings.pas:235
@@ -802,140 +819,139 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: AppSettings.pas:782
+#: AppSettings.pas:790
 msgid "Select file with icon for this application"
 msgstr ""
 
-#: AppSettings.pas:805
+#: AppSettings.pas:813
 msgid "ISO images"
 msgstr ""
 
-#: AppSettings.pas:806
+#: AppSettings.pas:814
 msgid "Select iso image to be mounted as drive "
 "%s"
 msgstr ""
 
-#: AppSettings.pas:823
+#: AppSettings.pas:831
 msgid "Text files"
 msgstr ""
 
-#: AppSettings.pas:823
+#: AppSettings.pas:831
 msgid "HTML files"
 msgstr ""
 
-#: AppSettings.pas:824
+#: AppSettings.pas:832
 msgid "PDF files"
 msgstr ""
 
-#: AppSettings.pas:825
+#: AppSettings.pas:833
 msgid "Select manual for this application"
 msgstr ""
 
-#: AppSettings.pas:842
+#: AppSettings.pas:850
 #: Settings.pas:235
-msgid "DOSBox key mapper files"
+msgid "DOSBox keymapper files"
 msgstr ""
 
-#: AppSettings.pas:843
-#: Settings.pas:236
-msgid "Select key mapper file"
-msgstr ""
-
-#: AppSettings.pas:860
+#: AppSettings.pas:868
 msgid "No application specific configuration found!\n"
 "Copy global configuration to application "
 "path?"
 msgstr ""
 
-#: AppSettings.pas:897
-msgid "Edit startup commands"
+#: AppSettings.pas:900
+msgid "Edit commands on startup"
 msgstr ""
 
-#: AppSettings.pas:897
+#: AppSettings.pas:908
+msgid "Edit commands before exit"
+msgstr ""
+
+#: AppSettings.pas:920
 msgid "List of commands"
 msgstr ""
 
-#: AppSettings.pas:911
+#: AppSettings.pas:941
 msgid "Batch files"
 msgstr ""
 
-#: AppSettings.pas:912
+#: AppSettings.pas:942
 msgid "Select executable for startup"
 msgstr ""
 
-#: AppSettings.pas:917
+#: AppSettings.pas:947
 msgid "The executable file must be located beneath the root path:\n"
 "%s\n"
 "Please try again!"
 msgstr ""
 
-#: AppSettings.pas:928
+#: AppSettings.pas:958
 msgid "Select path to be mounted as drive %s"
 msgstr ""
 
-#: DosPanelMain.pas:443
-#: DosPanelMain.pas:671
+#: DosPanelMain.pas:441
+#: DosPanelMain.pas:675
 msgid "Run DOSBox applications"
 msgstr ""
 
-#: DosPanelMain.pas:747
+#: DosPanelMain.pas:751
 msgid " \"%s\": File \"%s\" is empty!"
 msgstr ""
 
-#: DosPanelMain.pas:750
-#: DosPanelMain.pas:960
+#: DosPanelMain.pas:754
+#: DosPanelMain.pas:964
 msgid " \"%s\": File \"%s\" not found!"
 msgstr ""
 
-#: DosPanelMain.pas:769
+#: DosPanelMain.pas:773
 msgid "dospanel-en.chm"
 msgstr ""
 
-#: DosPanelMain.pas:774
+#: DosPanelMain.pas:778
 msgid "Help not available on this system!"
 msgstr ""
 
-#: DosPanelMain.pas:777
+#: DosPanelMain.pas:781
 msgid "Help file not found!"
 msgstr ""
 
-#: DosPanelMain.pas:893
+#: DosPanelMain.pas:897
 msgid "Remove application \"%s\" from panel?"
 msgstr ""
 
 #. check for basic configuration (local or global)
-#: DosPanelMain.pas:953
+#: DosPanelMain.pas:957
 #. check for basic configuration (local or global)
-#: DosPanelMain.pas:1079
+#: DosPanelMain.pas:1085
 msgid "Basic configuration file not found! Start application "
 "anyway?"
 msgstr ""
 
-#: DosPanelMain.pas:968
+#: DosPanelMain.pas:972
 msgid " \"%s\": Please insert the associated CD into drive "
 "\"%s\"!"
 msgstr ""
 
 #. if AutoEnd then s:=s+' -exit';
-#: DosPanelMain.pas:1034
+#: DosPanelMain.pas:1040
 #. start DosBox and enter keymapper
-#: DosPanelMain.pas:1112
+#: DosPanelMain.pas:1118
 #. start DosBox
-#: DosPanelMain.pas:1129
+#: DosPanelMain.pas:1135
 msgid "%s not found! Please adjust your global "
 "settings!"
 msgstr ""
 
-#: DosPanelMain.pas:1036
+#: DosPanelMain.pas:1042
 msgid "Application path not found:\n"
 "%s"
 msgstr ""
 
-#: DosPanelMain.pas:1048
+#: DosPanelMain.pas:1054
 msgid "Manual for "
 msgstr ""
 
-#: DosPanelMain.pas:1058
+#: DosPanelMain.pas:1064
 msgid "Manual not found (%s)!"
 msgstr ""
 
