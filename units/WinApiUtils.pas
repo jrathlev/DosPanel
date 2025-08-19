@@ -23,6 +23,7 @@
    Vers. 7 - Dec. 2015 : Modifications for Delphi 10 (all functions and constants
                          removed that are now handled in Winapi.Windows)
    Vers. 7.1 - July 2021 : LoadLibrary replaced by ExtLoadLibrary to handle FPU exceptions
+   Vers. 7.2 - August 2025 : ExtendedUserName, GetPreviousProgram, GetPowerCapabilities added
 
    last modified: August 2025
    *)
