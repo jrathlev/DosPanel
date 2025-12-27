@@ -21,7 +21,7 @@
                         messages accessible to screenreaders
    Vers. 3 - December 2023: code page selection added
              March 2024 : changed TMemIniFile
-   last modified: August 2024
+   last modified: July 2025
    *)
 
 
@@ -120,8 +120,8 @@ type
     CodePageList : TStringList;
     ListSelectDialog : TListSelectDialog;
     procedure Print (NoPrompt,SelectedLines : boolean);
-    function LoadText (const FName : string) : boolean;
-    procedure InitView (const FName : string);
+    function LoadText (const FName : string = '') : boolean;
+    procedure InitView (const FName : string = '');
     procedure GetSelectedIndex (n : integer);
     function GetCodepageIndex : integer;
     procedure FindText (Reverse : boolean);
@@ -195,7 +195,8 @@ implementation
 
 {$R *.DFM}
 
-uses GnuGetText, PathUtils, System.IniFiles, System.StrUtils, WinUtils, ShowMessageDlg;
+uses GnuGetText, PathUtils, System.IniFiles, System.StrUtils, WinUtils,
+  {$IFDEF ACCESSIBLE} ShowMessageDlg {$ELSE} MsgDialogs {$ENDIF};
 
 var
   IniFileName  : string;
@@ -280,7 +281,7 @@ begin
   PrinterSettings.Init;
   LWidth:=Width;
   CodePageList:=TStringList.Create;
-  FCodePage:=0;
+  FCodePage:=0; TextName:='';
   ListSelectDialog:=TListSelectDialog.Create(self);
   end;
 
@@ -325,7 +326,7 @@ begin
 procedure TShowTextDialog.GetSelectedIndex (n : integer);
 begin
   FCodePage:=n;
-  InitView(TextName);
+  InitView;
   end;
 
 procedure TShowTextDialog.FormShow(Sender: TObject);
@@ -348,7 +349,7 @@ begin
     end;
   Width:=LWidth;
   FitToScreen(Screen,self);
-  InitView(TextName);
+  InitView;
   BringToFront;
   end;
 
@@ -623,7 +624,7 @@ procedure TShowTextDialog.FindText (Reverse : boolean);
 begin
   with FindDialog do
     if not SearchMemo(Memo,false,FindText,Options,Reverse) then
-      ShowMessage(SafeFormat(dgettext('dialogs','"%s" not found!'),[FindText]))
+      ErrorDialog(SafeFormat(dgettext('dialogs','"%s" not found!'),[FindText]))
     else MemoChange(self);
   end;
 
@@ -637,7 +638,7 @@ begin
 
 procedure TShowTextDialog.UpdateBtnClick(Sender: TObject);
 begin
-  InitView(TextName);
+  InitView;
   end;
 
 procedure TShowTextDialog.FormKeyDown(Sender: TObject; var Key: Word;
@@ -691,9 +692,10 @@ var
   Buffer : TBytes;
   Enc    : TEncoding;
 begin
-  TextName:=FName;
   Result:=false;
-  fs:= TFileStream.Create(FName,fmOpenRead or fmShareDenyNone);
+  if length(FName)>0 then TextName:=FName;
+  if not FileExists(TextName) then Exit;
+  fs:= TFileStream.Create(TextName,fmOpenRead or fmShareDenyNone);
   try
     Size:=fs.Size-fs.Position;
     if Size<=MaxInt then with Memo.Lines do begin
@@ -828,7 +830,7 @@ begin
 
 procedure TShowTextDialog.ReloadText;
 begin
-  if Visible then InitView(TextName);
+  if Visible then InitView;
   end;
 
 procedure TShowTextDialog.Execute (const Title,TextDatei,
@@ -1071,6 +1073,6 @@ begin
   end;
 
 initialization
+  ShowTextDialog:=nil;
   IniFileName:='';
-finalization
 end.

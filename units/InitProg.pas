@@ -13,7 +13,7 @@
   the specific language governing rights and limitations under the License.
 
   Version 1.0 - Nov. 2011
-  last modified: October 2024
+  last modified: April 2025
   *)
   
 unit InitProg;
@@ -49,7 +49,8 @@ procedure FixToolBar(tb: TToolBar);
 
 var
   PrgPath,PrgName,
-  AppSubDir        : string;
+  AppSubDir,
+  CfgName          : string;
   VersInfo         : TFileVersionInfo;       // Programm- und Versionsinfo
 
 implementation
@@ -60,7 +61,7 @@ uses Vcl.Forms, WinShell, Winapi.ShlObj, UnitConsts;
 // Standardpfade
 function GetAppPath : string;
 begin
-  Result:=GetDesktopFolder(CSIDL_APPDATA);
+  Result:=GetAppDataFolder;
   end;
 
 function GetAppSubPath (const SubDir : string; CreateAppDir : boolean) : string;
@@ -77,19 +78,19 @@ begin
 
 function GetUserPath : string;
 begin
-  Result:=GetDesktopFolder(CSIDL_PERSONAL);
+  Result:=GetPersonalFolder;
   end;
 
 function GetProgPath : string;
 begin
-  Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES);
+  Result:=GetProgramFolder(pfProgramFiles);
   end;
 
 procedure InitPaths (var AppPath,UserPath,ProgPath : string; CreateAppDir : boolean);
 begin
   AppPath:=GetAppSubPath(AppSubDir,CreateAppDir);
   UserPath:=IncludeTrailingPathDelimiter(GetUserPath);
-  ProgPath:=IncludeTrailingPathDelimiter(GetDesktopFolder(CSIDL_PROGRAM_FILES));
+  ProgPath:=IncludeTrailingPathDelimiter(GetProgPath);
   end;
 
 procedure InitPaths (var AppPath,UserPath : string);
@@ -181,5 +182,6 @@ initialization
   PrgPath:=ExtractFilePath(Application.ExeName);
   PrgName:=ExtractFileName(ChangeFileExt(Application.ExeName,''));
   AppSubDir:='';
+  CfgName:='';
 end.
 

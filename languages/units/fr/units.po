@@ -6,15 +6,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Delphi units\n"
-"POT-Creation-Date: 2025-07-20 12:19+0200\n"
-"PO-Revision-Date: 2025-07-20 12:24+0200\n"
+"POT-Creation-Date: 2025-10-10 13:34+0200\n"
+"PO-Revision-Date: 2025-12-04 16:52+0100\n"
 "Last-Translator: J. Rathlev <kontakt@rathlev-home.de>\n"
 "Language-Team: Xavier Lasserre <xavierlasserre@orange.fr>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.8\n"
 "X-Poedit-SourceCharset: iso-8859-1\n"
 
 msgid "No errors on COM connection"
@@ -218,8 +218,6 @@ msgstr "Erreur d'effacement du fichier à \" %s\""
 msgid "Error renaming file"
 msgstr "Erreur de renommer du fichier"
 
-#. Programmer's name for it: rsZipFormat
-#: FileConsts.pas:85
 msgid "Invalid zip format"
 msgstr "Format zip non valide"
 
@@ -606,6 +604,47 @@ msgstr "%s (Version %s, %s)"
 
 msgid "Windows 11"
 msgstr "Windows 11"
+
+#. Programmer's name for it: rsVersionText
+#: UnitConsts.pas:82
+msgid ""
+"Product name        : %s%s\n"
+"Version             : %d.%d\n"
+"Build               : %d\n"
+"Edition             : %6:s"
+msgstr ""
+"Nom du produit      : %s%s\n"
+"Version             : %d.%d\n"
+"Build               : %d\n"
+"Édition             : %6:s"
+
+#. Programmer's name for it: rsSPVersionText
+#: UnitConsts.pas:87
+msgid ""
+"Product name        : %s%s\n"
+"Service Pack        : %5:d\n"
+"Version             : %2:d.%3:d\n"
+"Build               : %4:d\n"
+"Edition             : %6:s"
+msgstr ""
+"Nom du produit      : %s%s\n"
+"Service Pack        : %5:d\n"
+"Version             : %2:d.%3:d\n"
+"Build               : %4:d\n"
+"Édition             : %6:s"
+
+#. Programmer's name for it: rsVersion10Text
+#: UnitConsts.pas:91
+msgid ""
+"Product name        : %s%s\n"
+"Version             : %s\n"
+"Build               : %d\n"
+"Edition             : %s"
+msgstr ""
+"Nom du produit      : %s%s\n"
+"Version             : %s\n"
+"Build               : %d\n"
+"Édition             : %s"
 
 msgid "Professional with Media Center"
 msgstr "Avec Media Center Professionnel"

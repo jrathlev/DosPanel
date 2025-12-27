@@ -664,14 +664,15 @@ begin
 
 procedure TfrmMain.SetLanguageClick(Sender : TObject; Language : TLangCodeString);
 var
+  sl : TLangCodeString;
   s : string;
   n : integer;
 begin
   if not AnsiSameStr(SelectedLanguage,Language) then begin
     s:=MiscName;
-    Languages.SelectedLanguageCode:=Language;
-    ChangeLanguage(Language);
-    Languages.LoadLanguageNames(SelectedLanguage);
+//    Languages.SelectedLanguageCode:=Language;
+    sl:=ChangeLanguage(Language);
+    Languages.LoadLanguageNames(sl);
     Caption:=_('Run DOSBox applications')+' ('+VersInfo.Comments+')';
     with tcCats do with Tabs do begin
       n:=IndexOf(s);

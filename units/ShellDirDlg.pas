@@ -29,7 +29,7 @@
                            messages accessible to screenreaders
    Vers. 3.3 - Mar. 2024 : changed to TMemIniFile
 
-   last modified: March 2024
+   last modified: April 2025
    *)
 
 unit ShellDirDlg;
@@ -654,7 +654,7 @@ begin
   else begin
     spbComputer.Down:=true;
     if (length(s)=0) or not DirectoryExists(s)then begin
-      s:=GetDesktopFolder(CSIDL_PERSONAL);
+      s:=GetPersonalFolder;
       r:='rfMyComputer';
   //    r:='rfPersonal';
       if length(s)=0 then s:=GetCurrentDir;
@@ -673,7 +673,13 @@ begin
     sleep(500);    // new Feb. 2021
     if length(s)>0 then Path:=s
     else Selected:=nil;
-    if assigned(Selected) then try Selected.Expand(false); except end;
+    if assigned(Selected) then begin
+      try
+        Selected.Expand(false);
+        Selected.MakeVisible;
+      except
+        end;
+      end;
     end;
   end;
 

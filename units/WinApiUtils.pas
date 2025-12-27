@@ -41,6 +41,7 @@ const
   powrprof  = 'powrprof.dll';
   secur32 = 'Secur32.dll';
   wtsapi32 = 'Wtsapi32.dll';
+  ntdll = 'ntdll.dll';
 
 // Reason flags       (not used on Windows 2000, Windows NT and Windows Me/98/95)
 // Flags that end up in the event log code
@@ -61,6 +62,7 @@ const
   LOGON_ZERO_PASSWORD_BUFFER = DWORD($80000000);
 
   // constants missing in unit Windows
+  // see: https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-fscc/c8e77b37-3909-4fe6-a4ea-2b9d423b1ee4
   IO_REPARSE_TAG_MOUNT_POINT         = $A0000003;
   {$EXTERNALSYM IO_REPARSE_TAG_MOUNT_POINT}
   IO_REPARSE_TAG_HSM                 = $C0000004;
@@ -436,7 +438,7 @@ type
   TGetUserNameEx = function (NameFormat : DWORD; lpBuffer: LPWSTR; var nSize: DWORD): BOOL; stdcall;
 
   TFileVersionInfo = record
-    Company,Description,Version,InternalName,Copyright,Comments : string;
+    Company,Description,Version,InternalName,Copyright,Comments,ProductName,ProductVersion : string;
     end;
 
   TSessionData = record
@@ -562,6 +564,7 @@ function GetFileVersionAsNumber (const Filename : string; var Version : TVersion
 function GetFileVersionName (const Filename,DefName,DefVers : string): string;
 function GetFileVersionRelease (const Filename,defVers : string) : string;
 function GetFileVersionCopyright (const Filename,defCopyright : string) : string;
+function FileVersionToNumber (vs: string) : TVersion;
 
 { ---------------------------------------------------------------- }
 (* ermittle Zeitzonen-Info für aktuelle Zone *)
@@ -625,6 +628,10 @@ function ModifyPrivilege (const PrivilegeName : string; Enable : boolean) : bool
 { ---------------------------------------------------------------- }
 // WinHandle = Window Handle of process
 function KillProcessByWinHandle(WinHandle : Hwnd) : boolean;
+
+{ ---------------------------------------------------------------- }
+// Check whether the program runs under Wine.
+function CheckForWine : boolean;
 
 { ---------------------------------------------------------------- }
 // Replacement for SysUtils.SafeLoadLibrary with FPU exception handling for x86 and x64
@@ -885,8 +892,8 @@ var
   GetUserNameEx : TGetUserNameEx;
 begin
   Result:=false;
-  Secur32Handle:=FpuSafeLoadLibrary(secur32);
   try
+    Secur32Handle:=FpuSafeLoadLibrary(secur32);
     if Secur32Handle<>0 then begin
       GetUserNameEx:=GetProcAddress(Secur32Handle,'GetUserNameExW');
       if assigned(GetUserNameEx) then begin
@@ -1073,6 +1080,8 @@ begin
           4 : InternalName:=TrimRight(value);
           5 : Copyright:=TrimRight(value);
           6 : Comments:=TrimRight(value);
+          9 : ProductName:=TrimRight(value);
+          10 : ProductVersion:=TrimRight(value);
             end;
           end;
         end;
@@ -1112,12 +1121,11 @@ begin
     end;
   end;
 
-function GetFileVersionAsNumber (const Filename : string; var Version : TVersion) : boolean;
+function FileVersionToNumber (vs: string) : TVersion;
 var
-  s : string;
   val : integer;
 
-  function ReadNxtInt (var s : String;
+  function ReadNxtInt (var s : string;
                        var n : integer) : boolean;
   var
     i : integer;
@@ -1129,22 +1137,30 @@ var
     end;
 
 begin
-  with Version do begin
+  with Result do begin
     Major:=0; Minor:=0; Release:=0; Build:=0; ;
-    end;
-  Result:=GetFileVersionString(Filename,s);
-  if Result then with Version do begin
-    if ReadNxtInt(s,val) then begin
+    if ReadNxtInt(vs,val) then begin
       Major:=val;
-      if ReadNxtInt(s,val) then begin
+      if ReadNxtInt(vs,val) then begin
         Minor:=val;
-        if ReadNxtInt(s,val) then begin
+        if ReadNxtInt(vs,val) then begin
           Release:=val;
-          if ReadNxtInt(s,val) then Build:=val;
+          if ReadNxtInt(vs,val) then Build:=val;
           end;
         end;
       end;
     end
+  end;
+
+function GetFileVersionAsNumber (const Filename : string; var Version : TVersion) : boolean;
+var
+  vs : string;
+begin
+  with Version do begin
+    Major:=0; Minor:=0; Release:=0; Build:=0;
+    end;
+  Result:=GetFileVersionString(Filename,vs);
+  if Result then Version:=FileVersionToNumber(vs);
   end;
 
 function GetFileVersionName (const Filename,DefName,DefVers : string) : string;
@@ -1929,6 +1945,20 @@ begin
    if Processhandle=0 then Result:=false
    else Result:=TerminateProcess(ProcessHandle,4);
    end;
+
+{ ---------------------------------------------------------------- }
+// Check whether the program runs under Wine.
+function CheckForWine : boolean;
+var
+  NtDllHandle : THandle;
+begin
+  Result:=false;
+  NtDllHandle:=FpuSafeLoadLibrary(ntdll);
+  if NtDllHandle<>0 then begin
+    Result:=assigned(GetProcAddress(NtDllHandle,'wine_get_version'));
+    FreeLibrary(NtDllHandle);
+    end;
+  end;
 
 { ---------------------------------------------------------------- }
 // Replacement for SysUtils.SafeLoadLibrary with FPU exception handling for x86 and x64

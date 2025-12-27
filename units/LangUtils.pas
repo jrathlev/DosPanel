@@ -14,8 +14,9 @@
 
   Version 2.0 - Nov. 2011
           2.1 - Sept. 2024: languages added
+          2.2 - June 2025: optional loading of language list from resource
 
-          last modified: September 2024
+          last modified: June 2025
 
   Hinweise zur Verwendung:
   ========================
@@ -40,7 +41,7 @@
                            (leer: Name der Anwendung)
   2. im Haupt-Formular:
      ------------------
-    interfaace
+    interface
     uses ..., LangUtils, ...
     ...
     type
@@ -120,7 +121,7 @@ type
     FOnLangItemClick : TLanguageMenuEvent;
     FOnLangMeasureItem :TMenuMeasureItemEvent;
     FCurrentLanguage,
-    FPath,FName : string;
+    FPath,FLangName : string;
     procedure AddMenuItems;
     procedure RemoveMenuItems;
     function GetLangCode (Index : integer) : TLangCodeString;
@@ -134,7 +135,7 @@ type
     function GetLangIndex (const Value: TLangCodeString) : integer;
     procedure SetLangCode (const Value: TLangCodeString);
   public
-    constructor Create (const APath,Filename : string);
+    constructor Create (const APath : string; const Filename : string = '');
     destructor Destroy; override;
     function LoadLanguageNames (LangCode : TLangCodeString) : boolean;
     property CurrentLanguage : string read FCurrentLanguage;
@@ -155,12 +156,11 @@ procedure InitTranslation (const Domains : array of string); overload;
 procedure InitTranslation (const CfgDir : string; const Domains : array of string); overload;
 procedure InitTranslation (const CfgDir,ConfigName : string; const Domains : array of string); overload;
 procedure SaveLanguage (NewLangCode : TLangCodeString);
-procedure ChangeLanguage (NewLangCode : TLangCodeString);
+function ChangeLanguage (const NewLangCode : TLangCodeString) : TLangCodeString;
 function GetLanguageHint : string;
 function LangIdToCode(id : integer) : TLangCodeString;
 
 var
-  CfgName            : string;
   SelectedLanguage   : TLangCodeString;
   LangFromCfg        : boolean;
 
@@ -184,7 +184,7 @@ begin
   inherited Create;
 //  Sorted:=true;
   MenuSizeBefore:=0; FLangCode:='';
-  FPath:=IncludeTrailingPathDelimiter(APath); FName:=Filename;
+  FPath:=IncludeTrailingPathDelimiter(APath); FLangName:=Filename;
   LoadDefaultNames;  // load default language table
   end;
 
@@ -215,14 +215,26 @@ function TLanguageList.LoadDefaultNames : boolean;
 var
   sl      : TStringList;
   s,sn    : string;
+  rs      : TResourceStream;
   ss      : TLangCodeString;
   i       : integer;
 begin
-  s:=FPath+FName;
-  Result:=FileExists(s);
+  sl:=TStringList.Create; Result:=false;
+  if FLangName.IsEmpty then begin // load from resource
+    Result:=FindResource(HInstance,'IDR_LANGUAGES',RT_RCDATA)<>0;
+    if Result then begin
+    // read list of supported languages from resource
+      rs:=TResourceStream.Create(HInstance,'IDR_LANGUAGES',RT_RCDATA);
+      sl.LoadFromStream(rs);
+      rs.Free;
+      end;
+    end
+  else begin
+    s:=FPath+FLangName;
+    Result:=FileExists(s);
+    if Result then sl.LoadFromFile(s);
+    end;
   if Result then begin
-    sl:=TStringList.Create;
-    sl.LoadFromFile(s);
     Clear;
     AddObject(rsSystemDefault,LangCodeStringToCardinal(''));  // system language
     for i:=0 to sl.Count-1 do begin
@@ -234,10 +246,10 @@ begin
           AddObject(sn,pointer(LangCodeStringToCardinal(ss)));
         end;
       end;
-    sl.Free;
     Sort;
     if Assigned(FMenu) then SetMenu(FMenu);
     end;
+  sl.Free;
   end;
 
 procedure TLanguageList.RemoveMenuItems;
@@ -325,23 +337,30 @@ var
 begin
   if length(LangCode)>0 then begin
     LoadDefaultNames;
-    s:=FPath+'locale\'+LangCode+'\LC_MESSAGES\'+FName;
-    Result:=FileExists(s);  // localized language table found
-    if Result then begin
-      sl:=TStringList.Create;
-      sl.LoadFromFile(s);
-      for i:=0 to sl.Count-1 do begin
-        s:=Trim(sl[i]);
-        if (length(s)>0) and (s[1]<>'#') then begin
-          ss:=ReadNxtStr(s,'=');
-          n:=GetLangIndex(ss);
-          sn:=Trim(ReadNxtStr(s,'#'));
-          if (length(sn)>0) and (n>=0) then Strings[n]:=sn;
-          end;
-        end;
-      sl.Free;
+    if FLangName.IsEmpty then begin  // get supported languages from resource
+      for i:=1 to Count-1 do Strings[i]:=dgettext('languages',Strings[i]); // translate
       Sort;
       if Assigned(FMenu) then SetMenu(FMenu);
+      end
+    else begin
+      s:=FPath+'locale\'+LangCode+'\LC_MESSAGES\'+FLangName;
+      Result:=FileExists(s);  // localized language table found
+      if Result then begin
+        sl:=TStringList.Create;
+        sl.LoadFromFile(s);
+        for i:=0 to sl.Count-1 do begin
+          s:=Trim(sl[i]);
+          if (length(s)>0) and (s[1]<>'#') then begin
+            ss:=ReadNxtStr(s,'=');
+            n:=GetLangIndex(ss);
+            sn:=Trim(ReadNxtStr(s,'#'));
+            if (length(sn)>0) and (n>=0) then Strings[n]:=sn;
+            end;
+          end;
+        Sort;
+        if Assigned(FMenu) then SetMenu(FMenu);
+        sl.Free;
+        end;
       end;
     SetLangCode(LangCode);
     end
@@ -458,7 +477,7 @@ function ReadLanguageCode : TLangCodeString;
 var
   s,si  : string;
   j     : integer;
-  ok,po : boolean;
+  po    : boolean;
 
   // replace environment variable
   function ReplacePathPlaceHolder (const ps : string) : string;
@@ -483,8 +502,8 @@ var
     end;
 
 begin
-  ok:=false; po:=false; si:=''; Result:='';
-  for j:=1 to ParamCount do if not ok then begin   // prüfe Befehlszeile
+  po:=false; si:=''; Result:='';
+  for j:=1 to ParamCount do begin   // prüfe Befehlszeile
     s:=ParamStr(j);
     if (s[1]='/') or (s[1]='-') then begin
       delete (s,1,1);
@@ -533,7 +552,6 @@ begin
 
 procedure SaveLanguage (NewLangCode : TLangCodeString);
 begin
-  SelectedLanguage:=NewLangCode;
   if LangFromCfg then begin
     with TMemIniFile.Create(CfgName) do begin
       WriteString(LangSekt,LangID,SelectedLanguage);
@@ -553,14 +571,20 @@ begin
 
 { ------------------------------------------------------------------- }
 // Spracheinstellung eines laufenden Programms ändern
-procedure ChangeLanguage (NewLangCode : TLangCodeString);
+function ChangeLanguage (const NewLangCode : TLangCodeString) : TLangCodeString;
 var
   i : integer;
 begin
+  SelectedLanguage:=NewLangCode;
+{$IFDEF RELEASE}
   SaveLanguage(NewLangCode);
+{$EndIf}
   UseLanguage(NewLangCode);
-  with Application do for i:=0 to ComponentCount-1 do if (Components[i] is TForm) then
-    ReTranslateComponent(Components[i]);
+  if length(NewLangCode)=0 then Result:=copy(GetCurrentLanguage,1,2)  // system default
+  else Result:=NewLangCode;
+  with Application do for i:=0 to ComponentCount-1 do if (Components[i] is TForm) then begin
+    try ReTranslateComponent(Components[i]); except; end;
+    end;
   end;
 
 { ------------------------------------------------------------------- }
@@ -593,7 +617,6 @@ begin
   end;
 
 initialization
-  CfgName:='';
   SelectedLanguage:=''; // default: system language
 
 end.

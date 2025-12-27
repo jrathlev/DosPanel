@@ -13,7 +13,9 @@
 
    Vers. 1 - Sep. 2002
    Vers. 2 - April 2016: IFileOperation added
-   last updated: June 2020
+   Vers. 3 - August 2025: SHGetFolderLocation replaced by SHGetKnownFolderPath for
+             systems since Vista
+   last modified: August 2025
    *)
 
 unit WinShell;
@@ -152,6 +154,7 @@ function GetDesktopFolder (Typ : integer) : string;
 function GetKnownFolder (rfId : TGUID) : string;
 function GetProgramFolder (pfType : TProgramFolder) : string;
 
+function GetUserProfileFolder : string;
 function GetPersonalFolder : string;
 function GetAppDataFolder : string;
 function GetLocalAppDataFolder : string;
@@ -159,6 +162,10 @@ function GetPicturesFolder : string;
 function GetVideoFolder : string;
 function GetMusicFolder : string;
 function GetPublicFolder : string;
+function GetUserDesktopFolder : string;
+function GetUserStartupFolder : string;
+function GetFavoritesFolder : string;
+function GetProgramDataFolder : string;
 
 procedure RefreshDesktop;
 
@@ -286,6 +293,9 @@ implementation
 uses Winapi.ActiveX, Winapi.Shellapi, Winapi.KnownFolders;
 
 { ------------------------------------------------------------------- }
+var
+  IsVista : boolean;
+
 { ---------------------------------------------------------------- }
 (* Windows-Desktop *)
 (* Verzeichnisse auf Desktop oder im Startmenü erstellen *)
@@ -327,6 +337,7 @@ begin
   pMalloc._Release;
   end;
 
+// https://learn.microsoft.com/de-de/windows/win32/shell/knownfolderid#remarks
 function GetKnownFolder (rfId : TGUID) : string;  // available since Vista
 var
   ppszPath : PWideChar;
@@ -347,58 +358,114 @@ begin
   case pfType of
   pfProgramFiles86 : begin
     Result:=GetEnvironmentVariable('ProgramFiles(x86)'); // get from environment
-    if length(Result)=0 then Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES);
+    if length(Result)=0 then begin
+      if IsVista then Result:=GetKnownFolder(FOLDERID_ProgramFilesX86)
+      else Result:=GetDesktopFolder(CSIDL_PROGRAM_FILESX86);
+      end;
     end;
   pfProgramFiles64 : begin
     Result:=GetEnvironmentVariable('ProgramW6432'); // get from environment
-    if length(Result)=0 then Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES);
+    if length(Result)=0 then begin
+      if IsVista then Result:=GetKnownFolder(FOLDERID_ProgramFiles)
+      else Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES);
+      end;
     end;
   pfCommonProgramFiles86 : begin
     Result:=GetEnvironmentVariable('CommonProgramFiles(x86)'); // get from environment
-    if length(Result)=0 then Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES_COMMON);
+    if length(Result)=0 then begin
+      if IsVista then Result:=GetKnownFolder(FOLDERID_ProgramFilesCommonX86)
+      else Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES_COMMONX86);
+      end;
     end;
   pfCommonProgramFiles64 : begin
     Result:=GetEnvironmentVariable('CommonProgramW6432'); // get from environment
+    if length(Result)=0 then begin
+      if IsVista then Result:=GetKnownFolder(FOLDERID_ProgramFilesCommon)
+      else Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES_COMMON);
+      end;
     if length(Result)=0 then Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES_COMMON);
     end;
-  pfCommonProgramFiles : Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES_COMMON);
-  else Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES);
+  pfCommonProgramFiles : if length(Result)=0 then begin
+      if IsVista then Result:=GetKnownFolder(FOLDERID_ProgramFilesCommon)
+      else Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES_COMMON);
+      end;
+  else if length(Result)=0 then begin
+      if IsVista then Result:=GetKnownFolder(FOLDERID_ProgramFiles)
+      else Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES);
+      end;
     end;
+  end;
+
+function GetUserProfileFolder : string;
+begin
+  if IsVista then Result:=GetKnownFolder(FOLDERID_PROFILE)
+  else Result:=GetDesktopFolder(CSIDL_PROFILE);
   end;
 
 function GetPersonalFolder : string;
 begin
-  Result:=GetDesktopFolder(CSIDL_PERSONAL);
+  if IsVista then Result:=GetKnownFolder(FOLDERID_Documents)
+  else Result:=GetDesktopFolder(CSIDL_PERSONAL);
   end;
 
 function GetAppDataFolder : string;
 begin
-  Result:=GetDesktopFolder(CSIDL_APPDATA);
+  if IsVista then Result:=GetKnownFolder(FOLDERID_RoamingAppData)
+  else Result:=GetDesktopFolder(CSIDL_APPDATA);
   end;
 
 function GetLocalAppDataFolder : string;
 begin
-  Result:=GetDesktopFolder(CSIDL_LOCAL_APPDATA);
+  if IsVista then Result:=GetKnownFolder(FOLDERID_LocalAppData)
+  else Result:=GetDesktopFolder(CSIDL_LOCAL_APPDATA);
   end;
 
 function GetPicturesFolder : string;
 begin
-  Result:=GetDesktopFolder(CSIDL_MYPICTURES);
+  if IsVista then Result:=GetKnownFolder(FOLDERID_Pictures)
+  else Result:=GetDesktopFolder(CSIDL_MYPICTURES);
   end;
 
 function GetVideoFolder : string;
 begin
-  Result:=GetDesktopFolder(CSIDL_MYVIDEO);
+  if IsVista then Result:=GetKnownFolder(FOLDERID_Videos)
+  else Result:=GetDesktopFolder(CSIDL_MYVIDEO);
   end;
 
 function GetMusicFolder : string;
 begin
-  Result:=GetDesktopFolder(CSIDL_MYMUSIC);
+  if IsVista then Result:=GetKnownFolder(FOLDERID_Music)
+  else Result:=GetDesktopFolder(CSIDL_MYMUSIC);
   end;
 
 function GetPublicFolder : string;
 begin
-  Result:=GetKnownFolder(FOLDERID_Public);
+  if IsVista then Result:=GetKnownFolder(FOLDERID_Public)
+  else Result:=GetDesktopFolder(CSIDL_COMMON_DOCUMENTS);
+  end;
+
+function GetUserDesktopFolder : string;
+begin
+  if IsVista then Result:=GetKnownFolder(FOLDERID_Desktop)
+  else Result:=GetDesktopFolder(CSIDL_DESKTOP);
+  end;
+
+function GetUserStartupFolder : string;
+begin
+  if IsVista then Result:=GetKnownFolder(FOLDERID_Startup)
+  else Result:=GetDesktopFolder(CSIDL_STARTUP);
+  end;
+
+function GetFavoritesFolder : string;
+begin
+  if IsVista then Result:=GetKnownFolder(FOLDERID_Favorites)
+  else Result:=GetDesktopFolder(CSIDL_FAVORITES);
+  end;
+
+function GetProgramDataFolder : string;
+begin
+  if IsVista then Result:=GetKnownFolder(FOLDERID_ProgramData)
+  else Result:=GetDesktopFolder(CSIDL_COMMON_APPDATA);
   end;
 
 { ---------------------------------------------------------------- }
@@ -477,7 +544,7 @@ begin
   if SUCCEEDED(Result) then with psl do begin
     Result:=SetPath(pChar(ProgName));
     if SUCCEEDED(Result) then begin
-      SetArguments(PChar(Arg));
+      SetArguments(PChar(Arg));                 // max length is INFOTIPSIZE = 1024
       if length(IconLocation)>0 then SetIconLocation(PChar(IconLocation),IconIndex);
       if length(WorkDir)>0 then SetWorkingDirectory(PChar(WorkDir));
       if length(Desc)>0 then SetDescription(PChar(Desc));
@@ -588,7 +655,8 @@ begin
     cbSize := system.sizeof(tnid);     // Größenangabe der Struktur
     Wnd := WinHandle;                  // Handle des Message-Empfängers
     uID := UserId;                     // ID beliebig
-    uFlags := 0;                       // siehe Tabelle
+    uFlags := NIF_STATE;               // siehe Tabelle
+    dwStateMask:=NIS_HIDDEN;
     if MessageID>0 then uFlags:=NIF_MESSAGE;
     uCallbackMessage := MessageID;     // Message Identifier
     if IconHandle<>0 then uFlags:=uFlags or NIF_ICON;
@@ -988,4 +1056,6 @@ begin
   Result:=True;
   end;
 
+initialization
+  IsVista:=(Win32Platform=VER_PLATFORM_WIN32_NT) and (Win32MajorVersion>=6);
 end.
