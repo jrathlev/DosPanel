@@ -14,9 +14,10 @@
 
   Version 2.0 - Nov. 2011
           2.1 - Sept. 2024: languages added
-          2.2 - June 2025: optional loading of language list from resource
+          2.2 - June 2025 : optional loading of language list from resource
+          2.3 - April 2026: language codes expanded in accordance with ISO 639-1 <language>-<region>
 
-          last modified: June 2025
+  last modified: April 2026
 
   Hinweise zur Verwendung:
   ========================
@@ -88,6 +89,11 @@
                                   Die Sprachauswahl wird automatisch als
                                   Untermenü angehängt
   *)
+(* @abstract(Subroutines and components for multi languge support with GnuGetText)
+   @author(© Dr. J. Rathlev, D-24222 Schwentinental (kontakt(a)rathlev-home.de))
+   @created(November 2011)
+   @lastmod(April 2026)
+*)
 
 unit LangUtils;
 
@@ -109,9 +115,9 @@ const
   siPortable = 'portable';    // starte als portables Programm
 
 type
-  TLangCodeString = string[2];
+  TLangCodeString = string;
 
-  TLanguageMenuEvent = procedure(Sender : TObject; LangCode : TLangCodeString) of object;
+  TLanguageMenuEvent = procedure(Sender : TObject; const LangCode : TLangCodeString) of object;
 
   TLanguageList = class (TStringList)
   private
@@ -126,8 +132,6 @@ type
     procedure RemoveMenuItems;
     function GetLangCode (Index : integer) : TLangCodeString;
     procedure SetMenu(Menu : TMenuItem);
-    function LangCodeStringToCardinal (LangCode : TLangCodeString) : pointer;
-    function CardinalToLangCodeString (Value : cardinal) : TLangCodeString;
     function LoadDefaultNames : boolean;
   protected
     procedure DoLangItemClick(Sender : TObject); virtual;
@@ -158,10 +162,11 @@ procedure InitTranslation (const CfgDir,ConfigName : string; const Domains : arr
 procedure SaveLanguage (NewLangCode : TLangCodeString);
 function ChangeLanguage (const NewLangCode : TLangCodeString) : TLangCodeString;
 function GetLanguageHint : string;
-function LangIdToCode(id : integer) : TLangCodeString;
+function LangIdToCode(id : TLocaleID) : TLangCodeString;
 
 var
   SelectedLanguage   : TLangCodeString;
+  UserLangID         : TLocaleID;
   LangFromCfg        : boolean;
 
 implementation
@@ -170,12 +175,50 @@ uses
   Winapi.Windows, Vcl.Forms, Winapi.ShlObj, System.IniFiles, System.StrUtils,
   System.IOUtils, GnuGetText, UnitConsts, StringUtils, InitProg;
 
+const
+    IsVista : boolean = true;
+
 { ------------------------------------------------------------------- }
 (* Name enthält vollständigen Pfad *)
 function ContainsFullPath (const Name : string) : boolean;
 begin
   if length(Name)>0 then Result:=(Name[1]=PathDelim) or (pos(DriveDelim,Name)>0)
   else Result:=false;
+  end;
+
+{ ------------------------------------------------------------------- }
+function IdToShortLanguageName (LangId : TLocaleID) : TLangCodeString;
+var
+  nc : cardinal;
+  buf : array of Char;
+begin
+  Result:='';
+  if IsVista then begin
+    nc:=0;
+    nc:=GetLocaleInfo(LangId,LOCALE_SNAME,nil,nc);
+    if nc>0 then begin
+      SetLength(buf,nc);
+      if GetLocaleInfo(LangId,LOCALE_SNAME,@buf[0],nc)>0 then Result:=PChar(@buf[0]);
+      end
+    end
+  else begin
+    if LangId=0 then Result:=''
+    else Result:=AnsiChar(LongRec(LangId).Bytes[0])+AnsiChar(LongRec(LangId).Bytes[1]);
+    end;
+  end;
+
+function ShortLanguageNameToID (const LangName : TLangCodeString) : TLocaleID;
+var
+  nc : cardinal;
+begin
+  Result:=0; nc:=0;
+  if IsVista then begin
+    if GetLocaleInfoEx(pchar(LangName),LOCALE_RETURN_NUMBER or LOCALE_ILANGUAGE,@nc,4)>0 then Result:=nc;
+    end
+  else begin
+    if length(LangName)<2 then Result:=0
+    else Result:=ord(LangName[2]) shl 8 + ord(LangName[1]);
+    end;
   end;
 
 { ------------------------------------------------------------------- }
@@ -193,22 +236,9 @@ begin
   inherited Destroy;
   end;
 
-function TLanguageList.LangCodeStringToCardinal (LangCode : TLangCodeString) : pointer;
-begin
-  if length(LangCode)<2 then Result:=nil
-  else Result:=pointer(ord(LangCode[2]) shl 8 + ord(LangCode[1]));
-//  BytesToCardinal(0,0,ord(LangCode[2]),ord(LangCode[1])));
-  end;
-
-function TLanguageList.CardinalToLangCodeString (Value : cardinal) : TLangCodeString;
-begin
-  if Value=0 then Result:=''
-  else Result:=AnsiChar(LongRec(Value).Bytes[0])+AnsiChar(LongRec(Value).Bytes[1]);
-  end;
-
 function TLanguageList.GetLangCode (Index : integer) : TLangCodeString;
 begin
-  Result:=CardinalToLangCodeString(cardinal(Objects[Index]));
+  Result:=IdToShortLanguageName(TLocaleID(Objects[Index]));
   end;
 
 function TLanguageList.LoadDefaultNames : boolean;
@@ -236,14 +266,14 @@ begin
     end;
   if Result then begin
     Clear;
-    AddObject(rsSystemDefault,LangCodeStringToCardinal(''));  // system language
+    AddObject(rsSystemDefault,nil);  // system language
     for i:=0 to sl.Count-1 do begin
       s:=Trim(sl[i]);
       if (length(s)>0) and (s[1]<>'#') then begin
         ss:=ReadNxtStr(s,'=');
         sn:=Trim(ReadNxtStr(s,'#'));
         if (length(sn)>0) and (length(ss)>0) then
-          AddObject(sn,pointer(LangCodeStringToCardinal(ss)));
+          AddObject(sn,pointer(ShortLanguageNameToID(ss)));
         end;
       end;
     Sort;
@@ -276,7 +306,7 @@ begin
         RadioItem:=true;
         GroupIndex:=123;
         Tag:=i+1;
-        Checked:=AnsiSameStr(FLangCode,CardinalToLangCodeString(cardinal(Objects[i])));
+        Checked:=AnsiSameStr(FLangCode,IdToShortLanguageName(TLocaleID(Objects[i])));
         OnMeasureItem:=DoLangMeasureItem;
         end;
       FMenu.Add(mi);
@@ -295,7 +325,7 @@ begin
 function TLanguageList.GetLangIndex (const Value: TLangCodeString) : integer;
 begin
   for Result:=0 to Count-1 do
-     if LangCodeStringToCardinal(Value)=Objects[Result] then Exit;
+     if ShortLanguageNameToID(Value)=TLocaleID(Objects[Result]) then Exit;
   Result:=-1;
   end;
 
@@ -304,7 +334,6 @@ var
   n : integer;
 begin
   n:=GetLangIndex(Value);
-  //    if AnsiSameStr(Value,CardinalToLangCodeString(Objects[i])) then Break;
   if n>=0 then begin
     if assigned(FMenu) then FMenu.Items[MenuSizeBefore+n].Checked:=true;
     FLangCode:=Value;
@@ -317,7 +346,7 @@ begin
   if Assigned (FOnLangItemClick) then begin
     with (Sender as TMenuItem) do begin
       Checked:=true;
-      if Tag>0 then FOnLangItemClick(FMenu,CardinalToLangCodeString(cardinal(Objects[Tag-1])));
+      if Tag>0 then FOnLangItemClick(FMenu,IdToShortLanguageName(TLocaleID(Objects[Tag-1])));
       end;
     end;
   end;
@@ -344,6 +373,7 @@ begin
       end
     else begin
       s:=FPath+'locale\'+LangCode+'\LC_MESSAGES\'+FLangName;
+      if not FileExists(s) then s:=FPath+'locale\'+copy(LangCode,1,2)+'\LC_MESSAGES\'+FLangName;
       Result:=FileExists(s);  // localized language table found
       if Result then begin
         sl:=TStringList.Create;
@@ -368,22 +398,39 @@ begin
   end;
 
 { ------------------------------------------------------------------- }
+function GetLanguageShortName (LangId : TLocaleID) : string;
+var
+  nc : cardinal;
+  buf : array of Char;
+begin
+  Result:=''; nc:=0;
+  nc:=GetLocaleInfo(LangId,LOCALE_SNAME,nil,nc);
+  if nc>0 then begin
+    SetLength(buf,nc);
+    if GetLocaleInfo(LangId,LOCALE_SNAME,@buf[0],nc)>0 then
+      Result:=PChar(@buf[0]);
+    buf:=nil;
+    end;
+  if not IsVista then Result:=copy(Result,1,2);
+  end;
+
+{ ------------------------------------------------------------------- }
 // GnuGetText ermittelt als System-Standard nicht die Sprache sondern die lokale
-// Einstellung (GetLocaleInfo) (korrigiert Sept. 2023)
 // Bsp: engl. System mit lokaler Einstellung "German" gibt:
-//    GetLocaleInfo oder GetUserDefaultLangID   ==> de_DE
-//    GetUserDefaultUILanguage                  ==> 1033 = $409 = "English (US)"
-// Die nachfolgenden Routinen umgehen diesen Fehler
+//    GetSystemDefaultUILanguage                ==> 1033 = $409 = "English (US)"
+//    GetUserDefaultLangID                      ==> 1031 from regional user settings
+//    GetUserDefaultUILanguage                  ==> 1031 = $407 = "German (DE)"
 function GetUserLang : TLangCodeString;
 var
-  pli : integer;
+  pli : TLocaleID;
 begin
   pli:=GetUserDefaultUILanguage;       // not available with Win98
   if pli=0 then pli:=GetUserDefaultLangID;
-  Result:=LangIdToCode(pli);
+  Result:=GetLanguageShortName(pli);
+//  Result:=LangIdToCode(pli);
   end;
 
-function LangIdToCode(id : integer) : TLangCodeString;
+function LangIdToCode(id : TLocaleID) : TLangCodeString;
 begin
   case id and $3FF of
   $01 : Result:='ar';
@@ -545,8 +592,9 @@ begin
 
 function GetLanguage : TLangCodeString;
 begin
-  Result:=ReadLanguageCode;
-  if length(Result)=0 then Result:=GetUserLang;
+  Result:=ReadLanguageCode;     // from cfg file or command line
+  if length(Result)=0 then Result:=GetUserLang;  // from system setting
+  UserLangID:=ShortLanguageNameToID(Result);
   SelectedLanguage:=Result;
   end;
 
@@ -554,7 +602,7 @@ procedure SaveLanguage (NewLangCode : TLangCodeString);
 begin
   if LangFromCfg then begin
     with TMemIniFile.Create(CfgName) do begin
-      WriteString(LangSekt,LangID,SelectedLanguage);
+      WriteString(LangSekt,LangID,NewLangCode);
       try
         UpdateFile;
       finally
@@ -582,6 +630,7 @@ begin
   UseLanguage(NewLangCode);
   if length(NewLangCode)=0 then Result:=copy(GetCurrentLanguage,1,2)  // system default
   else Result:=NewLangCode;
+  UserLangID:=ShortLanguageNameToID(Result);
   with Application do for i:=0 to ComponentCount-1 do if (Components[i] is TForm) then begin
     try ReTranslateComponent(Components[i]); except; end;
     end;
@@ -617,6 +666,7 @@ begin
   end;
 
 initialization
+  IsVista:=(Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 6);
   SelectedLanguage:=''; // default: system language
 
 end.

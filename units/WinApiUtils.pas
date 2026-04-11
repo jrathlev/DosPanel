@@ -1,7 +1,7 @@
 (* Delphi Unit
    Definitions from Window API missing in library unit "Winapi.Windows"
-   collection of subroutines to use Windows API functions
-   ======================================================
+   Collection of subroutines using Windows API functions
+   =====================================================
 
    © Dr. J. Rathlev, D-24222 Schwentinental (kontakt(a)rathlev-home.de)
 
@@ -27,6 +27,12 @@
 
    last modified: August 2025
    *)
+(* @abstract(Definitions from Window API missing in library unit "Winapi.Windows"@br
+             Collection of subroutines using Windows API functions)
+   @author(© Dr. J. Rathlev, D-24222 Schwentinental (kontakt(a)rathlev-home.de))
+   @created(September 2002)
+   @lastmod(August 2025)
+*)
 
 unit WinApiUtils;
 
@@ -61,7 +67,7 @@ const
   LOGON_NETCREDENTIALS_ONLY = $00000002;
   LOGON_ZERO_PASSWORD_BUFFER = DWORD($80000000);
 
-  // constants missing in unit Windows
+  // constants missing in unit Windows (see: winnt.h)
   // see: https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-fscc/c8e77b37-3909-4fe6-a4ea-2b9d423b1ee4
   IO_REPARSE_TAG_MOUNT_POINT         = $A0000003;
   {$EXTERNALSYM IO_REPARSE_TAG_MOUNT_POINT}
@@ -71,10 +77,10 @@ const
   {$EXTERNALSYM IO_REPARSE_TAG_SIS}
   IO_REPARSE_TAG_DFS                 = $8000000A;
   {$EXTERNALSYM IO_REPARSE_TAG_DFS}
-  IO_REPARSE_TAG_FILTER_MANAGER      = $8000000B;
-  {$EXTERNALSYM IO_REPARSE_TAG_FILTER_MANAGER}
   IO_REPARSE_TAG_SYMLINK             = $A000000C;
   {$EXTERNALSYM IO_REPARSE_TAG_SYMLINK}
+  IO_REPARSE_TAG_CLOUD               = $9000001A;
+  {$EXTERNALSYM IO_REPARSE_TAG_CLOUD}
 
   MAXIMUM_REPARSE_DATA_BUFFER_SIZE  = 16 * 1024;
   REPARSE_DATA_BUFFER_HEADER_SIZE  = 8;
@@ -470,7 +476,8 @@ type
 
 { ---------------------------------------------------------------- }
 {$EXTERNALSYM GetFileSizeEx}
-function GetFileSizeEx(hFile: THandle; lpFileSize : Large_Integer): BOOL; stdcall;
+function GetFileSizeEx(hFile: THandle; out lpFileSize : Large_Integer): BOOL; stdcall;
+//function GetFileSizeEx(hFile: THandle; lpFileSize : pointer): BOOL; stdcall;
 
 {$EXTERNALSYM ConvertStringSidToSid}
 function ConvertStringSidToSid (lpStringSid: PChar; var Sid: PSID): BOOL; stdcall;
@@ -586,6 +593,7 @@ function IsPowerUserLoggedOn : boolean;
 { ---------------------------------------------------------------- }
 // prüfe, ob eine Exe-Datei gerade läuft
 function IsExeRunning(const AExeName: string; FullPath : boolean = false): boolean;
+function CountInstances(const AExeName: string) : integer;
 
 // Liste aller laufenden und sichtbaren Programme
 function GetProgramList(const List: TStrings): Boolean;
@@ -1337,7 +1345,7 @@ begin
   end;
 
 { ---------------------------------------------------------------- }
-// prüfe, ob eine Exe-Datei gerade läuft (optional mit vollst. Pfad)
+// check if an Exe file is running (optional with full path)
 function IsExeRunning(const AExeName: string; FullPath : boolean) : boolean;
 var
   h: THandle;
@@ -1396,6 +1404,27 @@ begin
       else sp:=p.szExeFile;
       if length(sp)>0 then Result:=AnsiSameText(AExeName,sp);
     until Result or (not Process32Next(h, p));
+  finally
+    CloseHandle(h);
+    end;
+  end;
+
+{ ---------------------------------------------------------------- }
+// count how many instances of an exe are running
+function CountInstances(const AExeName: string) : integer;
+var
+  h: THandle;
+  p: TProcessEntry32;
+  sp : string;
+begin
+  Result:=0;
+  p.dwSize:=SizeOf(p);
+  h:=CreateToolHelp32Snapshot(TH32CS_SnapProcess, 0);
+  try
+    if Process32First(h, p) then repeat
+      sp:=p.szExeFile;
+      if (length(sp)>0) and AnsiSameText(AExeName,sp) then inc(Result);
+    until (not Process32Next(h, p));
   finally
     CloseHandle(h);
     end;

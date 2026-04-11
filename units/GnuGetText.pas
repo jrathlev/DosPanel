@@ -4,7 +4,15 @@
 
   @author Lars B. Dybdahl and others
 -------------------------------------------------------------------------------}
-unit gnugettext;
+
+(* @abstract(GNU gettext translation system for Delphi)
+   @author(Lars B. Dybdahl and others)
+   @author(Dr. J. Rathlev, D-24222 Schwentinental (kontakt(a)rathlev-home.de))
+   @created()
+   @lastmod(June 2025)
+*)
+
+unit GnuGetText;
 (**************************************************************)
 (*                                                            *)
 (*  (C) Copyright by Lars B. Dybdahl and others               *)
@@ -881,12 +889,15 @@ var
   works : boolean;
 begin
   if (Win32Platform=VER_PLATFORM_WIN32_NT) and (Win32MajorVersion>=6) then begin
-    pc:=0;    // Retrieve the UI language (not the localeinfo) JR - Sept. 2023
+// Retrieve the UI language name (not the localeinfo) JR - Sept. 2023
+// same as GetUserDefaultUILanguage for LanID
+    pc:=0;
     works:=GetUserPreferredUILanguages(MUI_LANGUAGE_NAME,@n,nil,@pc);  // available since Vista
     if works then begin
       SetLength(buf,pc);
       works:=GetUserPreferredUILanguages(MUI_LANGUAGE_NAME,@n,@buf[0],@pc);
-      if works then LangCode:=ReplaceStr(PChar(@buf[0]),'-','_');
+      if works then LangCode:=PChar(@buf[0]);  // Windows uses '-' not '_'
+//      if works then LangCode:=ReplaceStr(PChar(@buf[0]),'-','_');
       buf:=nil;
       end;
     end
@@ -898,7 +909,7 @@ begin
       // Windows 98, Me, NT4, 2000, XP and newer
       LangCode := PWideChar(@(LanguageName[0]));
       if lowercase(LangCode)='no' then LangCode:='nb';
-      LangCode:=LangCode + '_' + PWideChar(@CountryName[0]);
+      LangCode:=LangCode + '-' + PWideChar(@CountryName[0]);
       end;
     end;
   if not works then begin
@@ -932,6 +943,7 @@ begin
     else
       langcode := 'C';
     end;
+    LangCode:=ReplaceStr(langcode,'_','-');
   end;
   Result := langcode;
 end;

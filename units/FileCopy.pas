@@ -1,6 +1,5 @@
-(* Delphi Unit (Unicode)
-   Copy file
-   ==========================================================
+(* Delphi Unit
+   Copy file with timestamps
 
    © Dr. J. Rathlev, D-24222 Schwentinental (kontakt(a)rathlev-home.de)
 
@@ -14,6 +13,11 @@
 
    Vers. 1.0 - June 2023
    *)
+(* @abstract(Copy file with timestamps)
+   @author(© Dr. J. Rathlev, D-24222 Schwentinental (kontakt(a)rathlev-home.de))
+   @created(June 2023)
+   @lastmod(June 2023)
+*)
 
 unit FileCopy;
 

@@ -168,7 +168,7 @@ type
     procedure actInfoExecute(Sender: TObject);
     procedure actDosBoxExecute(Sender: TObject);
     procedure actShowManExecute(Sender: TObject);
-    procedure SetLanguageClick(Sender : TObject; Language : TLangCodeString);
+    procedure SetLanguageClick(Sender : TObject; const Language : TLangCodeString);
     procedure actConvertTextExecute(Sender: TObject);
     procedure lvAppsDblClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -662,7 +662,7 @@ begin
   UpdateView(CurApp);
   end;
 
-procedure TfrmMain.SetLanguageClick(Sender : TObject; Language : TLangCodeString);
+procedure TfrmMain.SetLanguageClick(Sender : TObject; const Language : TLangCodeString);
 var
   sl : TLangCodeString;
   s : string;

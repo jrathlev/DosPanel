@@ -1,6 +1,6 @@
 (* Delphi Unit
-   collection of subroutines for Windows drives and devices
-   ========================================================
+   collection of subroutines for drives and devices
+   ================================================
 
    © Dr. J. Rathlev, D-24222 Schwentinental (kontakt(a)rathlev-home.de)
 
@@ -13,8 +13,13 @@
    the specific language governing rights and limitations under the License.
 
    Vers. 1 - Dec. 2016
-   last modified: March 2020
+   last modified: December 2023
    *)
+(* @abstract(Subroutines for drives and devices)
+   @author(© Dr. J. Rathlev, D-24222 Schwentinental (kontakt(a)rathlev-home.de))
+   @created(December 2016)
+   @lastmod(December 2023)
+*)
 
 unit WinDevUtils;
 
