@@ -566,7 +566,8 @@ function QueryShutDownReason (fHandle: hWnd; var Reason : string) : boolean;
 { ---------------------------------------------------------------- }
 (*  Get Version Info from File *)
 function GetFileVersion (const Filename : string; var FileVersionInfo : TFileVersionInfo) : boolean;
-function GetFileVersionString (const Filename : string; var Version : string) : boolean;
+function GetFileVersionString (const Filename : string; var Version : string) : boolean; overload;
+function GetFileVersionString (const Filename : string; ShowLevel : integer; var Version : string) : boolean; overload;
 function GetFileVersionAsNumber (const Filename : string; var Version : TVersion) : boolean;
 function GetFileVersionName (const Filename,DefName,DefVers : string): string;
 function GetFileVersionRelease (const Filename,defVers : string) : string;
@@ -579,7 +580,7 @@ procedure GetTimeZoneInfo (var Zone,DlBias : integer);
 
 { ---------------------------------------------------------------- }
 // Erzeuge einen Eintrag im Event-Log
-function ReportToEventLog(Source : string; EventType,CatID,MsgID : cardinal;
+function ReportToEventLog(const Source : string; EventType,CatID,MsgID : cardinal;
                           const Parameters : array of string) : integer;
 
 // Prüfe, ob für AppName ein Eintrag in der Registry unter Eventlog vorhanden ist
@@ -1129,6 +1130,17 @@ begin
     end;
   end;
 
+function GetFileVersionString (const Filename : string; ShowLevel : integer; var Version : string) : boolean;
+var
+  i,n : integer;
+begin
+  Result:=GetFileVersionString (Filename,Version);
+  if Result then begin
+    n:=Version.CountChar('.');
+    for i:=n downto ShowLevel do Version:=ChangeFileExt(Version,'');
+    end;
+  end;
+
 function FileVersionToNumber (vs: string) : TVersion;
 var
   val : integer;
@@ -1224,16 +1236,14 @@ begin
 // Erzeuge einen Eintrag im Event-Log
 // Result = 0:  ok
 //        > 0:  System-Fehlercode
-function ReportToEventLog(Source : string; EventType,CatID,MsgID : cardinal;
+function ReportToEventLog(const Source : string; EventType,CatID,MsgID : cardinal;
                           const Parameters : array of string) : integer;
 var
   hEventLog : THandle;
-  pmsgArray : array of PWideChar;
 begin
   Result:=NO_ERROR;
   hEventLog:=RegisterEventSource(nil,pchar(Source));
   if hEventLog<>0 then begin
-    SetLength(pmsgArray,length(Parameters));
     if not ReportEvent(hEventLog,EventType,CatID,MsgID,nil,
       length(Parameters),0,@Parameters,nil) then Result:=GetLastError;
     DeregisterEventSource(hEventLog);

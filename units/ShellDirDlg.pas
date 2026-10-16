@@ -255,15 +255,15 @@ begin
     with IniFile do begin
       Top:=ReadInteger(FIniSection,iniTop,0);
       Left:=ReadInteger(FIniSection,iniLeft,Left);
-      Height:=ReadInteger(FIniSection,iniHeight,Height);
+//      Height:=ReadInteger(FIniSection,iniHeight,Height);
       with PanelLeft do Width:=ReadInteger(FIniSection,iniLWidth,Width);
       with PanelRight do Width:=ReadInteger(FIniSection,iniRWidth,Width);
       Splitter.Left:=PanelRight.Left;
       cbxFiles.Checked:=ReadBool(FIniSection,iniFileView,false);
-      if Top=0 then begin
-        Top:=(Screen.Height-Height) div 2;
-        Left:=(Screen.Width-Width) div 2;
-        end;
+      if Top=0 then Position:=poOwnerFormCenter;
+//        Top:=(Screen.Height-Height) div 2;
+//        Left:=(Screen.Width-Width) div 2;
+//        end;
       Free;
       end;
     end;
@@ -281,7 +281,7 @@ begin
           WriteString(FIniSection,iniHistory+IntToStr(i),Strings[i]);
         WriteInteger(FIniSection,iniTop,Top);
         WriteInteger(FIniSection,iniLeft,Left);
-        WriteInteger(FIniSection,iniHeight,Height);
+//        WriteInteger(FIniSection,iniHeight,Height);
         WriteInteger(FIniSection,iniLWidth,PanelLeft.Width);
         WriteInteger(FIniSection,iniRWidth,PanelRight.Width);
         WriteBool(FIniSection,iniFileView,cbxFiles.Checked);

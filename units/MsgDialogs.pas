@@ -17,12 +17,12 @@
    the specific language governing rights and limitations under the License.
 
    July 2022
-   last modified: August 2025
+   last modified: May 2026
    *)
 (* @abstract(Message Dialogs (Info, Error, Confirm))
    @author(© Dr. J. Rathlev, D-24222 Schwentinental (kontakt(a)rathlev-home.de))
    @created(July 2022)
-   @lastmod(August 2025)
+   @lastmod(May 2026)
 *)
 
 unit MsgDialogs;
@@ -39,28 +39,28 @@ function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
                        AMonitor : TDefaultMonitor = dmActiveForm) : integer; overload;
 function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
                        Buttons: TMsgDlgButtons;
-                       Pos : TPoint; Delay : integer;
+                       const Pos : TPoint; Delay : integer;
                        AMonitor : TDefaultMonitor = dmActiveForm) : integer; overload;
 function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
                        Buttons: TMsgDlgButtons) : integer; overload;
 function MessageDialog(const Msg: string; DlgType: TMsgDlgType;
                        Buttons: TMsgDlgButtons) : integer; overload;
-function MessageDialog(Pos : TPoint; const Msg: string; DlgType: TMsgDlgType;
+function MessageDialog(const Pos : TPoint; const Msg: string; DlgType: TMsgDlgType;
                        Buttons: TMsgDlgButtons) : integer;  overload;
 
 function ConfirmDialog (const Title,Msg : string;
                         AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
 function ConfirmDialog (const Msg : string; DefaultButton : TMsgDlgBtn = mbYes;
                         AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
-function ConfirmDialog (Pos : TPoint; const Msg : string; DefaultButton : TMsgDlgBtn = mbYes;
+function ConfirmDialog (const Pos : TPoint; const Msg : string; DefaultButton : TMsgDlgBtn = mbYes;
                         AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
-function ConfirmDialog (Pos : TPoint; const Title,Msg : string;
+function ConfirmDialog (const Pos : TPoint; const Title,Msg : string;
                         AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
-function ConfirmDialog (Pos : TPoint; const Title,Msg : string; DefaultButton : TMsgDlgBtn;
+function ConfirmDialog (const Pos : TPoint; const Title,Msg : string; DefaultButton : TMsgDlgBtn;
                         AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
 
 function ConfirmRetryDialog (const Msg : string) : boolean; overload;
-function ConfirmRetryDialog (Pos : TPoint; const Msg : string; DefaultButton : TMsgDlgBtn = mbRetry;
+function ConfirmRetryDialog (const Pos : TPoint; const Msg : string; DefaultButton : TMsgDlgBtn = mbRetry;
                        AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
 
 
@@ -72,9 +72,9 @@ procedure InfoDialog (const Msg : string; Delay : integer;
                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
 procedure InfoDialog (const Msg : string;
                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
-procedure InfoDialog (Pos : TPoint; const Title,Msg : string;
+procedure InfoDialog (const Pos : TPoint; const Title,Msg : string;
                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
-procedure InfoDialog (Pos : TPoint; const Msg : string;
+procedure InfoDialog (const Pos : TPoint; const Msg : string;
                       AMonitor : TDefaultMonitor = dmActiveForm); overload;
 
 procedure ErrorDialog (const Title,Msg : string; x,y : integer;
@@ -87,9 +87,9 @@ procedure ErrorDialog (const Title,Msg : string;
                        AMonitor : TDefaultMonitor = dmActiveForm); overload;
 procedure ErrorDialog (const Msg : string;
                        AMonitor : TDefaultMonitor = dmActiveForm); overload;
-procedure ErrorDialog (Pos : TPoint; const Title,Msg : string;
+procedure ErrorDialog (const Pos : TPoint; const Title,Msg : string;
                        AMonitor : TDefaultMonitor = dmActiveForm); overload;
-procedure ErrorDialog (Pos : TPoint; const Msg : string;
+procedure ErrorDialog (const Pos : TPoint; const Msg : string;
                        AMonitor : TDefaultMonitor = dmActiveForm); overload;
 
 
@@ -158,7 +158,7 @@ begin
 
 function MessageDialog(const Title,Msg: string; DlgType: TMsgDlgType;
                 Buttons: TMsgDlgButtons;
-                Pos : TPoint; Delay : integer;
+                const Pos : TPoint; Delay : integer;
                 AMonitor : TDefaultMonitor = dmActiveForm) : integer;
 var
   DefaultButton: TMsgDlgBtn;
@@ -181,7 +181,7 @@ begin
   Result:=MessageDialog('',Msg,DlgType,Buttons,CenterPos,0);
   end;
 
-function MessageDialog(Pos : TPoint; const Msg: string; DlgType: TMsgDlgType;
+function MessageDialog (const Pos : TPoint; const Msg: string; DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons) : integer;
 begin
   Result:=MessageDialog('',Msg,DlgType,Buttons,Pos,0);
@@ -189,20 +189,20 @@ begin
 
 { ---------------------------------------------------------------- }
 // Bestätigung in Bildschirmmitte (X<0) oder an Position X,Y
-function ConfirmDialog (Pos : TPoint; const Title,Msg : string;
+function ConfirmDialog (const Pos : TPoint; const Title,Msg : string;
                         AMonitor : TDefaultMonitor) : boolean;
 begin
   Result:=MessageDialog (Title,Msg,mtConfirmation,[mbYes,mbNo],Pos,0,AMonitor)=mrYes;
   end;
 
 // Bestätigung auf einstellbarem Monitor
-function ConfirmDialog (Pos : TPoint; const Msg : string; DefaultButton : TMsgDlgBtn;
+function ConfirmDialog (const Pos : TPoint; const Msg : string; DefaultButton : TMsgDlgBtn;
                         AMonitor : TDefaultMonitor) : boolean;
 begin
   Result:=MessageDialog ('',Msg,mtConfirmation,[mbYes,mbNo],DefaultButton,Pos,0,AMonitor)=mrYes;
   end;
 
-function ConfirmDialog (Pos : TPoint; const Title,Msg : string; DefaultButton : TMsgDlgBtn;
+function ConfirmDialog (const Pos : TPoint; const Title,Msg : string; DefaultButton : TMsgDlgBtn;
                         AMonitor : TDefaultMonitor) : boolean;
 begin
   Result:=MessageDialog (Title,Msg,mtConfirmation,[mbYes,mbNo],DefaultButton,Pos,0,AMonitor)=mrYes;
@@ -226,20 +226,20 @@ begin
   Result:=ConfirmDialog(CenterPos,Msg);
   end;
 
-function ConfirmRetryDialog (Pos : TPoint; const Msg : string; DefaultButton : TMsgDlgBtn = mbRetry;
+function ConfirmRetryDialog (const Pos : TPoint; const Msg : string; DefaultButton : TMsgDlgBtn = mbRetry;
                        AMonitor : TDefaultMonitor = dmActiveForm) : boolean; overload;
 begin
   Result:=MessageDialog('',Msg,mtError,[mbRetry,mbCancel],DefaultButton,Pos,0,AMonitor)=mrRetry;
   end;
 
 // Information an Position ausgeben
-procedure InfoDialog (Pos : TPoint; const Title,Msg : string;
+procedure InfoDialog (const Pos : TPoint; const Title,Msg : string;
                       AMonitor : TDefaultMonitor);
 begin
   MessageDialog (Title,Msg,mtInformation,[mbOK],Pos,0,AMonitor);
   end;
 
-procedure InfoDialog (Pos : TPoint; const Msg : string;
+procedure InfoDialog (const Pos : TPoint; const Msg : string;
                       AMonitor : TDefaultMonitor);
 begin
   InfoDialog(Pos,'',Msg,AMonitor);
@@ -278,13 +278,13 @@ begin
   MessageDialog (Title,Msg,mtError,[mbOK],Point(x,y),0,AMonitor);
   end;
 
-procedure ErrorDialog (Pos : TPoint; const Title,Msg : string;
+procedure ErrorDialog (const Pos : TPoint; const Title,Msg : string;
                        AMonitor : TDefaultMonitor);
 begin
   MessageDialog (Title,Msg,mtError,[mbOK],Pos,0,AMonitor);
   end;
 
-procedure ErrorDialog (Pos : TPoint; const Msg : string;
+procedure ErrorDialog (const Pos : TPoint; const Msg : string;
                        AMonitor : TDefaultMonitor);
 begin
   ErrorDialog(Pos,'',Msg,AMonitor);

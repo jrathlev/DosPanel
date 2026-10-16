@@ -1,5 +1,6 @@
 ### DosPanel
-DosPanel is a graphical user interface for [DOSBox](http://www.dosbox.com/) under Windows. 
+**DosPanel** is a graphical user interface for [DOSBox](http://www.dosbox.com/) under Windows. 
+The program is designed for use with DosBox version 0.74. 
 The user can make all required settings 
 needed to start DOS applications in DOSBox without concern the somewhat crude syntax of the 
 configuration file. Each DOS application can have its individual settings stored by the program.

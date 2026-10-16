@@ -1511,7 +1511,10 @@ object ShowTextDialog: TShowTextDialog
     Height = 21
     Panels = <
       item
-        Width = 200
+        Width = 150
+      end
+      item
+        Width = 250
       end
       item
         Width = 50

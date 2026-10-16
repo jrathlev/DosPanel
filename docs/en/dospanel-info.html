@@ -238,7 +238,7 @@
     host system (e.g. <b>D:</b>) when <em>DOSBox</em> is started. It is possible
     to specify several ISO images, between which you can switch in <em>DOSBox</em> 
     using the key combination <i>Ctrl-F4</i> (see the <em>DOSBox</em> documentation).</li>
-  <li><b>General settings:</b>
+  <li><b>General:</b>
   <ul>
     <li style="margin-top:-5px;"><b>Application to be started:</b> Select the DOS application or the batch file
     on your main drive (e.g <b>C:</b>) or any subdirectory that will be started 
@@ -246,12 +246,12 @@
   <li><b>Parameters of application:</b> Optional parameters for the application to
     be started automatically.</li>
   <li><b>Additional commands on startup:</b> Enter the DOS commands that will be executed
-    before starting the above application (e.g. changing drive and directory).</li>
+    before starting the above application (e.g. changing drive and directory or 
+    mounting of other drives ).</li>
+  <li><b>Additional commands before exit:</b> Enter the DOS commands that will be executed
+    after the above application has ended (e.g. deleting files no longer needed).</li>
   <li><b>Icon file:</b> Select an image file (e.g. <i>.ICO</i>) or an exe file 
     containing an icon for the <strong>DosPanel</strong> display.</li>
-  <li><b>Mapper file:</b> Select the DOS application specific mapper file, if needed
-    (<a href="#appmapper">more ..</a>). Usually this file is located in the
-    main drive directory of the DOS application (see above).</li>
   <img src="images/app-mixer.png" width="346" height="301" align="right" border="0" hspace="5">
   <li><b>Manual:</b> Select a file on your host system that contains a manual for 
     the selected DOS application. This may be any file type (e.g. text or PDF)
@@ -280,21 +280,27 @@
       delete the list completely and change the order of the entries.</li>
   </ul></li>
 
-  <img src="images/app-console.png" width="346" height="123" align="right" border="0" hspace="5">
-  <li><b><a name="showcon">Console</a></b><br>
-    When <em>DOSBox</em> is started, the <em>DOSBox console</em> is normally displayed 
-    in a second window. If desired, this can be disabled here for the selected application. 
-    The output from <em>DosBox</em> is then written to the files <i>stdout.txt</i> and 
-    <i>stderr.txt</i>, which are located in the 
-    <a href="#appdir">directory selected for the application</a>. If desired, these 
-    can be displayed via the <a href="#menu">context menu</a>.
+  <img src="images/app-other.png" width="346" height="198" align="right" border="0" hspace="5">
+  <li><b><a name="showcon">Other</a></b><br>
+    <ul>
+    <li><b>Console:</b> 
+      When <em>DOSBox</em> is started, the <em>DOSBox console</em> is normally displayed 
+      in a second window. If desired, this can be disabled here for the selected application. 
+      The output from <em>DosBox</em> is then written to the files <i>stdout.txt</i> and 
+      <i>stderr.txt</i>, which are located in the 
+      <a href="#appdir">directory selected for the application</a>. If desired, these 
+      can be displayed via the <a href="#menu">context menu</a>.
     <ul>
       <li><b>Hide console:</b> The output of <em>DOSBox</em> is redirected to the 
-      files <i>stdout.txt</i> and <i>stderr.txt</i>.</li>
+        files <i>stdout.txt</i> and <i>stderr.txt</i>.</li>
       <li><b>Delete console output files when DosPanel is closed:</b> When <em>DosPanel</em> 
-      is closed, the files <i>stdout.txt</i> and <i>stderr.txt</i> are deleted, 
-      if they exist. This function is only available if the <i>Hide Console</i> option 
-      is enabled.</li>
+        is closed, the files <i>stdout.txt</i> and <i>stderr.txt</i> are deleted, 
+        if they exist. This function is only available if the <i>Hide Console</i> option 
+        is enabled.</li>
+    </ul>
+    <li><b>Keymapper file:</b> Select the DOS application specific mapper file, if needed
+      (<a href="#appmapper">more ..</a>). Usually this file is located in the
+      main drive directory of the DOS application (see above).</li>
     </ul>
     </li>
   <li><b>Select configuration:</b> The configuration provided by <em>DOSBox</em> is 

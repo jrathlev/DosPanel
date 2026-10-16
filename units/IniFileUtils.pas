@@ -53,11 +53,11 @@ function ReadIntegerFromIni (const IniName,Section,Ident : string; Default : int
 function ReadBoolFromIni (const IniName,Section,Ident : string; Default : boolean) : boolean;
 
 // Write to ini file
-function WriteStringToIniFile(const Filename,Section,Ident,Value: String) : boolean;
-function WriteIntegerToIniFile(const Filename,Section,Ident: string; Value: Longint) : boolean;
-function WriteBoolToIniFile(const Filename,Section,Ident: string; Value: Boolean) : boolean;
-function EraseSectionFromIniFile(const Filename,Section: string) : boolean;
-function DeleteKeyFromIniFile(const Filename,Section,Ident: String) : boolean;
+procedure WriteStringToIniFile(const Filename,Section,Ident,Value: String);
+procedure WriteIntegerToIniFile(const Filename,Section,Ident: string; Value: Longint);
+procedure WriteBoolToIniFile(const Filename,Section,Ident: string; Value: Boolean);
+procedure EraseSectionFromIniFile(const Filename,Section: string);
+procedure DeleteKeyFromIniFile(const Filename,Section,Ident: String);
 
 { ---------------------------------------------------------------- }
 implementation
@@ -171,16 +171,19 @@ begin
   end;
 
 //-----------------------------------------------------------------------------
-function WriteStringToIniFile(const Filename,Section,Ident,Value: String) : boolean;
+procedure WriteStringToIniFile(const Filename,Section,Ident,Value: String);
 begin
   with TMemIniFile.Create(Filename) do begin
     WriteString(Section,Ident,Value);
-    UpdateFile;
-    Free;
+    try
+      UpdateFile;
+    finally
+      Free;
+      end;
     end;
   end;
 
-function WriteIntegerToIniFile(const Filename,Section,Ident: string; Value: Longint) : boolean;
+procedure WriteIntegerToIniFile(const Filename,Section,Ident: string; Value: Longint);
 begin
   with TMemIniFile.Create(Filename) do begin
     WriteInteger(Section,Ident,Value);
@@ -192,7 +195,7 @@ begin
     end;
   end;
 
-function WriteBoolToIniFile(const Filename,Section,Ident: string; Value: Boolean) : boolean;
+procedure WriteBoolToIniFile(const Filename,Section,Ident: string; Value: Boolean);
 begin
   with TMemIniFile.Create(Filename) do begin
     WriteBool(Section,Ident,Value);
@@ -205,7 +208,7 @@ begin
     end;
   end;
 
-function EraseSectionFromIniFile(const Filename,Section: string) : boolean;
+procedure EraseSectionFromIniFile(const Filename,Section: string);
 begin
   with TMemIniFile.Create(Filename) do begin
     EraseSection(Section);
@@ -217,7 +220,7 @@ begin
     end;
   end;
 
-function DeleteKeyFromIniFile(const Filename,Section,Ident: String) : boolean;
+procedure DeleteKeyFromIniFile(const Filename,Section,Ident: String);
 begin
   with TMemIniFile.Create(Filename) do begin
     DeleteKey(Section,Ident);

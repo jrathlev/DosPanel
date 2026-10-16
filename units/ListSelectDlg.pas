@@ -15,7 +15,7 @@
    the specific language governing rights and limitations under the License.
 
    Vers. 1 - Aug. 2018
-   last modified: September 2024
+   last modified: July 2025
 *)
 
 unit ListSelectDlg;
@@ -37,6 +37,7 @@ type
       var Height: Integer);
     procedure lbSelectDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
+    procedure FormShow(Sender: TObject);
   private
     { Private-Deklarationen }
     FWidth : integer;
@@ -53,7 +54,7 @@ type
     procedure AddItem (const AItem : string; AIndex : integer);
     procedure AddList (AItems : TStrings; const Prefix : string = '');
     function GetItem (Index : integer) : string;
-    procedure ShowList (APos : TPoint; AHeight : integer = 0);
+    procedure ShowList (const APos : TPoint; AHeight : integer = 0);
     property BakColor : TColor read GetBakColor write SetBakColor;
     property Sorted : boolean read GetSorted write SetSorted;
     property Width : integer read FWidth write FWidth;
@@ -80,6 +81,11 @@ begin
 procedure TListSelectDialog.FormDeactivate(Sender: TObject);
 begin
   Close;
+  end;
+
+procedure TListSelectDialog.FormShow(Sender: TObject);
+begin
+  FitToScreen(Screen,self);
   end;
 
 function TListSelectDialog.GetBakColor : TColor;
@@ -181,7 +187,7 @@ begin
    Height:=defItemHeight;
    end;
 
-procedure TListSelectDialog.ShowList (APos : TPoint; AHeight : integer);
+procedure TListSelectDialog.ShowList (const APos : TPoint; AHeight : integer);
 var
   i,j,w,h : integer;
 begin
@@ -200,6 +206,7 @@ begin
     if (AHeight=0) or (h<=AHeight) then ClientHeight:=h+(defItemHeight+1) div 3
     else ClientHeight:=AHeight;
     AdjustFormPosition(Screen,self,APos);
+    lbSelect.ItemIndex:=-1;
     Show;
     end;
   end;

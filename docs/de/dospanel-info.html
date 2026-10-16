@@ -251,7 +251,7 @@
   <li><b>Kategorie:</b> Name der Seite, auf der die Anwendung in <strong>DosPanel</strong>
     angezeigt werden soll. Bei fehlender Kategorie wird die Anwendung unter <i>Verschiedenes</i>
     eingetragen.</li>
-  <li><a name="appdir"><b>Verbinde Laufwerk mit Pfad:</b></a> Auswahl eines Verzeichnisses auf dem Host-System, 
+  <li><b><a name="appdir">Verbinde Laufwerk mit Pfad:</a></b> Auswahl eines Verzeichnisses auf dem Host-System, 
     das in <em>DOSBox</em> als Hauptlaufwerk (hier <b>C:</b>) verwendet werden soll
     (Standard-Verzeichnis der Anwendung).</li>
   <li><b>CD-Laufwerk anbinden an:</b> Wenn diese Option aktiviert ist, wird  
@@ -260,7 +260,7 @@
     auf dem Host-System verbunden. Es können mehrere Iso-Images angegeben werden,
     zwischen denen in <em>DOSBox</em> mit der Tastenkombination <i>Strg-F4</i> umgeschaltet 
     werden kann (siehe dazu die <em>DOSBox</em>-Dokumentation).</li>
-  <li><b>Allgemeine Einstellungen</b>
+  <li><b>Allgemein</b>
   <ul>
     <li style="margin-top:-5px;"><b>Zu startende Anwendung:</b> Auswahl einer DOS-Anwendung oder einer Batch-Datei 
       in dem als Hauptlaufwerk (hier <b>C:</b>) angegebenen Pfad oder einem Unterverzeichnis. 
@@ -269,12 +269,12 @@
       zu startende DOS-Anwendung.</li>
     <li><b>Zusätzliche Befehle beim Start:</b> Eingabe von DOS-Befehlen, die vor der 
       automatisch zu startenden Anwendung ausgeführt werden sollen (z.B. Wechsel auf
-      das Laufwerk <b>C:</b>).</li>
+      das Laufwerk <b>C:</b>, Anbinden weiterer Laufwerke mit <tt>MOUNT</tt>).</li>
+    <li><b>Zusätzliche Befehle vor dem Beenden:</b> Eingabe von DOS-Befehlen, die nach der 
+      Beendigung der zu startenden Anwendung ausgeführt werden sollen (z.B. Löschen
+      von nicht mehr benötigten Dateien).</li>
     <li><b>Symbol-Datei:</b> Auswahl eines Symbols (Bilddatei, wie z.B. <i>.ICO</i>) 
       oder einer Anwendung mit einem Symbol für die Anzeige in <strong>DosPanel</strong></li>
-    <li><b>Mapper-Datei:</b> Hier wird die für die ausgewählte DOS-Anwendung angepasste 
-      Tastaturmapper-Datei ausgewählt (<a href="#appmapper">siehe auch</a>). Sie befindet 
-      sich normalerweise im Verzeichnis des Hauptlaufwerks der DOS-Anwendung (siehe oben).</li>
   <img src="images/app-mixer.png" width="346" height="301" align="right" border="0" hspace="5">
     <li><b>Anleitung:</b> Auswahl einer Datei auf dem Host-System (z.B. Text oder PDF),
       die in <strong>DosPanel</strong> als Anleitung für die ausgewählte Anwendung
@@ -303,14 +303,16 @@
       die Liste komplett zu löschen und die Reihenfolge der Einträge zu ändern.</li>
   </ul>
   </li>
-  <img src="images/app-console.png" width="346" height="123" align="right" border="0" hspace="5">
-  <li><b><a name="showcon">Konsole</a></b><br>
-    Beim Start von <em>DOSBox</em> wird normalerweise in einem zweiten Fenster die 
-    <em>DOSBox-Konsole</em> angezeigt. Auf Wunsch kann diese hier für die ausgewählte
-    Anwendung abgeschaltet werden. Die Ausgabe von <em>DosBox</em> erfolgt dann in die
-    Dateien <i>stdout.txt</i> und <i>stderr.txt</i>, die sich im für die 
-    <a href="#appdir">Anwendung ausgewählten Verzeichnis</a> befinden. Auf Wunsch können
-    diese über das <a href="#menu">Kontextmenü</a> zur Anzeige gebracht werden. 
+  <img src="images/app-other.png" width="346" height="201" align="right" border="0" hspace="5">
+  <li><b><a name="showcon">Weitere</a></b><br>
+    <ul>
+    <li><b>Konsole:</b> 
+      Beim Start von <em>DOSBox</em> wird normalerweise in einem zweiten Fenster die 
+      <em>DOSBox-Konsole</em> angezeigt. Auf Wunsch kann diese hier für die ausgewählte
+      Anwendung ausgeblendet werden. Die Ausgabe von <em>DosBox</em> erfolgt dann in die
+      Dateien <i>stdout.txt</i> und <i>stderr.txt</i>, die sich im für die 
+      <a href="#appdir">Anwendung ausgewählten Verzeichnis</a> befinden. Auf Wunsch können
+      diese über das <a href="#menu">Kontextmenü</a> zur Anzeige gebracht werden. 
     <ul>
       <li><b>Konsole verbergen:</b> Die Ausgabe von <em>DOSBox</em> wird in die Dateien
       <i>stdout.txt</i> und <i>stderr.txt</i> umgeleitet.</li>
@@ -319,7 +321,11 @@
         <i>stdout.txt</i> und <i>stderr.txt</i> gelöscht. Diese Funktion steht nur zur 
         Verfügung, wenn die Option <i>Konsole verbergen</i> eingeschaltet ist.</li>
     </ul>
+    <li><b>Keymapper-Datei:</b> Hier wird die für die ausgewählte DOS-Anwendung angepasste 
+      Tastaturmapper-Datei ausgewählt (<a href="#appmapper">siehe auch</a>). Sie befindet 
+      sich normalerweise im Verzeichnis des Hauptlaufwerks der DOS-Anwendung (siehe oben).</li>
     </li>
+    </ul>
   <li><b>Grundkonfiguration auswählen:</b> Per Voreinstellung wird immer die von <em>DOSBox</em>
     <a href="#basic">bereit gestellte Konfiguration</a> ausgewählt. Wenn für die jeweilige 
     Anwendung besondere Einstellungen erforderlich sind, kann man auf <i>Anwendungsspezifisch</i>
