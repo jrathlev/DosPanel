@@ -13,8 +13,7 @@ uses
   AppSettings in 'AppSettings.pas' {AppSettingsDialog},
   SelectFromListDlg in 'units\SelectFromListDlg.pas' {SelectFromListDialog},
   ShowMemo in 'units\ShowMemo.pas' {ShowTextDialog},
-  TxtConvertDlg in 'TxtConvertDlg.pas' {TxtConvertDialog},
-  FileCopy in 'units\FileCopy.pas';
+  TxtConvertDlg in 'TxtConvertDlg.pas' {TxtConvertDialog};
 
 {$R *.res}
 

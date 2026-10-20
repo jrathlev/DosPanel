@@ -31,11 +31,11 @@ DefaultDirName={commonpf}\DosPanel
 DefaultGroupName=Dos Panel
 OutputDir=.
 OutputBaseFilename={#OutputFile}
-SetupIconFile=DosPanel.ico
+SetupIconFile=..\DosPanel.ico
 UninstallDisplayIcon={app}\DosPanel-u.ico
 WizardImageFile=Dp-Install-Image.bmp
 WizardSmallImageFile=Dp-Install-Small.bmp
-Compression=lzma
+Compression=lzma2
 SolidCompression=yes
 ChangesAssociations=yes
 ShowLanguageDialog=auto
@@ -52,8 +52,6 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "..\Release\Win32\DosPanel.exe"; DestDir: "{app}"; Flags: ignoreversion restartreplace
-Source: "..\Release\Win32\locale\*.mo"; DestDir: "{app}\locale"; Flags: recursesubdirs ignoreversion restartreplace
-Source: "..\Release\Win32\language.cfg"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion restartreplace
 Source: "..\docs\license-*.rtf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\docs\DosPanel-de.chm"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\docs\DosPanel-en.chm"; DestDir: "{app}"; Flags: ignoreversion
