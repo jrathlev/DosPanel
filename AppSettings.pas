@@ -521,6 +521,7 @@ begin
 procedure TDosBoxApp.Assign (ADosBoxApp : TDosBoxApp);
 begin
   AppName:=ADosBoxApp.AppName;
+  FConfigFile:=ADosBoxApp.FConfigFile;
   Category:=ADosBoxApp.Category;
   AppPath:=ADosBoxApp.AppPath;
   CdPath:=ADosBoxApp.CdPath;
@@ -544,6 +545,7 @@ begin
   AutoEnd:=ADosBoxApp.AutoEnd;
   AutoClose:=ADosBoxApp.AutoClose;
   Speed:=ADosBoxApp.Speed;
+  MemSize:=ADosBoxApp.MemSize;
   ImgIndex:=ADosBoxApp.ImgIndex;
 //  DefLImg:=ADosBoxApp.DefLImg;
 //  DefSImg:=ADosBoxApp.DefSImg;
