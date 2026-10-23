@@ -1151,6 +1151,7 @@ var
     i : integer;
   begin
     i:=pos ('.',s);
+    if i=0 then i:=pos (',',s);
     if i=0 then i:=succ(length(s));
     Result:=TryStrToInt(copy(s,1,pred(i)),n);
     delete(s,1,i);

@@ -14,7 +14,7 @@
    the specific language governing rights and limitations under the License.
 
    J. Rathlev, Dec. 2011
-   last modified: August 2025
+   last modified: October 2026
    *)
 
 unit Settings;
@@ -53,6 +53,7 @@ const
 type
   TBasicSettings = record
     DosBoxPath,
+    DosBoxDesc,
     RootPath,
     ConfFile,
     LangFile,
@@ -60,6 +61,7 @@ type
     KeyLayout,
     TextEditor    : string;
     Codepage      : integer;
+    IsStaging,
     AutoStart,
     HideCon       : boolean;
     end;
@@ -91,6 +93,7 @@ type
     btMapper: TSpeedButton;
     btEditConf: TSpeedButton;
     btEditMapper: TSpeedButton;
+    laVersion: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure btPathClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -103,9 +106,13 @@ type
     procedure btEditMapperClick(Sender: TObject);
   private
     { Private-Deklarationen }
+    FStaging : boolean;
   public
     { Public-Deklarationen }
     function Execute (var ASettings : TBasicSettings) : boolean;
+    procedure UpdateDosBoxInfo (const ADosBoxPath: string;
+                                var Desc : string; var AStaging : boolean);
+    procedure InitVersion (var ASettings : TBasicSettings);
   end;
 
 function GetKeyboardLayoutDosName : string;
@@ -119,7 +126,10 @@ implementation
 {$R *.dfm}
 
 uses Winapi.ShellApi, DosPanelMain, GnuGetText, StringUtils, PathUtils, WinUtils,
-  MsgDialogs, ShellDirDlg;
+  MsgDialogs, ShellDirDlg, WinApiUtils;
+
+const
+  defConfStaging = 'dosbox-staging.conf';
 
 { ------------------------------------------------------------------- }
 function GetKeyboardLayoutDosName : string;
@@ -184,6 +194,7 @@ begin
     for i:=0 to High(CodePages) do Items.Add(CodePages[i].CodePageName);
     ItemIndex:=0;
     end;
+  FStaging:=false;
   end;
 
 procedure TDosBoxSetDialog.FormCloseQuery(Sender: TObject;
@@ -191,11 +202,15 @@ procedure TDosBoxSetDialog.FormCloseQuery(Sender: TObject;
 begin
   if (Modalresult=mrOK) then begin
     if not FileExists(SetDirName(edPath.Text)+DosBoxName) then
-    CanClose:=not ConfirmDialog(_('DosBox.exe not found in the specified directory!'+
+    CanClose:=not ConfirmDialog(ScreenPos,_('DosBox.exe not found in the specified directory!'+
       sLineBreak+'Adjust setting?'));
     if not DirectoryExists(SetDirName(edRootPath.Text)) then
-    CanClose:=not ConfirmDialog(_('Root path to DOS applications not found!'+
+    CanClose:=not ConfirmDialog(ScreenPos,_('Root path to DOS applications not found!'+
       sLineBreak+'Adjust setting?'));
+    if not FileExists(edConfFile.Text) and not FStaging then begin
+      ErrorDialog(ScreenPos,Format(_('%s requires a primary configuration file to be specified!'),[laVersion.Caption]));
+      CanClose:=false;
+      end;
     end;
   end;
 
@@ -240,12 +255,21 @@ begin
 
 procedure TDosBoxSetDialog.btPathClick(Sender: TObject);
 var
-  s : string;
+  s,sd : string;
 begin
   s:=edPath.Text;
   if length(s)=0 then s:=frmMain.ProgPath;
   if ShellDirDialog.Execute (_('Select DOSBox program directory'),
-      false,true,false,frmMain.ProgPath,s) then edPath.Text:=s;
+      false,true,false,frmMain.ProgPath,s) then begin
+    edPath.Text:=s;
+    UpdateDosBoxInfo(s,sd,FStaging);
+    laVersion.Caption:=sd;
+    if FStaging then begin
+      edConfFile.Text:=AddPath(frmMain.LocPath,defConfStaging);
+      end
+    else if not FileExists(edConfFile.Text) then btConfClick(Sender);
+    edMapperFile.Text:=''; edLangFile.Text:='';
+    end;
   end;
 
 procedure TDosBoxSetDialog.btRootPathClick(Sender: TObject);
@@ -260,14 +284,18 @@ begin
 
 procedure TDosBoxSetDialog.btEditConfClick(Sender: TObject);
 begin
-  ShellExecute (Application.Handle,'open',PChar(MakeQuotedStr(frmMain.BasicSettings.TextEditor,[' '])),
-        PChar(MakeQuotedStr(edConfFile.Text,[' '])),nil,SW_RESTORE);
+  if FileExists(edConfFile.Text) then
+    ShellExecute (Application.Handle,'open',PChar(MakeQuotedStr(frmMain.BasicSettings.TextEditor,[' '])),
+        PChar(MakeQuotedStr(edConfFile.Text,[' '])),nil,SW_RESTORE)
+  else ErrorDialog(ScreenPos,Format(_('File not found: %s'),[edConfFile.Text]));
   end;
 
 procedure TDosBoxSetDialog.btEditMapperClick(Sender: TObject);
 begin
-  ShellExecute (Application.Handle,'open',PChar(MakeQuotedStr(frmMain.BasicSettings.TextEditor,[' '])),
-        PChar(MakeQuotedStr(edMapperFile.Text,[' '])),nil,SW_RESTORE);
+  if FileExists(edMapperFile.Text) then
+    ShellExecute (Application.Handle,'open',PChar(MakeQuotedStr(frmMain.BasicSettings.TextEditor,[' '])),
+        PChar(MakeQuotedStr(edMapperFile.Text,[' '])),nil,SW_RESTORE)
+  else ErrorDialog(ScreenPos,Format(_('File not found: %s'),[edMapperFile.Text]));
   end;
 
 procedure TDosBoxSetDialog.btEditorClick(Sender: TObject);
@@ -294,6 +322,8 @@ begin
   with ASettings do begin
     edRootPath.Text:=RootPath;
     edPath.Text:=DosBoxPath;
+    FStaging:=IsStaging;
+    laVersion.Caption:=DosBoxDesc;
     edConfFile.Text:=ConfFile;
     edLangFile.Text:=LangFile;
     edMapperFile.Text:=MapperFile;
@@ -317,6 +347,8 @@ begin
     if Result then begin
       RootPath:=edRootPath.Text;
       DosBoxPath:=edPath.Text;
+      DosBoxDesc:=laVersion.Caption;
+      IsStaging:=FStaging;
       ConfFile:=edConfFile.Text;
       LangFile:=edLangFile.Text;
       MapperFile:=edMapperFile.Text;
@@ -329,4 +361,26 @@ begin
       end;
     end;
   end;
+
+procedure TDosBoxSetDialog.UpdateDosBoxInfo (const ADosBoxPath : string;
+                                             var Desc : string; var AStaging : boolean);
+var
+  vi : TFileVersionInfo;
+  vs : TVersion;
+  sn : string;
+begin
+  Desc:=''; AStaging:=false;
+  sn:=AddPath(ADosBoxPath,DosBoxName);
+  if FileExists(sn) and GetFileVersion(sn,vi) then begin
+    vs:=FileVersionToNumber(vi.Version);
+    AStaging:=vs.Minor>80;
+    Desc:=vi.Description+' ('+IntToStr(vs.Major)+'.'+IntToStr(vs.Minor)+'.'+IntToStr(vs.Build)+')';
+    end;
+  end;
+
+procedure TDosBoxSetDialog.InitVersion (var ASettings : TBasicSettings);
+begin
+  with ASettings do UpdateDosBoxInfo(DosBoxPath,DosBoxDesc,IsStaging);
+  end;
+
 end.

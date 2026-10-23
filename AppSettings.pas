@@ -14,7 +14,7 @@
    the specific language governing rights and limitations under the License.
 
    J. Rathlev, Dec. 2011
-   last modified: August 2025
+   last modified: October 2026
    *)
 
 unit AppSettings;
@@ -51,15 +51,22 @@ const
   secDBox = 'dosbox';
   cfgLang = 'language';
   cfgMSz  = 'memsize';
+  cfgXms  = 'xms';
+  cfgEms  = 'ems';
+  cfgUmb  = 'umb';
 
   secRender = 'render';
   cfgScaler = 'scaler';           //*
 
   secCPU  = 'cpu';
   cfgCycl = 'cycles';
+  cfgReal = 'cpu_cycles';
+  cfgProt = 'cpu_cycles protected';
+  cfgThrt = 'cpu_throttle';
 
   secDos  = 'dos]';
   cfgKeyb = 'keyboardlayout';
+  cfgStgKeyb = 'keyboard_layout';
 
   secExec  = 'autoexec';
   cfgMount = 'MOUNT';
@@ -68,12 +75,23 @@ const
 
   sAuto = 'auto';
   sMax  = 'max';
+  sOn   = 'on';
+  sOff  = 'off';
   sFixed = 'fixed';
+
   sConfig = 'dosbox.conf';
   sMapper = 'appmapper.map';
-  sDosBox = 'DosBox.exe';
+//  sDosBox = 'DosBox.exe';
 
 type
+  TCpuSpeed = record
+    RealSpeed,ProtSpeed,Throttle : integer;
+    end;
+
+  TMemManage = record
+    XMS,EMS,UMB : integer;
+    end;
+
   TAppIcons = class(TPicture)
   private
     FImgType : TImgType;
@@ -114,16 +132,18 @@ type
     AutoClose         : boolean;
     CodePage,
     ImgIndex,
-    MemSize,
-    Speed             : integer;
+    MemSize           : integer;
+    MemManage         : TMemManage;
+    Speed             : TCpuSpeed;
     ConsoleMode       : TConsoleModes;
     Icons             : TAppIcons;
     constructor Create (const AConfigFile : string; DefLargeImg,DefSmallImg : TPicture; DefCodePage : integer);
     constructor CreateFrom (ADosBoxApp : TDosBoxApp);
     destructor Destroy; override;
+    procedure Init (AConfigFile : string = '');
+    procedure LoadConfig (AConfigFile : string = '');
     procedure Assign (ADosBoxApp : TDosBoxApp);
     procedure LoadIcons (const Filename : string);
-    procedure LoadConfig (AConfigFile : string = '');
     procedure CopyConfig (const AConfigFile : string);
     end;
 
@@ -170,8 +190,6 @@ type
     gbCdDrive: TCheckGroupBox;
     bbEditConfig: TBitBtn;
     bbReset: TBitBtn;
-    Label2: TLabel;
-    cbCycles: TComboBox;
     pcSettings: TPageControl;
     tsGeneral: TTabSheet;
     tsAudio: TTabSheet;
@@ -203,6 +221,28 @@ type
     edExitCommands: TLabeledEdit;
     btExitCommands: TSpeedButton;
     gbConsole: TGroupBox;
+    pcCycles: TPageControl;
+    tsNormal: TTabSheet;
+    tsStaging: TTabSheet;
+    Label14: TLabel;
+    Label15: TLabel;
+    cbRealSpeed: TComboBox;
+    cbProtSpeed: TComboBox;
+    cbCycles: TComboBox;
+    Label2: TLabel;
+    tsEmulation: TTabSheet;
+    gbCpu: TGroupBox;
+    gbMemory: TGroupBox;
+    pnMemMan: TPanel;
+    Label17: TLabel;
+    cbXms: TComboBox;
+    cbEms: TComboBox;
+    Label19: TLabel;
+    cbUmb: TComboBox;
+    Label18: TLabel;
+    Label21: TLabel;
+    cbThrottling: TComboBox;
+    paEmulation: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure btPathClick(Sender: TObject);
     procedure btExeFileClick(Sender: TObject);
@@ -235,6 +275,7 @@ type
     NewIcons   : TAppIcons;
     FDosBoxApp : TDosBoxApp;
     LastDrive : string;
+    FIsStaging : boolean;
     procedure GetCdDrives;
     procedure ChangeCdRom (IsIso : boolean);
     procedure ShowMixerChannel (AIndex : integer);
@@ -244,10 +285,12 @@ type
   public
     { Public-Deklarationen }
     function Execute (Categories : TStrings;
-                      var DosBoxApp : TDosBoxApp) : boolean;
+                      var DosBoxApp : TDosBoxApp;
+                      IsStaging : boolean = false) : boolean;
   end;
 
 function MiscName : string;
+function GetSwitch (Value : integer) : string;
 function ScaleBitmap(ABitmap: TBitmap; AWidth,AHeight : integer) : TBitMap;
 
 var
@@ -268,6 +311,11 @@ const
 function MiscName : string;
 begin
   Result:=_('Miscellaneous');
+  end;
+
+function GetSwitch (Value : integer) : string;
+begin
+  if Value=0 then Result:=sOn else Result:=sOff;
   end;
 
 function ScaleBitmap(ABitmap: TBitmap; AWidth,AHeight : integer) : TBitMap;
@@ -470,9 +518,7 @@ begin
   Commands:=HardDrv+':;"CD \"';
   ExitCommands:='';
   Description:=''; MixerChannels:='';
-  ConsoleMode:=[]; MountCd:=true; IsoImage:=true;
-  LoadConfig;
-  AutoEnd:=true; AutoClose:=false; AppMapper:='';
+  Init;
   AppConfig:=false; ImgIndex:=-1; CodePage:=DefCodePage;
   DefLImg:=DefLargeImg; DefSImg:=DefSmallImg;
   InitIcons;
@@ -505,12 +551,45 @@ begin
     if (length(AppMapper)>0) and not FileExists(AppMapper) then
       AppMapper:=MakeAbsolutePath(ExtractFilePath(FConfigFile),s);
     MemSize:=ReadInteger(secDBox,cfgMSz,16);
-    s:=ReadString(secCPU,cfgCycl,sAuto);
-    if AnsiStartsText(s,sAuto) then Speed:=0
-    else if AnsiStartsText(s,sMax) then Speed:=maxCycles
-    else Speed:=-1;
+//    if ValueExists(secCPU,cfgCycl) then begin  // DosBox legacy
+//      s:=ReadString(secCPU,cfgCycl,sAuto);
+//      if AnsiStartsText(s,sAuto) then Speed.RealSpeed:=0
+//      else if AnsiStartsText(s,sMax) then Speed.RealSpeed:=maxCycles
+//      else if AnsiStartsText(s,sFixed) then begin
+//        if not TryStrToInt(ReadNxtStr(s,' '),Speed.RealSpeed) then Speed.RealSpeed:=-1;
+//        end
+//      else Speed.RealSpeed:=-1;
+//      Speed.ProtSpeed:=-1; Speed.Throttle:=-1;
+//      end
+//    else begin                 // DosBox staging
+//      s:=ReadString(secCPU,cfgReal,'3000');
+//      if AnsiStartsText(s,sMax) then Speed.RealSpeed:=maxCycles
+//      else if not TryStrToInt(s,Speed.RealSpeed) then Speed.RealSpeed:=-1;
+//      s:=ReadString(secCPU,cfgProt,'60000');
+//      if AnsiStartsText(s,sAuto) then Speed.ProtSpeed:=0
+//      else if AnsiStartsText(s,sMax) then Speed.ProtSpeed:=maxCycles
+//      else if not TryStrToInt(s,Speed.ProtSpeed) then Speed.ProtSpeed:=-1;
+//      s:=ReadString(secCPU,cfgThrt,'');
+//      if length(s)=0 then Speed.Throttle:=-1
+//      else if AnsiStartsText(s,sOff) then Speed.Throttle:=0 else Speed.Throttle:=1;
+//      end;
     Free;
     end;
+  end;
+
+procedure TDosBoxApp.Init (AConfigFile : string);
+begin
+  if frmMain.BasicSettings.HideCon then ConsoleMode:=[cmHide]
+  else ConsoleMode:=[];
+  MountCd:=true; IsoImage:=true;
+  with MemManage do begin
+    XMS:=-1; EMS:=-1; UMB:=-1;  // default
+    end;
+  with Speed do begin
+    RealSpeed:=-1; ProtSpeed:=-1; Throttle:=-1; // default;
+    end;
+  LoadConfig(AConfigFile);       // Mapper and MemSize
+  AutoEnd:=true; AutoClose:=false; AppMapper:='';
   end;
 
 procedure TDosBoxApp.CopyConfig (const AConfigFile : string);
@@ -546,6 +625,7 @@ begin
   AutoClose:=ADosBoxApp.AutoClose;
   Speed:=ADosBoxApp.Speed;
   MemSize:=ADosBoxApp.MemSize;
+  MemManage:=ADosBoxApp.MemManage;
   ImgIndex:=ADosBoxApp.ImgIndex;
 //  DefLImg:=ADosBoxApp.DefLImg;
 //  DefSImg:=ADosBoxApp.DefSImg;
@@ -715,15 +795,48 @@ begin
     edMapperFile.Text:=AppMapper;
     for i:=0 to High(MemSizeList) do if MemSize<=MemSizeList[i] then Break;
     with cbMemSize do if i>High(MemSizeList) then Itemindex:=1 else Itemindex:=i;
-    with cbCycles do begin
-      case Speed of
-      0 : ItemIndex:=0;
-      maxCycles: ItemIndex:=1;
-      5000  : ItemIndex:=2;
-      10000 : ItemIndex:=3;
-      25000 : ItemIndex:=4;
-      50000 : ItemIndex:=5;
-      else ItemIndex:=6;
+    pnMemMan.Visible:=FIsStaging;
+    if FIsStaging then begin
+      pcCycles.ActivePageIndex:=1;
+      with cbRealSpeed do begin
+//    Use default value, 3 000, 5 000, 10 000, 25 000, 50 000, Set to maximum
+        if Speed.RealSpeed<0 then ItemIndex:=0     // default
+        else if Speed.RealSpeed<=3000 then ItemIndex:=1
+        else if Speed.RealSpeed<=5000 then ItemIndex:=2
+        else if Speed.RealSpeed<=10000 then ItemIndex:=3
+        else if Speed.RealSpeed<=25000 then ItemIndex:=4
+        else if Speed.RealSpeed<=50000 then ItemIndex:=5
+        else ItemIndex:=6; // maximum
+        end;
+//    Use default value, Set automatically, 10 000, 20 000, 60 000, 100 000, 200 000, Set to maximum
+      with cbProtSpeed do begin
+        if Speed.ProtSpeed<0 then ItemIndex:=0     // default
+        else if Speed.ProtSpeed=0 then ItemIndex:=1   // auto
+        else if Speed.ProtSpeed<=10000 then ItemIndex:=2
+        else if Speed.ProtSpeed<=20000 then ItemIndex:=3
+        else if Speed.ProtSpeed<=60000 then ItemIndex:=4
+        else if Speed.ProtSpeed<=100000 then ItemIndex:=5
+        else if Speed.ProtSpeed<=200000 then ItemIndex:=6
+        else ItemIndex:=7; // maximum
+        end;
+      cbThrottling.ItemIndex:=Speed.Throttle+1;
+      with MemManage do begin
+        cbXms.ItemIndex:=XMS+1;
+        cbEms.ItemIndex:=EMS+1;
+        cbUmb.ItemIndex:=UMB+1;
+        end;
+      end
+    else begin
+      pcCycles.ActivePageIndex:=0;
+      with cbCycles do begin
+//    Use default value, Set automatically, 5 000, 10 000, 25 000, 50 000, Set to maximum
+        if Speed.RealSpeed<0 then ItemIndex:=0       // default
+        else if Speed.RealSpeed=0 then ItemIndex:=1   // auto
+        else if Speed.RealSpeed<=5000 then ItemIndex:=2
+        else if Speed.RealSpeed<=10000 then ItemIndex:=3
+        else if Speed.RealSpeed<=25000 then ItemIndex:=4
+        else if Speed.RealSpeed<=50000 then ItemIndex:=5
+        else ItemIndex:=6;  // maximum
         end;
       end;
     end;
@@ -817,7 +930,9 @@ begin
     if Execute then begin
       s:='';
       for i:=0 to Files.Count-1 do s:=s+MakeQuotedStr(Files[i])+Space;
-      edIsoFile.Text:=s;
+      with edIsoFile do begin
+        Text:=s; Hint:=s;
+        end;
       end;
     end;
   end;
@@ -867,7 +982,7 @@ begin
   ok:=FileExists(sc);
   if not ok then begin
     if ConfirmDialog(_('No application specific configuration found!'+sLineBreak+
-        'Copy global configuration to application path?')) then begin
+        'Copy primary configuration to application path?')) then begin
       FDosBoxApp.CopyConfig(sc);
       ok:=true;
       end
@@ -887,10 +1002,7 @@ var
   s : string;
 begin
   if rgConfig.ItemIndex=1 then s:=AddPath(edAppPath.Text,sConfig) else s:='';
-  with FDosBoxApp do begin
-    LoadConfig(s);
-    AutoEnd:=true; AutoClose:=false; ConsoleMode:=[];
-    end;
+  with FDosBoxApp do Init(s);
   ShowConfig;
   end;
 
@@ -994,10 +1106,12 @@ begin
   end;
 
 function TAppSettingsDialog.Execute (Categories : TStrings;
-                                     var DosBoxApp : TDosBoxApp) : boolean;
+                                     var DosBoxApp : TDosBoxApp;
+                                     IsStaging : boolean) : boolean;
 var
   i,n : integer;
 begin
+  FIsStaging:=IsStaging;
   with cbCategory do begin
     Clear;
     for i:=0 to Categories.Count-1 do Items.AddObject(Categories[i],pointer(i));
@@ -1019,7 +1133,9 @@ begin
     ChangeCdRom(IsoImage);
     // NoConsole
     gbCdDrive.Checked:=MountCd;
-    if IsoImage then edIsoFile.Text:=CdPath
+    if IsoImage then with edIsoFile do begin
+      Text:=CdPath; Hint:=CdPath;
+      end
     else with cbDrive do ItemIndex:=Items.IndexOf(CdPath);
     edExeFile.Text:=AppFile;
     edParam.Text:=Parameters;
@@ -1072,14 +1188,46 @@ begin
     AutoEnd:=cxAutoEnd.Checked;
     AutoClose:=cxAutoClose.Checked;
     MemSize:=MemSizeList[cbMemSize.ItemIndex];
-    case cbCycles.ItemIndex of
-    0 : Speed:=0;
-    1 : Speed:=maxCycles;
-    2 : Speed:=5000;
-    3 : Speed:=10000;
-    4 : Speed:=25000;
-    5 : Speed:=50000;
-    else Speed:=-1;
+    if FIsStaging then begin
+//    Use default value, 3 000, 5 000, 10 000, 25 000, 50 000, Set to maximum
+      case cbRealSpeed.ItemIndex of
+      0 : Speed.RealSpeed:=-1;               // default
+      1 : Speed.RealSpeed:=3000;
+      2 : Speed.RealSpeed:=5000;
+      3 : Speed.RealSpeed:=10000;
+      4 : Speed.RealSpeed:=25000;
+      5 : Speed.RealSpeed:=50000;
+      else Speed.RealSpeed:=maxCycles;       // maximum
+        end;
+//    Use default value, Set automatically, 10 000, 20 000, 60 000, 100 000, 200 000, Set to maximum
+      case cbProtSpeed.ItemIndex of
+      0 : Speed.ProtSpeed:=-1;               // default
+      1 : Speed.ProtSpeed:=0;                // auto
+      2 : Speed.ProtSpeed:=10000;
+      3 : Speed.ProtSpeed:=20000;
+      4 : Speed.ProtSpeed:=60000;
+      5 : Speed.ProtSpeed:=100000;
+      6 : Speed.ProtSpeed:=200000;
+      else Speed.ProtSpeed:=maxCycles;       // maximum
+        end;
+      Speed.Throttle:=cbThrottling.ItemIndex-1;
+      with MemManage do begin
+        XMS:=cbXms.ItemIndex-1;
+        EMS:=cbEms.ItemIndex-1;
+        UMB:=cbUmb.ItemIndex-1;
+        end;
+      end
+    else begin
+//    Use default value, Set automatically, 5 000, 10 000, 25 000, 50 000, Set to maximum
+      case cbCycles.ItemIndex of
+      0 : Speed.RealSpeed:=-1;               // default
+      1 : Speed.RealSpeed:=0;                // auto
+      2 : Speed.RealSpeed:=5000;
+      3 : Speed.RealSpeed:=10000;
+      4 : Speed.RealSpeed:=25000;
+      5 : Speed.RealSpeed:=50000;
+      else Speed.RealSpeed:=maxCycles;       // maximum
+        end;
       end;
     AppConfig:=rgConfig.ItemIndex=1;
     Icons.Assign(NewIcons);

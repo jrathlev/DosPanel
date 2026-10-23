@@ -188,23 +188,9 @@ object AppSettingsDialog: TAppSettingsDialog
     Anchors = [akTop, akRight]
     Caption = 'Options:'
     TabOrder = 6
-    object Label6: TLabel
-      Left = 10
-      Top = 147
-      Width = 63
-      Height = 13
-      Caption = 'Memory size:'
-    end
-    object Label2: TLabel
-      Left = 10
-      Top = 178
-      Width = 96
-      Height = 13
-      Caption = 'Instructions per ms:'
-    end
     object cxFullScreen: TCheckBox
       Left = 10
-      Top = 22
+      Top = 27
       Width = 141
       Height = 17
       Caption = 'Full screen'
@@ -212,7 +198,7 @@ object AppSettingsDialog: TAppSettingsDialog
     end
     object cxAutoEnd: TCheckBox
       Left = 10
-      Top = 45
+      Top = 55
       Width = 156
       Height = 36
       Caption = 'Close DOSBox automatically at end of execution'
@@ -220,47 +206,13 @@ object AppSettingsDialog: TAppSettingsDialog
       WordWrap = True
       OnClick = cxAutoEndClick
     end
-    object cbMemSize: TComboBox
-      Left = 90
-      Top = 142
-      Width = 76
-      Height = 21
-      Style = csDropDownList
-      ItemIndex = 1
-      TabOrder = 2
-      Text = '16 MB'
-      Items.Strings = (
-        '8 MB'
-        '16 MB'
-        '32 MB'
-        '48 MB'
-        '64 MB')
-    end
-    object cbCycles: TComboBox
-      Left = 25
-      Top = 195
-      Width = 141
-      Height = 21
-      Style = csDropDownList
-      ItemIndex = 0
-      TabOrder = 3
-      Text = 'Set automatically'
-      Items.Strings = (
-        'Set automatically'
-        'Set to maximum'
-        '5 000'
-        '10 000'
-        '25 000'
-        '50 000'
-        'Use preset')
-    end
     object cxAutoClose: TCheckBox
       Left = 10
-      Top = 85
+      Top = 95
       Width = 161
       Height = 36
       Caption = 'Close also DosPanel application automatically'
-      TabOrder = 4
+      TabOrder = 2
       WordWrap = True
     end
   end
@@ -643,6 +595,8 @@ object AppSettingsDialog: TAppSettingsDialog
         Width = 271
         Height = 21
         Anchors = [akLeft, akTop, akRight]
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 0
       end
     end
@@ -852,7 +806,7 @@ object AppSettingsDialog: TAppSettingsDialog
     Top = 185
     Width = 346
     Height = 301
-    ActivePage = tsGeneral
+    ActivePage = tsEmulation
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 4
     object tsGeneral: TTabSheet
@@ -1859,6 +1813,246 @@ object AppSettingsDialog: TAppSettingsDialog
         end
       end
     end
+    object tsEmulation: TTabSheet
+      Caption = 'Emulation'
+      ImageIndex = 3
+      object paEmulation: TPanel
+        Left = 0
+        Top = 0
+        Width = 338
+        Height = 273
+        Align = alClient
+        BevelOuter = bvNone
+        TabOrder = 0
+        ExplicitLeft = 130
+        ExplicitWidth = 61
+        ExplicitHeight = 31
+        object gbCpu: TGroupBox
+          Left = 5
+          Top = 2
+          Width = 326
+          Height = 156
+          Caption = 'CPU cycles'
+          TabOrder = 0
+          object pcCycles: TPageControl
+            Left = 5
+            Top = 15
+            Width = 316
+            Height = 131
+            ActivePage = tsStaging
+            TabOrder = 0
+            object tsNormal: TTabSheet
+              Caption = 'tsNormal'
+              TabVisible = False
+              object Label2: TLabel
+                Left = 20
+                Top = 13
+                Width = 66
+                Height = 13
+                Caption = 'Normal mode:'
+              end
+              object cbCycles: TComboBox
+                Left = 20
+                Top = 30
+                Width = 141
+                Height = 21
+                Style = csDropDownList
+                ItemIndex = 0
+                TabOrder = 0
+                Text = 'Use default value'
+                Items.Strings = (
+                  'Use default value'
+                  'Set automatically'
+                  '5 000 cycles/ms'
+                  '10 000 cycles/ms'
+                  '25 000 cycles/ms'
+                  '50 000 cycles/ms'
+                  'Set to maximum')
+              end
+            end
+            object tsStaging: TTabSheet
+              Caption = 'tsStaging'
+              ImageIndex = 1
+              TabVisible = False
+              object Label14: TLabel
+                Left = 5
+                Top = 10
+                Width = 54
+                Height = 13
+                Caption = 'Real mode:'
+              end
+              object Label15: TLabel
+                Left = 5
+                Top = 65
+                Width = 80
+                Height = 13
+                Caption = 'Protected mode:'
+              end
+              object Label21: TLabel
+                Left = 196
+                Top = 10
+                Width = 50
+                Height = 13
+                Caption = 'Throttling:'
+              end
+              object cbRealSpeed: TComboBox
+                Left = 5
+                Top = 25
+                Width = 166
+                Height = 21
+                Style = csDropDownList
+                ItemIndex = 0
+                TabOrder = 0
+                Text = 'Use default value'
+                Items.Strings = (
+                  'Use default value'
+                  '3 000 cycles/ms'
+                  '5 000 cycles/ms'
+                  '10 000 cycles/ms'
+                  '25 000 cycles/ms'
+                  '50 000 cycles/ms'
+                  'Set to maximum')
+              end
+              object cbProtSpeed: TComboBox
+                Left = 5
+                Top = 80
+                Width = 166
+                Height = 21
+                Style = csDropDownList
+                ItemIndex = 0
+                TabOrder = 1
+                Text = 'Use default value'
+                Items.Strings = (
+                  'Use default value'
+                  'Set automatically'
+                  '10 000 cycles/ms'
+                  '20 000 cycles/ms'
+                  '60 000 cycles/ms'
+                  '100 000 cycles/ms'
+                  '200 000 cycles/ms'
+                  'Set to maximum')
+              end
+              object cbThrottling: TComboBox
+                Left = 195
+                Top = 25
+                Width = 101
+                Height = 21
+                Style = csDropDownList
+                ItemIndex = 0
+                TabOrder = 2
+                Text = 'Default'
+                Items.Strings = (
+                  'Default'
+                  'On'
+                  'Off')
+              end
+            end
+          end
+        end
+        object gbMemory: TGroupBox
+          Left = 5
+          Top = 162
+          Width = 326
+          Height = 106
+          Caption = 'Memory'
+          TabOrder = 1
+          object Label6: TLabel
+            Left = 25
+            Top = 23
+            Width = 23
+            Height = 13
+            Caption = 'Size:'
+          end
+          object cbMemSize: TComboBox
+            Left = 25
+            Top = 40
+            Width = 76
+            Height = 21
+            Style = csDropDownList
+            ItemIndex = 1
+            TabOrder = 0
+            Text = '16 MB'
+            Items.Strings = (
+              '8 MB'
+              '16 MB'
+              '32 MB'
+              '48 MB'
+              '64 MB')
+          end
+          object pnMemMan: TPanel
+            Left = 125
+            Top = 10
+            Width = 196
+            Height = 86
+            BevelOuter = bvNone
+            TabOrder = 1
+            object Label17: TLabel
+              Left = 46
+              Top = 10
+              Width = 24
+              Height = 13
+              Caption = 'XMS:'
+            end
+            object Label19: TLabel
+              Left = 46
+              Top = 40
+              Width = 24
+              Height = 13
+              Caption = 'EMS:'
+            end
+            object Label18: TLabel
+              Left = 46
+              Top = 70
+              Width = 25
+              Height = 13
+              Caption = 'UMB:'
+            end
+            object cbXms: TComboBox
+              Left = 85
+              Top = 5
+              Width = 101
+              Height = 21
+              Style = csDropDownList
+              ItemIndex = 0
+              TabOrder = 0
+              Text = 'Default'
+              Items.Strings = (
+                'Default'
+                'On'
+                'Off')
+            end
+            object cbEms: TComboBox
+              Left = 85
+              Top = 35
+              Width = 101
+              Height = 21
+              Style = csDropDownList
+              ItemIndex = 0
+              TabOrder = 1
+              Text = 'Default'
+              Items.Strings = (
+                'Default'
+                'On'
+                'Off')
+            end
+            object cbUmb: TComboBox
+              Left = 85
+              Top = 65
+              Width = 101
+              Height = 21
+              Style = csDropDownList
+              ItemIndex = 0
+              TabOrder = 2
+              Text = 'Default'
+              Items.Strings = (
+                'Default'
+                'On'
+                'Off')
+            end
+          end
+        end
+      end
+    end
     object tsOther: TTabSheet
       Caption = 'Other'
       ImageIndex = 2
@@ -1871,14 +2065,12 @@ object AppSettingsDialog: TAppSettingsDialog
         BevelOuter = bvNone
         ParentBackground = False
         TabOrder = 0
-        ExplicitLeft = -15
-        ExplicitTop = -25
         DesignSize = (
           338
           273)
         object btMapper: TSpeedButton
           Left = 304
-          Top = 135
+          Top = 145
           Width = 26
           Height = 26
           Hint = 'Select keymapper file'
@@ -1942,7 +2134,7 @@ object AppSettingsDialog: TAppSettingsDialog
         end
         object edMapperFile: TLabeledEdit
           Left = 10
-          Top = 140
+          Top = 150
           Width = 291
           Height = 21
           Anchors = [akLeft, akTop, akRight]
@@ -1953,14 +2145,14 @@ object AppSettingsDialog: TAppSettingsDialog
         end
         object gbConsole: TGroupBox
           Left = 10
-          Top = 15
+          Top = 10
           Width = 326
-          Height = 96
+          Height = 91
           Caption = 'Console'
           TabOrder = 1
           object cbDelConFiles: TCheckBox
             Left = 10
-            Top = 55
+            Top = 45
             Width = 291
             Height = 31
             Caption = 'Delete console output files when DosPanel is closed'
@@ -1969,7 +2161,7 @@ object AppSettingsDialog: TAppSettingsDialog
           end
           object cbNoConsole: TCheckBox
             Left = 10
-            Top = 26
+            Top = 21
             Width = 181
             Height = 17
             Caption = 'Hide console'

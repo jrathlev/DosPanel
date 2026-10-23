@@ -287,7 +287,7 @@ begin
   FillChar(si, SizeOf(TStartupInfo), 0);
   with si do begin
     cb := Sizeof(TStartupInfo);
-    dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
+    dwFlags := STARTF_USESHOWWINDOW;
     wShowWindow:=SW_SHOWNORMAL;
     end;
   if length(WorkDir)>0 then pwd:=pchar(WorkDir) else pwd:=nil;

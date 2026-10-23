@@ -391,13 +391,13 @@ begin
     if length(Result)=0 then Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES_COMMON);
     end;
   pfCommonProgramFiles : if length(Result)=0 then begin
-      if IsVista then Result:=GetKnownFolder(FOLDERID_ProgramFilesCommon)
-      else Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES_COMMON);
-      end;
-  else if length(Result)=0 then begin
-      if IsVista then Result:=GetKnownFolder(FOLDERID_ProgramFiles)
-      else Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES);
-      end;
+    if IsVista then Result:=GetKnownFolder(FOLDERID_ProgramFilesCommon)
+    else Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES_COMMON);
+    end;
+  else begin   // pfProgramFiles
+    if IsVista then Result:=GetKnownFolder(FOLDERID_ProgramFiles)
+    else Result:=GetDesktopFolder(CSIDL_PROGRAM_FILES);
+    end;
     end;
   end;
 

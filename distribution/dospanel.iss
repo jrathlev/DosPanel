@@ -14,10 +14,12 @@
 #define Year GetDateTimeString('yyyy','','')
 #define ProgramName "Dos Panel"
 #define ProgramAuthor "Dr. J. Rathlev"
-#define OutputFile "dospanel-setup"
+#define OutputFile "dospanel-setup-2"
 
 [Setup]
-PrivilegesRequired=admin
+PrivilegesRequired=lowest
+PrivilegesRequiredOverridesAllowed=dialog
+UsePreviousPrivileges=no
 AppName={#ProgramName}
 AppVerName={#ProgramName} {#ApplicationVersion}
 AppVersion={#ApplicationVersion}
@@ -27,14 +29,14 @@ AppSupportURL=https://www.rathlev-home.de?home-e.html#dospanel
 AppUpdatesURL=https://www.rathlev-home.de?home-e.html#dospanel
 AppCopyright=© 2011-{#Year} {#ProgramAuthor}
 VersionInfoVersion={#ApplicationVersion}
-DefaultDirName={commonpf}\DosPanel
+DefaultDirName={autopf}\DosPanel
 DefaultGroupName=Dos Panel
 OutputDir=.
 OutputBaseFilename={#OutputFile}
 SetupIconFile=..\DosPanel.ico
 UninstallDisplayIcon={app}\DosPanel-u.ico
-WizardImageFile=Dp-Install-Image.bmp
-WizardSmallImageFile=Dp-Install-Small.bmp
+WizardImageFile=Wizard-DosPanel-1.png,Wizard-DosPanel-2.png
+WizardSmallImageFile=Wizard-small-1.png,Wizard-small-2.png
 Compression=lzma2
 SolidCompression=yes
 ChangesAssociations=yes
@@ -42,6 +44,7 @@ ShowLanguageDialog=auto
 DisableDirPage=auto
 DisableWelcomePage=no
 DisableProgramGroupPage=auto
+WizardStyle=modern dynamic 
 
 [Languages]
 Name: "en"; MessagesFile: compiler:Default.isl; LicenseFile:"..\docs\license-en.rtf"; InfoBeforeFile:"..\docs\notes-en.rtf";

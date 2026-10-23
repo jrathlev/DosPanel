@@ -3,7 +3,7 @@ object DosBoxSetDialog: TDosBoxSetDialog
   Top = 0
   Anchors = [akLeft, akTop, akRight]
   Caption = 'Global settings'
-  ClientHeight = 407
+  ClientHeight = 436
   ClientWidth = 437
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -17,16 +17,16 @@ object DosBoxSetDialog: TDosBoxSetDialog
   OnCreate = FormCreate
   DesignSize = (
     437
-    407)
+    436)
   PixelsPerInch = 96
   TextHeight = 13
   object btEditor: TSpeedButton
     Left = 395
-    Top = 333
+    Top = 363
     Width = 26
     Height = 26
     Hint = 'Select mapper file'
-    Anchors = [akTop, akRight]
+    Anchors = [akLeft, akRight, akBottom]
     Flat = True
     Glyph.Data = {
       36060000424D3606000000000000360000002800000020000000100000000100
@@ -83,11 +83,11 @@ object DosBoxSetDialog: TDosBoxSetDialog
     ParentShowHint = False
     ShowHint = True
     OnClick = btEditorClick
-    ExplicitLeft = 365
+    ExplicitTop = 333
   end
   object OKBtn: TBitBtn
     Left = 255
-    Top = 370
+    Top = 399
     Width = 71
     Height = 31
     Anchors = [akRight, akBottom]
@@ -150,7 +150,7 @@ object DosBoxSetDialog: TDosBoxSetDialog
   end
   object CancelBtn: TBitBtn
     Left = 330
-    Top = 370
+    Top = 399
     Width = 101
     Height = 31
     Anchors = [akRight, akBottom]
@@ -215,16 +215,16 @@ object DosBoxSetDialog: TDosBoxSetDialog
     Left = 5
     Top = 5
     Width = 426
-    Height = 312
+    Height = 336
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Settings for DOSBox'
     TabOrder = 2
     DesignSize = (
       426
-      312)
+      336)
     object btConf: TSpeedButton
       Left = 390
-      Top = 113
+      Top = 138
       Width = 26
       Height = 26
       Hint = 'Select configuration'
@@ -288,7 +288,7 @@ object DosBoxSetDialog: TDosBoxSetDialog
     end
     object btLang: TSpeedButton
       Left = 390
-      Top = 193
+      Top = 218
       Width = 26
       Height = 26
       Hint = 'Select language file'
@@ -476,7 +476,7 @@ object DosBoxSetDialog: TDosBoxSetDialog
     end
     object btMapper: TSpeedButton
       Left = 390
-      Top = 153
+      Top = 178
       Width = 26
       Height = 26
       Hint = 'Select keymapper file'
@@ -540,7 +540,7 @@ object DosBoxSetDialog: TDosBoxSetDialog
     end
     object btEditConf: TSpeedButton
       Left = 365
-      Top = 113
+      Top = 138
       Width = 26
       Height = 26
       Hint = 'Edit configuration'
@@ -604,7 +604,7 @@ object DosBoxSetDialog: TDosBoxSetDialog
     end
     object btEditMapper: TSpeedButton
       Left = 365
-      Top = 153
+      Top = 178
       Width = 26
       Height = 26
       Hint = 'Edit keymapper file'
@@ -666,9 +666,15 @@ object DosBoxSetDialog: TDosBoxSetDialog
       ShowHint = True
       OnClick = btEditMapperClick
     end
+    object laVersion: TLabel
+      Left = 10
+      Top = 100
+      Width = 3
+      Height = 13
+    end
     object cbConsole: TCheckBox
       Left = 205
-      Top = 287
+      Top = 312
       Width = 128
       Height = 17
       Caption = 'Hide console'
@@ -676,36 +682,37 @@ object DosBoxSetDialog: TDosBoxSetDialog
     end
     object edConfFile: TLabeledEdit
       Left = 10
-      Top = 115
+      Top = 140
       Width = 351
       Height = 21
       Anchors = [akLeft, akTop, akRight]
-      EditLabel.Width = 116
+      EditLabel.Width = 123
       EditLabel.Height = 13
-      EditLabel.Caption = 'Global configuration file:'
+      EditLabel.Caption = 'Primary configuration file:'
+      ReadOnly = True
       TabOrder = 2
     end
     object edLangFile: TLabeledEdit
       Left = 10
-      Top = 195
+      Top = 220
       Width = 376
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       EditLabel.Width = 68
       EditLabel.Height = 13
       EditLabel.Caption = 'Language file:'
-      TabOrder = 3
+      TabOrder = 4
     end
     object edMapperFile: TLabeledEdit
       Left = 10
-      Top = 155
+      Top = 180
       Width = 351
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       EditLabel.Width = 112
       EditLabel.Height = 13
       EditLabel.Caption = 'Default keymapper file:'
-      TabOrder = 4
+      TabOrder = 3
     end
     object edPath: TLabeledEdit
       Left = 10
@@ -731,7 +738,7 @@ object DosBoxSetDialog: TDosBoxSetDialog
     end
     object gbCodePage: TGroupBox
       Left = 185
-      Top = 225
+      Top = 250
       Width = 191
       Height = 56
       Caption = 'Code page used in DOSBox'
@@ -747,7 +754,7 @@ object DosBoxSetDialog: TDosBoxSetDialog
     end
     object gbKeyLayout: TGroupBox
       Left = 10
-      Top = 225
+      Top = 250
       Width = 169
       Height = 76
       Caption = 'Keyboard layout'
@@ -800,10 +807,10 @@ object DosBoxSetDialog: TDosBoxSetDialog
   end
   object edEditor: TLabeledEdit
     Left = 15
-    Top = 335
+    Top = 365
     Width = 376
     Height = 21
-    Anchors = [akLeft, akTop, akRight]
+    Anchors = [akLeft, akRight, akBottom]
     EditLabel.Width = 57
     EditLabel.Height = 13
     EditLabel.Caption = 'Text editor:'
@@ -811,9 +818,10 @@ object DosBoxSetDialog: TDosBoxSetDialog
   end
   object cbAutoStart: TCheckBox
     Left = 15
-    Top = 375
+    Top = 405
     Width = 226
     Height = 17
+    Anchors = [akLeft, akBottom]
     Caption = 'Start DosPanel automatically'
     TabOrder = 4
   end

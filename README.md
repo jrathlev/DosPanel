@@ -1,9 +1,8 @@
 ### DosPanel
-**DosPanel** is a graphical user interface for [DOSBox](http://www.dosbox.com/) under Windows. 
-The program is designed for use with DosBox version 0.74. 
-The user can make all required settings 
-needed to start DOS applications in DOSBox without concern the somewhat crude syntax of the 
-configuration file. Each DOS application can have its individual settings stored by the program.
+**DosPanel** is a graphical user interface for *DOSBox* on Windows. 
+The program is designed for use with [DOSBox version 0.74](http://www.dosbox.com/) and [DOSBox Staging version 0.83](https://www.dosbox-staging.org/). 
+Users can configure all the necessary settings to launch
+DOS applications in DOSBox without having to deal with the somewhat cumbersome syntax of the configuration file. Individual settings for each DOS application can be saved within the program.
 
 **The functions at a glance:**
 
@@ -14,7 +13,7 @@ configuration file. Each DOS application can have its individual settings stored
 - A list of any DOS commands to be executed before starting the above application (e.g. changing the directory)
 - Optional MIXER settings
 - Selection of an icon to be displayed in DosPanel
-- Optional selection of a keymapper
+- Optional selection of a key mapper
 - Selection of a manual (e.g. text or PDF) for the DOS application
 - Additional comments
 - Additional options: full screen and automatic closing of *DOSBox*

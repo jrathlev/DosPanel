@@ -12,10 +12,10 @@
 <table>
 <tr>
   <td rowspan="2" valign="center"><img src="images/dp-logo.png" width="53" height="40" align="left" border="0"></td>
-  <td align="Left"><h2 style="margin-top:2pt;margin-bottom:2pt;">DosPanel - Windows-Desktop for DosBox</h2></td>
+  <td align="Left"><h2 style="margin-top:2pt;margin-bottom:2pt;">DosPanel - Windows-Desktop for DOSBox</h2></td>
 </tr>
 <tr valign="top"">
-    <td><b>&copy; 2014-2025, J. Rathlev</a>, 24222 Schwentinental, Germany</b></td>
+    <td><b>&copy; 2014-2026, J. Rathlev</a>, 24222 Schwentinental, Germany</b></td>
 </tr>
 </table>
 <p>
@@ -50,8 +50,8 @@
   <area shape="rect" coords="4,121,393,262" href="#apps" alt="Application of a category" title="Application of a category">
   <area shape="rect" coords="321,56,350,88" href="#basic" alt="Basic settings" title="Basic settings">
 </map>
-<img src="images/dospanel.png" width="426" height="297" align="right" border="0" hspace="5" usemap="#dospanel">
-<p>The program is a Windows frontend to the DOS emulator
+<img src="images/dospanel.png" width="431" height="306" align="right" border="0" hspace="5" usemap="#dospanel">
+<p>The program is a Windows front end to the DOS emulator
   <i><a href="http://www.dosbox.com/news.php" target="_blank">DOSBox</a></i>
   to manage and run DOS applications and runs runs on all current Windows systems. 
   The user can configure all
@@ -61,6 +61,12 @@
   For better view the DOS applications can be assigned to different categories.
 </p>
 
+<h4>New in Version 2.0</h4><p></p>
+<p>The program now also supports
+  <b><a href="https://www.dosbox-staging.org/" title="DOSBox Staging" target="_blank">DOSBox Staging</a></b>.
+  It automatically detects which version of DOSBox is integrated.
+  The configuration commands are adjusted accordingly.</p>
+  
 <h3>The functions at a glance:</h3>
 <ul>
   <li>Assigning the drives of the DOS application:</li>
@@ -81,19 +87,25 @@
   <li>Adjusting the emulation speed</li>  
 </ul>
 
-<h2>DOSBox</h2>
+<a name="dosboxweb"><h2>DOSBox</h2></a>
 <p><em>DOSBox</em> is an emulator to run DOS application on different platforms
   (e.g Windows, Linux). So many of the old DOS games can be resurrected. You will
-  find more information and a download at 
-  <a href="http://www.dosbox.com/news.php" target="_blank">DOSBox</a>. The documentation
-  will be found <a href="http://www.dosbox.com/wiki/Main_Page" target="_blank">
-  here</a>.</p>
+  find more information and a download here:</p>
+<ul>
+  <li><b>DOSBox 0.73:</b> <a href="https://www.dosbox.com" target="_blank">Download</a> and
+    <a href="https://www.dosbox.com/DOSBoxManual.html" target="_blank">English documentation</a>
+</li>
+  <li><b>DOSBox Staging 0.83:</b> <a href="https://www.dosbox-staging.org/download/">Download</a> and
+    <a href="https://www.dosbox-staging.org/0.83/manual/introduction/about-this-manual/" target="_blank">English documentation</a>
+  </li>
+</ul> 
   
 <hr>
 <h2><a name="install">Installing the program</a></h2>
 <p>On <em>Windows 7, 8, 10 and 11</em> just start the executable setup file
-  to install the program. To do so the rights of an administrator
-  are required. For older Windows versions (XP and Vista), the installation must be
+  to install the program. Alternatively, it can be installed only for the logged-in user
+  or for all users (administrator privileges required).
+  For older Windows versions (XP and Vista), the installation must be
   carried out by unpacking the zip archive provided.<br>
   <b> Before starting <strong>DosPanel</strong> for the first time</b> it 
   is necessary to <b>install the current version of <em>DOSBox</em> and run it once</b>.
@@ -114,7 +126,7 @@
   If there is no path specified in <i>[IniFile]</i>, the path of the program
   installation will be used.
 <dt><b>/lang:[<em>LangId</em>]</b></dt>
-<dd>Use the specified GUI language (<i>LangId</i> = <i>en</i> or <i>de</i>)</dd>
+<dd>Use the specified GUI language (<i>LangId</i> = <i>en</i>, <i>de</i> or <i>fr</i>)</dd>
 </dl>
 
 <hr>
@@ -173,7 +185,7 @@
 <br clear="all">
   
 <hr>
-<img src="images/basic-options.png" width="439" height="439" align="right" border="0" hspace="5">
+<img src="images/basic-options.png" width="439" height="468" align="right" border="0" hspace="5">
 <h3><a name="basic">Basic settings</a></h3>
 <p>When starting <strong>DosPanel</strong> for the first time after the installation,
   the program searches for an installed <em>DOSBox</em> and will adjust most
@@ -182,26 +194,38 @@
   <h4>Settings for DOSBox</h4>
   <ul>
     <li><b>Root path to DOS applications:</b> Select the root directory of 
-    your DOS applications.</li>
-    <li><b>Path to DOSBox:</b> This entry is made by the program automatically.</li>
+      your DOS applications.</li>
+    <li><b>Path to DOSBox:</b>The first time the program is launched, the user is prompted to
+      select the path to the installed version of DOSBox. This setting
+      can be changed at any time later by clicking the button to the right of it.
+      Information about the detected DOSBox version is displayed below the path.</li>
     <li><b>Global configuration file:</b> This is the file with the basic configuration
-    created from <em>DOSBox</em>. The entry is made by the program automatically. 
-    If required, the configuration file can be changed with any text editor.
-    It is automatically adopted for each <a href="#add">new application added</a>. 
-    Notes about the format you will find in the <em>DOSBox</em> documentation.</li>
+      created from <em>DOSBox</em>. The entry is made by the program automatically. 
+      If required, the configuration file can be changed with a text editor (click the
+      button to the right of it). It is automatically applied to every 
+      <a href="#add">newly added application</a>. For information on the format, see
+      the <em>DOSBox</em> documentation and the comments in the configuration file.
+      Notes about the format you will find in the <em>DOSBox</em> documentation.</li>
     <li><b>Default key mapper file:</b> This is the file with settings for redirection of 
-    keys and joystick buttons used by certain DOS applications in <em>DOSBox</em>. 
-    This entry is made by the program automatically. <a href="#appmapper">Application specific</a>
-    adjustments are possible.</li>
-    <li><b>Language file:</b> This entry is made by the program automatically and is
-    only needed for other languages than English.</li>
+      keys and joystick buttons used by certain DOS applications in <em>DOSBox</em>.
+      If nothing is specified here, the setting from the configuration file applies.
+      Optionally, you can select a different key mapper as the default. It is also
+      possible to make a custom <a href="#appmapper">adjustment for the specific 
+      application</a>.</li>
+    <li><b>Language selection for DOSBox output:</b> If nothing is specified here,
+      the setting from the configuration file applies. For the classic
+      DOSBox version, a different language file can be selected here; for DOSBox Staging,
+      the respective language code (<i>de</i>, <i>en</i>, etc.) is specified.</li>
+    <li><b>Keyboard layout:</b> If automatic detection in <em>DOSBox</em>
+      does not work, the keyboard layout (e.g., <i>GR</i> for the German
+      keyboard) can be selected manually here.</li>
     <li><b>Keyboard layout:</b> If the automatic detection in <em>DOSBox</em> fails,
-    you can specify your keyboard layout (e.g. <i>GR</i> for a German
-    keyboard) manually.</li>
+      you can specify your keyboard layout (e.g. <i>GR</i> for a German
+      keyboard) manually.</li>
     <li><b>Code page used in DOSBox:</b> Select the code page you want to use for
-    screen output of <em>DOSBox</em> .</li>
+      screen output of <em>DOSBox</em> .</li>
     <li><b>Hide console:</b> Starting <em>DOSBox</em> will open a <em>DOSBox console</em>
-    in a second window. If you wish, you can hide this window.</li>
+      in a second window. If you wish, you can hide this window.</li>
   </ul> 
 <h4>Other settings</h4>
   <ul>
@@ -252,11 +276,11 @@
     after the above application has ended (e.g. deleting files no longer needed).</li>
   <li><b>Icon file:</b> Select an image file (e.g. <i>.ICO</i>) or an exe file 
     containing an icon for the <strong>DosPanel</strong> display.</li>
-  <img src="images/app-mixer.png" width="346" height="301" align="right" border="0" hspace="5">
   <li><b>Manual:</b> Select a file on your host system that contains a manual for 
     the selected DOS application. This may be any file type (e.g. text or PDF)
     and will be opened with the application assigned in Windows (e.g. <i>Adobe Reader</i> 
     or <i>Sumatra PDF</i>).</li>
+  <img src="images/app-mixer.png" width="338" height="273" align="right" border="0" hspace="5">
   <li><b>Description:</b> This is a short description for the selected DOS application
     that will be displayed in <strong>DosPanel</strong> when moving the mouse over
     the assigned icon.</li>
@@ -280,7 +304,37 @@
       delete the list completely and change the order of the entries.</li>
   </ul></li>
 
-  <img src="images/app-other.png" width="346" height="198" align="right" border="0" hspace="5">
+  <img src="images/app-emu.png" width="346" height="301" align="right" border="0" hspace="5">
+  <li><b><a name="emu">Emulation</a></b><br>
+    There are differences between the various DOSBox versions:<br>
+    <div style="margin-top:5px;margin-bottom:-5px;"><b>Classic DOSBox (0.73):</b></div>
+    <ul>
+    <li><b>CPU Cycles:</b> This setting allows you to adjust the speed
+      of the <em>DOSBox</em> emulation. In most cases, the
+      automatic mode works fine. However, with some DOS games, this can cause problems
+      with time-sensitive commands, so a custom setting
+      or the setting from the <i>conf</i> file (<i>Use default</i>)
+      should be used.
+      Further information on this can also be found in the <em>DOSBox</em> documentation.</li>
+    <li><b>Memory Size:</b> Size of the working memory in <em>DOSBox</em>.</li>
+    </ul>
+    <div style="margin-top:5px;margin-bottom:-5px;"><b>DOSBox Staging (0.83):</b></div>
+    <ul>
+    <li><b>CPU Cycles:</b> There are two separate settings for <i>Real Mode</i>
+      and <i>Protected Mode</i>. By default, the standard settings
+      from the <a href="#basic">basic configuration</a> are used. Further details
+      can be found in the <a href="https://www.dosbox-staging.org/0.83/manual/system/memory/" target="_blank">manual</a>
+      or in the comments of the <a href="#basic">basic configuration</a>.
+      </li>
+    <li><b>Memory size:</b> Size of the working memory in <em>DOSBox</em>.</li>
+    <li><b>Memory Management:</b> The supported schemes (<i>XMS</i>, <i>EMS</i>, and <i>UMB</i>)
+      are normally enabled via the <a href="#basic">basic configuration</a>.
+      Optionally, a different setting can be selected for the chosen application.
+      </li>
+    </ul>
+  </li>
+  
+  <img src="images/app-other.png" width="346" height="207" align="right" border="0" hspace="5">
   <li><b><a name="showcon">Other</a></b><br>
     <ul>
     <li><b>Console:</b> 
@@ -303,7 +357,7 @@
       main drive directory of the DOS application (see above).</li>
     </ul>
     </li>
-  <li><b>Select configuration:</b> The configuration provided by <em>DOSBox</em> is 
+  <li><b>Select configuration:</b> The basic configuration provided by <em>DOSBox</em> is 
     always selected by default. If special settings are required for the respective 
     application, you can switch to <i>Application specific</i>. The basic configuration 
     is then copied to the application directory and can be edited there individually 
@@ -318,13 +372,6 @@
     <li><b>Close also DosPanel application automatically:</b> This option is only 
      available if the previous option is checked. After closing <em>DOSBox</em> the
      <strong>DosPanel</strong> application will also close automatically.</li>
-    <li><b>Memory size:</b> If necessary you can adjust the size of <em>DOSBox</em>
-      memory.</li>
-    <li><b>Instruction per ms:</b> This settings affects the speed of the
-      <em>DOSBox</em> emulation. In most cases the automatic mode will work.
-      Some DOS games may require an individual setting to a lower value. 
-      (<i>Use preset</i>). In this case the setting from the <i>conf</i> will be used. 
-      You will find more information about this topic in the <em>DOSBox</em> documentation.</li>
   </ul></li>
   <li><b>Default options:</b> By clicking on this button, the options displayed above
     are reset to the values as they are saved in the respective configuration file.</li>
@@ -344,9 +391,9 @@
 <p>Use this command to remove a DOS application from <strong>DosPanel</strong>.</p>
   
 <h4><a name="appmapper"><img src="images/keymapper.png" width="20" height="20" border="0">
-  Adjust keymapper</a></h4>
-<p>Have a look into the <em>DOSBox</em> documentation to learn more about the keymapper.
-  Calling this menu item will open the <em>DOSBox</em> keymapper to make individual
+  Adjust key mapper</a></h4>
+<p>Have a look into the <em>DOSBox</em> documentation to learn more about the key mapper.
+  Calling this menu item will open the <em>DOSBox</em> key mapper to make individual
   settings for keyboard and joystick. This may be useful with some DOS applications
   to simplify the handling. There is a default mapper file (see <a href="#basic">Basic settings</a>)
   and optional a mapper file for each DOS application that will be created using
@@ -375,7 +422,7 @@
 <p><em>DOSBox</em> will be opened without starting a special DOS application.</p>
 
 <hr>
-<img src="images/tp-e.png" width="541" height="539" align="right" border="0" hspace="5">
+<img src="images/tp-e.png" width="541" height="559" align="right" border="0" hspace="5">
 <h3><a name="sample">Configuration example to run Turbo-Pascal</a></h3>
 <p>Everybody wishing to use the popular Turbo Pascal IDE with 64-bit versions
   of Windows, can realize this very simply using DosPanel and DOSBox. The
@@ -419,8 +466,10 @@
 <dl>
   <dt><h3><a name="hints">Notes:</a></h3></dt>
   <dd>The program was written in <b>Embarcadero Delphi 10 Seattle</b>&nbsp;&reg;.</dd>
-  <dd><a href="https://www.dosbox.com/news.php?show_news=1" target="_blank">DOSBox</a> is 
-    an OpenSource project.</dd>
+  <dd>The sources can be find at <a href="https://github.com/jrathlev/DosPanel" target="_blank">GitHub</a>.</dd>
+  <dd><a href="https://www.dosbox.com/news.php?show_news=1" target="_blank">DOSBox</a> and
+    <a href="https://www.dosbox-staging.org/" title="DOSBox Staging" target="_blank">DOSBox Staging</a>
+    an OpenSource projects.</dd>
 </dl>
 
 <dl>
@@ -438,14 +487,13 @@
 </dd>
   <dt><b>2. Distributing the program</b></dt>
   <dd>The program may be distributed by any means, provided that the original files 
-  as supplied by the author remain intact and no charge is made other than for 
-  reasonable distribution costs.
-  The program may not be distributed as a component of any commercial product
-  without a prior license agreement with the author.
-</dd>
+    as supplied by the author remain intact and no charge is made other than for 
+    reasonable distribution costs.
+    The program may not be distributed as a component of any commercial product
+    without a prior license agreement with the author.</dd>
 </dl>
 
 <hr>
-<i>J. Rathlev, 24222 Schwentinental, Germany, August 2025</i>
+<i>J. Rathlev, 24222 Schwentinental, Germany, October 2026</i>
 </body>
 </html>

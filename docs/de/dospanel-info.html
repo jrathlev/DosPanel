@@ -12,10 +12,10 @@
 <table>
 <tr>
   <td rowspan="2" valign="center"><img src="images/dp-logo.png" width="53" height="40" align="left" border="0"></td>
-  <td align="Left"><h2 style="margin-top:2pt;margin-bottom:2pt;">DosPanel - Windows-Desktop für DosBox</h2></td>
+  <td align="Left"><h2 style="margin-top:2pt;margin-bottom:2pt;">DosPanel 2.0 - Windows-Desktop für DOSBox</h2></td>
 </tr>
 <tr valign="top"">
-    <td><b>&copy; 2014-2025, J. Rathlev</a>, D-24222 Schwentinental</b></td>
+    <td><b>&copy; 2014-2026, J. Rathlev</a>, D-24222 Schwentinental</b></td>
 </tr>
 </table>
 <p>
@@ -51,7 +51,7 @@
   <area shape="rect" coords="11,125,384,258" href="#apps" alt="Anwendungen der Kategorie" title="Anwendungen der Kategorie">
   <area shape="rect" coords="322,53,350,86" href="#basic" alt="Grundeinstellungen" title="Grundeinstellungen">
 </map>
-<img src="images/dospanel.png" width="426" height="293" align="right" border="0" hspace="5" usemap="#dospanel">
+<img src="images/dospanel.png" width="431" height="306" align="right" border="0" hspace="5" usemap="#dospanel">
 <p>Das Programm stellt eine grafische Bedienoberfläche für den DOS-Emulator
   <i><a href="http://www.dosbox.com/news.php" target="_blank">DOSBox</a></i> bereit
   und funktioniert unter allen aktuellen Windows-Systemen. 
@@ -64,6 +64,12 @@
   Zur besseren Übersicht lassen sich die DOS-Anwendungen verschiedenen Kategorien
   zuordnen.   
 </p>
+<h4>Neu in Version 2.0</h4><p></p>
+<p>Das Programm unterstützt jetzt auch 
+  <b><a href="https://www.dosbox-staging.org/" title="DOSBox Staging" target="_blank">DOSBox Staging</a></b>. 
+  Es wird automatisch erkannt, welche Version von DOSBox eingebunden ist. 
+  Die Befehle der Konfiguration werden entsprechend angepasst.</p>
+  
 <h3>Die Funktionen in der Übersicht:</h3>
 <ul>
   <li>Anbinden von Laufwerken für eine DOS-Anwendung:</li>
@@ -84,25 +90,31 @@
   <li>Einstellung der Emulationsgeschwindigkeit</li>  
 </ul>
 
-<h2>DOSBox</h2>
+<a name="dosboxweb"><h2>DOSBox</h2></a>
 <p><em>DOSBox</em> ist ein Emulator, der es ermöglicht DOS-Anwendungen auf verschiedenen
   Plattformen und Betriebssystemen (z.B. Windows, Linux) auszuführen. Damit können 
   z.B. viele alte DOS-Spieleklassiker
   wieder zum Leben erweckt werden. Weitere Infos und eine Downloadmöglichkeit gibt
-  es bei <a href="http://www.dosbox.com/news.php" target="_blank">DOSBox</a>. Auch eine
-  ausführliche <a href="http://www.dosbox.com/wiki/Main_Page" target="_blank">
-  englische Dokumentation</a> ist vorhanden.</p>
+  es hier:</p>
+<ul>
+  <li><b>DOSBox 0.73:</b> <a href="https://www.dosbox.com" target="_blank">Download</a>,
+    <a href="https://www.dosbox.com/DOSBoxManual.html" target="_blank">englische Dokumentation</a>
+    und <a href="http://www.dosbox.com/tools/DOSBox-german-lang-0.74.zip">deutsche Sprachanpassung und Dokumentation</a>.
+  </li>
+  <li><b>DOSBox Staging 0.83:</b> <a href="https://www.dosbox-staging.org/download/">Download</a> und
+    <a href="https://www.dosbox-staging.org/0.83/manual/introduction/about-this-manual/" target="_blank">englische Dokumentation</a>
+  </li>
+</ul>  
   
 <hr>
 <h2><a name="install">Installation von DosPanel</a></h2>
-<p>Unter <em>Windows 7, 8, 10 und 11</em> wird einfach das  
-  ausführbare Setup-Programm gestartet. Dazu sind die Rechte eines 
-  Administrators erforderlich. Bei älteren Windows-Versionen (XP und Vista) muss
+<p>Unter <em>Windows 7, 8, 10 und 11</em> wird einfach das ausführbare Setup-Programm 
+  gestartet. Es kann alternativ nur für den angemeldeten Benutzer
+  oder für alle Benutzer (Administratorrechte erforderlich) installiert werden. 
+  Bei älteren Windows-Versionen (XP und Vista) muss
   die Installation durch Entpacken des bereit gestellten Zip-Archivs erfolgen.<br>
   <b>Vor der ersten Inbetriebnahme</b> sollte in jedem Fall die aktuelle Version von
-  <b>DOSBox installiert und einmal gestartet</b> werden. Die deutsche Sprachanpassung
-  und Dokumentation findet man 
-  <a href="http://www.dosbox.com/tools/DOSBox-german-lang-0.74.zip">hier</a>.</p>
+  <b><a href="#dosboxweb">DOSBox</a> installiert und einmal gestartet</b> werden. /p>
 
 <hr>
 <h2><a name="options">Befehlszeilenoptionen</a></h2>
@@ -121,7 +133,8 @@
   Wird in <i>[IniFile]</i> kein Pfad angegeben, wird das Programinstallationsverzeichnis 
   von DosPanel verwendet. 
 <dt><b>/lang:[<em>LangId</em>]</b></dt>
-<dd>Für die Programmoberfläche wird die ausgewählte Sprache verwendet (<i>LangId</i> = <i>en</i> oder <i>de</i>)</dd>
+<dd>Für die Programmoberfläche wird die ausgewählte Sprache verwendet 
+  (<i>LangId</i> = <i>en</i>, <i>de</i> oder <i>fr</i>)</dd>
 </dl>
 
 <hr>
@@ -184,7 +197,7 @@
 <br clear="all">
   
 <hr>
-<img src="images/basic-options.png" width="439" height="439" align="right" border="0" hspace="5">
+<img src="images/basic-options.png" width="455" height="468" align="right" border="0" hspace="5">
 <h3><a name="basic">Grundeinstellungen</a></h3>
 <p>Nach dem ersten Start sucht <strong>DosPanel</strong> nach einer 
   installierten <em>DOSBox</em> und nimmt die zur Einbindung erforderlichen 
@@ -193,29 +206,34 @@
   <h4>Einstellungen für DOSBox</h4>
   <ul>
     <li><b>Basis-Pfad für DOS-Anwendungen:</b> Hier wird der übergeordnete Pfad 
-    für alle DOS-Anwendungen des Benutzers ausgewählt.</li>
-    <li><b>Pfad zu DOSBox:</b> Dieser Pfad sollte bereits automatisch vom
-    Programm eingetragen sein.</li>
+      für alle DOS-Anwendungen des Benutzers ausgewählt.</li>
+    <li><b>Pfad zu DOSBox:</b> Beim ersten Start des Programms wird der Benutzer aufgefordert,
+      den Pfad zur installierten DOSBox-Version auszuwählen. Diese Einstellung
+      kann durch Klick auf die Schaltfläche rechts daneben später jederzeit geändert werden.
+      Unterhalb des Pfades wird eine Info zur gefundenen DOSBox-Version angezeigt.</li>  
     <li><b>Globale Konfigurationsdatei:</b> Hier steht die Datei mit der von
-    <em>DOSBox</em> angelegten Grundkonfiguration. Dieser Eintrag wird vom Programm
-    automatisch vorgenommen. Die Konfiguration kann, falls erforderlich,  mit einem 
-    Texteditor individuell angepasst werden. Sie wird automatisch für jede
-    neu hinzugenommene <a href="#add">Anwendung</a> übernommen. Hinweise zum Format findet man in
-    der <em>DOSBox</em>-Dokumentation. </li>
-    <li><b>Standard-Tastaturmapper-Datei:</b> Diese Datei enthält die Einstellungen für 
-    eine Umleitung von Tastatureingaben und Joystick-Tasten, wie sie für bestimmte 
-    DOS-Anwendungen in <em>DOSBox</em> benötigt werden. Dieser Eintrag wird vom Programm 
-    automatisch auf die von <em>DOSBox</em>-Vorgabe gesetzt. Eine individuelle 
-    <a href="#appmapper">Anpassung an die jeweilige Anwendung</a> ist
-    möglich.</li>
-    <li><b>Sprach-Datei:</b> Datei mit den <em>DOSBox</em>-Texten für andere 
-    Sprachen als englisch. Dieser Eintrag wird vom Programm
-    automatisch vorgenommen.</li>
-    <li><b>Tastatur-Layout:</b> Falls die automatische Erkennung in <em>DOSBox</em>
-    nicht funktioniert, kann hier das Tastatur-Layout (z.B. <i>GR</i> für die deutsche
-    Tastatur) von Hand ausgewählt werden.</li>
+      <em>DOSBox</em> angelegten Grundkonfiguration. Dieser Eintrag wird vom Programm
+      automatisch vorgenommen. Die Konfiguration kann, falls erforderlich,  mit einem 
+      Texteditor (Klick auf die Schaltfläche rechts davon) individuell angepasst werden. 
+      Sie wird automatisch für jede
+      neu hinzugenommene <a href="#add">Anwendung</a> übernommen. Hinweise zum Format findet man in
+      den <em>DOSBox</em>-Dokumentationen und in den Kommentaren der Konfigurationsdatei.</li>
+    <li><b>Standard-Keymapper-Datei:</b> Diese Datei enthält die Einstellungen für 
+      eine Umleitung von Tastatureingaben und Joystick-Tasten, wie sie für bestimmte 
+      DOS-Anwendungen in <em>DOSBox</em> benötigt werden. Wenn hier nichts angegeben
+      wird, ist die Einstellung aus der Konfigurationsdatei gültig. Optional kann ein
+      anderer Keymapper als Voreinstellung ausgewählt werden. Außerdem ist es
+      möglich, eine individuelle <a href="#appmapper">Anpassung an die jeweilige Anwendung</a> 
+      vorzunehmen.</li>
+    <li><b>Sprachauswahl für die DOSBox-Ausgabe:</b> Wenn hier nichts angegeben wird, 
+      ist die Einstellung aus der Konfigurationsdatei gültig. Für die klassische
+      DOSBox-Version kann hier eine andere Sprachdatei ausgewählt werden, für DOSBox Staging
+      wird das jeweilige Sprachenkürzel (<i>de</i>, <i>en</i>, etc.) angegeben.</li>
+      <li><b>Tastatur-Layout:</b> Falls die automatische Erkennung in <em>DOSBox</em>
+      nicht funktioniert, kann hier das Tastatur-Layout (z.B. <i>GR</i> für die deutsche
+      Tastatur) von Hand ausgewählt werden.</li>
     <li><b>In DOSBox verwendete Code-Seite:</b> Hier wird die für die Bildschirmausgabe
-    in <em>DOSBox</em> zu verwendende Code-Seite ausgewählt.</li>
+      in <em>DOSBox</em> zu verwendende Code-Seite ausgewählt.</li>
     <li><b>Konsole verbergen:</b> Voreinstellung für neu installierte Anwendungen, um
       beim Start von <em>DOSBox</em> das normalerweise angezeigte Fenster mit 
       der <em>DOSBox-Konsole</em> zu verbergen.</li>
@@ -275,7 +293,7 @@
       von nicht mehr benötigten Dateien).</li>
     <li><b>Symbol-Datei:</b> Auswahl eines Symbols (Bilddatei, wie z.B. <i>.ICO</i>) 
       oder einer Anwendung mit einem Symbol für die Anzeige in <strong>DosPanel</strong></li>
-  <img src="images/app-mixer.png" width="346" height="301" align="right" border="0" hspace="5">
+  <img src="images/app-mixer.png" width="338" height="273" align="right" border="0" hspace="5">
     <li><b>Anleitung:</b> Auswahl einer Datei auf dem Host-System (z.B. Text oder PDF),
       die in <strong>DosPanel</strong> als Anleitung für die ausgewählte Anwendung
       angezeigt werden soll. Diese Datei wird automatisch mit der in Windows zugeordneten 
@@ -303,7 +321,38 @@
       die Liste komplett zu löschen und die Reihenfolge der Einträge zu ändern.</li>
   </ul>
   </li>
-  <img src="images/app-other.png" width="346" height="201" align="right" border="0" hspace="5">
+  
+  <img src="images/app-emu.png" width="346" height="301" align="right" border="0" hspace="5">
+  <li><b><a name="emu">Emulation</a></b><br>
+    Hier gibt es Unterschiede zwischen den DOSBox-Versionen:<br>
+    <div style="margin-top:5px;margin-bottom:-5px;"><b>Klassisches DOSBox (0.73):</b></div>
+    <ul>
+    <li><b>CPU-Zyklen:</b> Hiermit kann Einfluss auf die Geschwindigkeit
+      der <em>DOSBox</em>-Emulation genommen werden. Meist funktioniert der 
+      automatische Modus. Bei manchen DOS-Spielen kann es damit aber bei zeitkritischen
+      Befehlen zu Problemen kommen, so dass eine individuelle Einstellung erforderlich
+      ist oder die Einstellung aus der <i>conf</i>-Datei (<i>Vorgabe verwenden</i>)
+      verwendet wird. 
+      Weitere Hinweise dazu findet man auch in der <em>DOSBox</em>-Beschreibung.</li>
+    <li><b>Speichergröße:</b> Größe des Arbeitsspeichers in <em>DOSBox</em>.</li>
+    </ul>
+    <div style="margin-top:5px;margin-bottom:-5px;"><b>DOSBox-Staging (0.83):</b></div>
+    <ul>
+    <li><b>CPU-Zyklen:</b> Es gibt zwei getrennte Einstellungen für den <i>Real-Modus</i>
+      und den <i>geschützten Modus</i>. Per Vorgabe werden die Standardeinstellungen
+      aus der <a href="#basic">Basis-Konfiguration</a> verwendet. Weitere Einzelheiten dazu
+      findet man im <a href="https://www.dosbox-staging.org/0.83/manual/system/memory/" target="_blank">Handbuch</a>
+      oder in den Kommentaren der <a href="#basic">Basis-Konfiguration</a>.
+      </li>
+    <li><b>Speichergröße:</b> Größe des Arbeitsspeichers in <em>DOSBox</em>.</li>
+    <li><b>Speicher-Management:</b> Die unterstützten Schemata (<i>XMS</i>, <i>EMS</i> und <i>UMB</i>)
+      sind normalerweise über die <a href="#basic">Basis-Konfiguration</a> eingeschaltet.
+      Optional kann für die ausgewählte Anwendung eine andere Einstellung gewählt werden.
+      </li>
+    </ul>
+  </li>
+ 
+  <img src="images/app-other.png" width="346" height="212" align="right" border="0" hspace="5">
   <li><b><a name="showcon">Weitere</a></b><br>
     <ul>
     <li><b>Konsole:</b> 
@@ -327,7 +376,7 @@
     </li>
     </ul>
   <li><b>Grundkonfiguration auswählen:</b> Per Voreinstellung wird immer die von <em>DOSBox</em>
-    <a href="#basic">bereit gestellte Konfiguration</a> ausgewählt. Wenn für die jeweilige 
+    <a href="#basic">bereit gestellte Basis-Konfiguration</a> ausgewählt. Wenn für die jeweilige 
     Anwendung besondere Einstellungen erforderlich sind, kann man auf <i>Anwendungsspezifisch</i>
     umschalten. Die Grundkonfiguration wird dann in das <a href="#appdir">Verzeichnis der Anwendung</a> 
     kopiert und kann dort individuell bearbeiten werden (Klick auf <em>Konfiguration bearbeiten</em>).  
@@ -344,15 +393,6 @@
       verfügbar, wenn die zuvor beschriebene Option ausgewählt ist. Nach dem
       Schließen der <em>DOSBox</em> wird auch die <strong>DosPanel</strong>-Anwendung
       automatisch geschlossen.</li>
-    <li><b>Speichergröße:</b> Größe des Arbeitsspeichers in <em>DOSBox</em>.</li>
-    <li><b>Anweisungen pro ms:</b> Hiermit kann Einfluss auf die Geschwindigkeit
-      der <em>DOSBox</em>-Emulation genommen werden. Meist funktioniert der 
-      automatische Modus. Bei manchen DOS-Spielen kann es damit aber bei zeitkritischen
-      Befehlen zu Problemen kommen, so dass eine individuelle Einstellung erforderlich
-      ist (<i>Vorgabe verwenden</i>). Es wird dann die Einstellung aus der <i>conf</i>-Datei
-      verwendet. 
-      Weitere Hinweise dazu findet man auch in der
-      <em>DOSBox</em>-Beschreibung.</li>
   </ul></li>
   <li><b>Standard-Optionen:</b> Mit einem Klick auf diese Schaltfläche werden die darüber
     angezeigte Optionen wieder auf die Werte zurück gesetzt, wie sie in der jeweiligen
@@ -374,7 +414,7 @@
   
 <h4><a name="appmapper"><img src="images/keymapper.png" width="20" height="20" border="0">
   Keymapper anpassen</a></h4>
-<p>Die Funktion des Tastaturmapper ist in der <em>DOSBox</em>-Dokumentation näher
+<p>Die Funktion des Keymapper ist in der <em>DOSBox</em>-Dokumentation näher
   erläutert. Beim Aufrufen dieses Menüpunktes wird direkt der <em>DOSBox</em>-Keymapper
   gestartet, um individuelle Anpassungen der Tastenbelegung und des Joysticks
   vorzunehmen. Dies ist bei manchen DOS-Anwendungen nützlich, um die Bedienung zu 
@@ -451,7 +491,10 @@
 <dl>
   <dt><h3><a name="hints">Hinweise:</a></h3></dt>
   <dd>Das Programm wurde mit <b>Embarcadero Delphi 10 Seattle</b>&nbsp;&reg; erstellt.</dd>
-  <dd><a href="https://www.dosbox.com/news.php?show_news=1" target="_blank">DOSBox</a> ist ein OpenSource Projekt</dd>
+  <dd>Die Quelltexte findet man bei <a href="https://github.com/jrathlev/DosPanel" target="_blank">GitHub</a>.</dd>
+  <dd><a href="https://www.dosbox.com/news.php?show_news=1" target="_blank">DOSBox</a> und
+    <a href="https://www.dosbox-staging.org/" title="DOSBox Staging" target="_blank">DOSBox Staging</a>
+    sind OpenSource Projekte.</dd>
 </dl>
 
 <dl>
@@ -476,6 +519,6 @@
 </dl>
 
 <hr>
-<i>J. Rathlev, D-24222 Schwentinental, August 2025</i>
+<i>J. Rathlev, D-24222 Schwentinental, Oktober 2026</i>
 </body>
 </html>
