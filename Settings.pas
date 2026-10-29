@@ -107,6 +107,10 @@ type
   private
     { Private-Deklarationen }
     FStaging : boolean;
+    function SelectConfFile : boolean;
+{$IFDEF HDPI}   // scale glyphs and images for High DPI
+    procedure AfterConstruction; override;
+{$EndIf}
   public
     { Public-Deklarationen }
     function Execute (var ASettings : TBasicSettings) : boolean;
@@ -125,7 +129,7 @@ implementation
 
 {$R *.dfm}
 
-uses Winapi.ShellApi, DosPanelMain, GnuGetText, StringUtils, PathUtils, WinUtils,
+uses Winapi.ShellApi, System.IniFiles, DosPanelMain, GnuGetText, StringUtils, PathUtils, WinUtils,
   MsgDialogs, ShellDirDlg, WinApiUtils;
 
 const
@@ -214,7 +218,15 @@ begin
     end;
   end;
 
-procedure TDosBoxSetDialog.btConfClick(Sender: TObject);
+{$IFDEF HDPI}   // scale glyphs and images for High DPI
+procedure TDosBoxSetDialog.AfterConstruction;
+begin
+  inherited;
+  ScaleButtonGlyphs(self,PixelsPerInchOnDesign,Monitor.PixelsPerInch);
+  end;
+{$EndIf}
+
+function TDosBoxSetDialog.SelectConfFile : boolean;
 begin
   with OpenDialog do begin
     if length(edConfFile.Text)>0 then InitialDir:=ExtractFilePath(edConfFile.Text)
@@ -223,8 +235,47 @@ begin
     Filename:='';
     Filter:=_('DOSBox configuration files')+'|*.conf|'+_('All')+'|*.*';
     Title:=_('Select basic configuration file');
-    if Execute then edConfFile.Text:=Filename;
+    Result:=Execute;
+    if Result then edConfFile.Text:=Filename;
     end;
+  end;
+
+procedure TDosBoxSetDialog.btPathClick(Sender: TObject);
+var
+  s,sd : string;
+
+  function ReadMapperName : string;
+  begin
+    with TMemIniFile.Create(edConfFile.Text) do begin
+      s:=ReadString(secSdl,cfgMapF,'');
+      Result:=MakeAbsolutePath(frmMain.LocPath,s);
+      if not FileExists(Result) then Result:='';
+      Free;
+      end;
+    end;
+
+begin
+  s:=edPath.Text;
+  if length(s)=0 then s:=frmMain.ProgPath;
+  if ShellDirDialog.Execute (_('Select DOSBox program directory'),
+      false,true,false,frmMain.ProgPath,s) then begin
+    edPath.Text:=s;
+    UpdateDosBoxInfo(s,sd,FStaging);
+    laVersion.Caption:=sd;
+    if FStaging then begin
+      s:=AddPath(frmMain.LocPath,defConfStaging);
+      if FileExists(s) then edConfFile.Text:=s
+      else SelectConfFile;
+      end
+    else SelectConfFile;;
+    edMapperFile.Text:=ReadMapperName;
+    edLangFile.Text:='';
+    end;
+  end;
+
+procedure TDosBoxSetDialog.btConfClick(Sender: TObject);
+begin
+  SelectConfFile;
   end;
 
 procedure TDosBoxSetDialog.btLangClick(Sender: TObject);
@@ -250,25 +301,6 @@ begin
     Filter:=_('DOSBox keymapper files')+'|*.map;*.txt|'+_('All')+'|*.*';
     Title:=_('Select keymapper file');
     if Execute then edMapperFile.Text:=Filename;
-    end;
-  end;
-
-procedure TDosBoxSetDialog.btPathClick(Sender: TObject);
-var
-  s,sd : string;
-begin
-  s:=edPath.Text;
-  if length(s)=0 then s:=frmMain.ProgPath;
-  if ShellDirDialog.Execute (_('Select DOSBox program directory'),
-      false,true,false,frmMain.ProgPath,s) then begin
-    edPath.Text:=s;
-    UpdateDosBoxInfo(s,sd,FStaging);
-    laVersion.Caption:=sd;
-    if FStaging then begin
-      edConfFile.Text:=AddPath(frmMain.LocPath,defConfStaging);
-      end
-    else if not FileExists(edConfFile.Text) then btConfClick(Sender);
-    edMapperFile.Text:=''; edLangFile.Text:='';
     end;
   end;
 

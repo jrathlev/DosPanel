@@ -200,7 +200,7 @@ object AppSettingsDialog: TAppSettingsDialog
       Left = 10
       Top = 55
       Width = 156
-      Height = 36
+      Height = 46
       Caption = 'Close DOSBox automatically at end of execution'
       TabOrder = 1
       WordWrap = True
@@ -208,9 +208,9 @@ object AppSettingsDialog: TAppSettingsDialog
     end
     object cxAutoClose: TCheckBox
       Left = 10
-      Top = 95
+      Top = 105
       Width = 161
-      Height = 36
+      Height = 46
       Caption = 'Close also DosPanel application automatically'
       TabOrder = 2
       WordWrap = True
@@ -806,7 +806,7 @@ object AppSettingsDialog: TAppSettingsDialog
     Top = 185
     Width = 346
     Height = 301
-    ActivePage = tsEmulation
+    ActivePage = tsGeneral
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 4
     object tsGeneral: TTabSheet
@@ -1228,6 +1228,10 @@ object AppSettingsDialog: TAppSettingsDialog
     object tsAudio: TTabSheet
       Caption = 'Audio mixer'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object paAudio: TPanel
         Left = 0
         Top = 0
@@ -1816,6 +1820,10 @@ object AppSettingsDialog: TAppSettingsDialog
     object tsEmulation: TTabSheet
       Caption = 'Emulation'
       ImageIndex = 3
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object paEmulation: TPanel
         Left = 0
         Top = 0
@@ -1824,9 +1832,6 @@ object AppSettingsDialog: TAppSettingsDialog
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitLeft = 130
-        ExplicitWidth = 61
-        ExplicitHeight = 31
         object gbCpu: TGroupBox
           Left = 5
           Top = 2
@@ -1839,11 +1844,15 @@ object AppSettingsDialog: TAppSettingsDialog
             Top = 15
             Width = 316
             Height = 131
-            ActivePage = tsStaging
+            ActivePage = tsNormal
             TabOrder = 0
             object tsNormal: TTabSheet
               Caption = 'tsNormal'
               TabVisible = False
+              ExplicitLeft = 0
+              ExplicitTop = 0
+              ExplicitWidth = 0
+              ExplicitHeight = 0
               object Label2: TLabel
                 Left = 20
                 Top = 13
@@ -1858,6 +1867,8 @@ object AppSettingsDialog: TAppSettingsDialog
                 Height = 21
                 Style = csDropDownList
                 ItemIndex = 0
+                ParentShowHint = False
+                ShowHint = True
                 TabOrder = 0
                 Text = 'Use default value'
                 Items.Strings = (
@@ -1874,6 +1885,10 @@ object AppSettingsDialog: TAppSettingsDialog
               Caption = 'tsStaging'
               ImageIndex = 1
               TabVisible = False
+              ExplicitLeft = 0
+              ExplicitTop = 0
+              ExplicitWidth = 0
+              ExplicitHeight = 0
               object Label14: TLabel
                 Left = 5
                 Top = 10
@@ -1902,6 +1917,8 @@ object AppSettingsDialog: TAppSettingsDialog
                 Height = 21
                 Style = csDropDownList
                 ItemIndex = 0
+                ParentShowHint = False
+                ShowHint = True
                 TabOrder = 0
                 Text = 'Use default value'
                 Items.Strings = (
@@ -1920,6 +1937,8 @@ object AppSettingsDialog: TAppSettingsDialog
                 Height = 21
                 Style = csDropDownList
                 ItemIndex = 0
+                ParentShowHint = False
+                ShowHint = True
                 TabOrder = 1
                 Text = 'Use default value'
                 Items.Strings = (
@@ -1939,6 +1958,8 @@ object AppSettingsDialog: TAppSettingsDialog
                 Height = 21
                 Style = csDropDownList
                 ItemIndex = 0
+                ParentShowHint = False
+                ShowHint = True
                 TabOrder = 2
                 Text = 'Default'
                 Items.Strings = (
@@ -1966,15 +1987,19 @@ object AppSettingsDialog: TAppSettingsDialog
           object cbMemSize: TComboBox
             Left = 25
             Top = 40
-            Width = 76
+            Width = 86
             Height = 21
             Style = csDropDownList
-            ItemIndex = 1
+            ItemIndex = 0
+            ParentShowHint = False
+            ShowHint = True
             TabOrder = 0
-            Text = '16 MB'
+            Text = 'Default'
             Items.Strings = (
+              'Default'
               '8 MB'
               '16 MB'
+              '24 MB'
               '32 MB'
               '48 MB'
               '64 MB')
@@ -2014,6 +2039,8 @@ object AppSettingsDialog: TAppSettingsDialog
               Height = 21
               Style = csDropDownList
               ItemIndex = 0
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 0
               Text = 'Default'
               Items.Strings = (
@@ -2028,6 +2055,8 @@ object AppSettingsDialog: TAppSettingsDialog
               Height = 21
               Style = csDropDownList
               ItemIndex = 0
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 1
               Text = 'Default'
               Items.Strings = (
@@ -2042,6 +2071,8 @@ object AppSettingsDialog: TAppSettingsDialog
               Height = 21
               Style = csDropDownList
               ItemIndex = 0
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 2
               Text = 'Default'
               Items.Strings = (
@@ -2056,6 +2087,10 @@ object AppSettingsDialog: TAppSettingsDialog
     object tsOther: TTabSheet
       Caption = 'Other'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object paOther: TPanel
         Left = 0
         Top = 0

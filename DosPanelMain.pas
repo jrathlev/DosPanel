@@ -40,6 +40,48 @@ const
   sStdOut = 'stdout.txt';
   sStdErr = 'stderr.txt';
 
+  // Conf file parameter
+  secSdl  = 'sdl';
+  cfgFull = 'fullscreen';
+  cfgMapF = 'mapperfile';
+  cfgOutp = 'output';               //*
+  cfgScan = 'usescancodes';         //'
+
+  secDBox = 'dosbox';
+  cfgLang = 'language';
+  cfgMSz  = 'memsize';
+  cfgXms  = 'xms';
+  cfgEms  = 'ems';
+  cfgUmb  = 'umb';
+
+  secRender = 'render';
+  cfgScaler = 'scaler';           //*
+
+  secCPU  = 'cpu';
+  cfgCycl = 'cycles';
+  cfgReal = 'cpu_cycles';
+  cfgProt = 'cpu_cycles protected';
+  cfgThrt = 'cpu_throttle';
+
+  secDos  = 'dos';
+  cfgKeyb = 'keyboardlayout';
+  cfgStgKeyb = 'keyboard_layout';
+
+  secExec  = 'autoexec';
+  cfgMount = 'MOUNT';
+  cfgImgMt = 'IMGMOUNT';
+  cfgExit  = 'EXIT';
+
+  sAuto = 'auto';
+  sMax  = 'max';
+  sOn   = 'on';
+  sOff  = 'off';
+  sFixed = 'fixed';
+
+  sConfig = 'dosbox.conf';
+  sMapper = 'appmapper.map';
+//  sDosBox = 'DosBox.exe';
+
 type
   TConfigList = class(TStringList)
   private
@@ -192,6 +234,9 @@ type
     procedure UpdateView (const NAppName : string);
     procedure UpdateAutoStart;
     function CurrentAppIndex : integer;
+{$IFDEF HDPI}   // scale glyphs and images for High DPI
+    procedure AfterConstruction; override;
+{$EndIf}
   public
     { Public-Deklarationen }
     UserPath,ProgPath,
@@ -288,6 +333,8 @@ const
   iniClose  = 'AutoClose';
 
 procedure TfrmMain.FormCreate(Sender: TObject);
+var
+  IniFile  : TUnicodeIniFile;
 
   procedure ReadOptions;
   var
@@ -318,6 +365,13 @@ begin
     LoadLanguageNames(SelectedLanguage);
     OnLanguageItemClick:=SetLanguageClick;
     end;
+  with TUnicodeIniFile.CreateForRead(IniName) do begin
+    Left:=ReadInteger (CfgSekt,IniLeft,50);
+    Top:=ReadInteger (CfgSekt,IniTop,50);
+    Height:=ReadInteger(CfgSekt,iniHeight,Height);
+    Width:=ReadInteger(CfgSekt,iniWidth,Width);
+    Free;
+    end;
   HtManWin:=TWebBrowserWin.Create(Application);
   end;
 
@@ -325,6 +379,14 @@ procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
   Apps.Free; Languages.Free;
   end;
+
+{$IFDEF HDPI}   // scale glyphs and images for High DPI
+procedure TfrmMain.AfterConstruction;
+begin
+  inherited;
+  ScaleImageList(ilActions,PixelsPerInchOnDesign,Monitor.PixelsPerInch);
+  end;
+{$EndIf}
 
 { ------------------------------------------------------------------- }
 procedure TfrmMain.lvAppsResize(Sender: TObject);
@@ -380,6 +442,10 @@ begin
       CurApp:=Items[n].Caption;
       end;
     end;
+{$IFDEF HDPI}   // scale glyphs and images for High DPI
+  ScaleImageList(ilLarge,PixelsPerInchOnDesign,Monitor.PixelsPerInch);
+  ScaleImageList(ilSmall,PixelsPerInchOnDesign,Monitor.PixelsPerInch);
+{$EndIf}
   end;
 
 procedure TfrmMain.FormShow(Sender: TObject);
@@ -450,6 +516,9 @@ var
 
 begin
   s:='';
+// bei größeren dpi wird die Fontgröße falsch berechnet, wenn ParentFont:=false ist
+  k:=Font.Height;
+  tcCats.Font.Height:=k;
   LocPath:=SetDirName(SetDirName(GetDesktopFolder(CSIDL_LOCAL_APPDATA)));
   Caption:=_('Run DOSBox applications')+' ('+VersInfo.Comments+')';
   Apps:=TObjectList.Create;
@@ -471,10 +540,6 @@ begin
     end
   else New:=false;
   with IniFile do begin
-    Left:=ReadInteger (CfgSekt,IniLeft,50);
-    Top:=ReadInteger (CfgSekt,IniTop,50);
-    Height:=ReadInteger(CfgSekt,iniHeight,Height);
-    Width:=ReadInteger(CfgSekt,iniWidth,Width);
     with BasicSettings do begin
       DosBoxPath:=sp;
       LocPath:=LocPath+defSubPath;
@@ -1021,7 +1086,7 @@ begin
       cl.AddSection(secDBox);
       with BasicSettings do if not IsStaging then
         if FileExists(LangFile) then cl.AddValue(cfgLang,LangFile);
-      if MemSize<>0 then cl.AddValue(cfgMSz,MemSize);
+      if MemSize>0 then cl.AddValue(cfgMSz,MemSize);
       cl.AddSection(secCPU);
       if BasicSettings.IsStaging then begin
         if Speed.RealSpeed>=0 then begin
@@ -1033,12 +1098,12 @@ begin
           case Speed.ProtSpeed of
           0         : s:=sAuto;
           maxCycles : s:=sMax;
-          else s:=sFixed+' '+IntToStr(Speed.ProtSpeed);
+          else s:=IntToStr(Speed.ProtSpeed);
             end;
-          cl.AddValue(cfgReal,s);
+          cl.AddValue(cfgProt,s);
           end;
         if Speed.Throttle>=0 then begin
-          cl.AddValue(cfgReal,GetSwitch(Speed.Throttle));
+          cl.AddValue(cfgThrt,GetSwitch(Speed.Throttle));
           end;
         end
       else if Speed.RealSpeed>=0 then begin
@@ -1153,10 +1218,10 @@ begin
     sc:=SetDirName(AppPath)+ConfName;
     cl:=TConfigList.Create(sc);
     cl.AddSection(secSdl);
-    sa:=MakeAbsolutePath(ExtractFilePath(BasicSettings.ConfFile),BasicSettings.MapperFile);
-    if (length(AppMapper)=0) or (SameFileName(sa,AppMapper)) then begin // new keymapper
-      AppMapper:=AddPath(AppPath,sMapper);
-      if FileExists(sa) then CopyFileTS(sa,AppMapper);
+    AppMapper:=AddPath(AppPath,sMapper); // new keymapper for app
+    if length(BasicSettings.MapperFile)>0 then begin
+      sa:=MakeAbsolutePath(ExtractFilePath(BasicSettings.ConfFile),BasicSettings.MapperFile);
+      if not SameFileName(sa,AppMapper) and FileExists(sa) then CopyFileTS(sa,AppMapper);
       end;
     cl.AddValue(cfgMapF,AppMapper);
     with BasicSettings do begin

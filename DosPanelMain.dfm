@@ -274,7 +274,7 @@ object frmMain: TfrmMain
     Height = 39
     BorderWidth = 2
     ButtonHeight = 32
-    ButtonWidth = 29
+    ButtonWidth = 32
     Images = ilActions
     TabOrder = 0
     object tbNew: TToolButton
@@ -285,49 +285,49 @@ object frmMain: TfrmMain
       ShowHint = True
     end
     object tbEdit: TToolButton
-      Left = 29
+      Left = 32
       Top = 0
       Action = actEditProgram
       ParentShowHint = False
       ShowHint = True
     end
     object tbRemove: TToolButton
-      Left = 58
+      Left = 64
       Top = 0
       Action = actRemProgram
       ParentShowHint = False
       ShowHint = True
     end
     object ToolButton1: TToolButton
-      Left = 87
+      Left = 96
       Top = 0
       Width = 8
       ImageIndex = 0
       Style = tbsSeparator
     end
     object tbMan: TToolButton
-      Left = 95
+      Left = 104
       Top = 0
       Action = actShowMan
       ParentShowHint = False
       ShowHint = True
     end
     object tbRun: TToolButton
-      Left = 124
+      Left = 136
       Top = 0
       Action = actRun
       ParentShowHint = False
       ShowHint = True
     end
     object ToolButton2: TToolButton
-      Left = 153
+      Left = 168
       Top = 0
       Width = 8
       ImageIndex = 0
       Style = tbsSeparator
     end
     object tbLarge: TToolButton
-      Left = 161
+      Left = 176
       Top = 0
       Action = actLargeIcons
       Grouped = True
@@ -336,7 +336,7 @@ object frmMain: TfrmMain
       Style = tbsCheck
     end
     object tbSmall: TToolButton
-      Left = 190
+      Left = 208
       Top = 0
       Action = actSmallIcons
       Grouped = True
@@ -345,7 +345,7 @@ object frmMain: TfrmMain
       Style = tbsCheck
     end
     object tbList: TToolButton
-      Left = 219
+      Left = 240
       Top = 0
       Action = actList
       Grouped = True
@@ -354,7 +354,7 @@ object frmMain: TfrmMain
       Style = tbsCheck
     end
     object tbDetails: TToolButton
-      Left = 248
+      Left = 272
       Top = 0
       Action = actDetails
       Grouped = True
@@ -363,7 +363,7 @@ object frmMain: TfrmMain
       Style = tbsCheck
     end
     object ToolButton3: TToolButton
-      Left = 277
+      Left = 304
       Top = 0
       Width = 8
       Caption = 'ToolButton3'
@@ -371,21 +371,21 @@ object frmMain: TfrmMain
       Style = tbsSeparator
     end
     object tbDosBox: TToolButton
-      Left = 285
+      Left = 312
       Top = 0
       Action = actDosBox
       ParentShowHint = False
       ShowHint = True
     end
     object tbSettings: TToolButton
-      Left = 314
+      Left = 344
       Top = 0
       Action = actSettings
       ParentShowHint = False
       ShowHint = True
     end
     object tbExit: TToolButton
-      Left = 343
+      Left = 376
       Top = 0
       Action = actExit
     end
@@ -678,7 +678,7 @@ object frmMain: TfrmMain
     Left = 130
     Top = 110
     Bitmap = {
-      494C01011300D401E40214001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011300D401F00214001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000050000000640000000100200000000000007D
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

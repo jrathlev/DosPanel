@@ -41,48 +41,6 @@ const
   ChannelCount = 7;
   MixerChannels : array[0..ChannelCount-1] of string = ('MASTER','DISNEY','SPKR','GUS','SB','FM','CDAUDIO');
 
-  // Conf file parameter
-  secSdl  = 'sdl';
-  cfgFull = 'fullscreen';
-  cfgMapF = 'mapperfile';
-  cfgOutp = 'output';               //*
-  cfgScan = 'usescancodes';         //'
-
-  secDBox = 'dosbox';
-  cfgLang = 'language';
-  cfgMSz  = 'memsize';
-  cfgXms  = 'xms';
-  cfgEms  = 'ems';
-  cfgUmb  = 'umb';
-
-  secRender = 'render';
-  cfgScaler = 'scaler';           //*
-
-  secCPU  = 'cpu';
-  cfgCycl = 'cycles';
-  cfgReal = 'cpu_cycles';
-  cfgProt = 'cpu_cycles protected';
-  cfgThrt = 'cpu_throttle';
-
-  secDos  = 'dos]';
-  cfgKeyb = 'keyboardlayout';
-  cfgStgKeyb = 'keyboard_layout';
-
-  secExec  = 'autoexec';
-  cfgMount = 'MOUNT';
-  cfgImgMt = 'IMGMOUNT';
-  cfgExit  = 'EXIT';
-
-  sAuto = 'auto';
-  sMax  = 'max';
-  sOn   = 'on';
-  sOff  = 'off';
-  sFixed = 'fixed';
-
-  sConfig = 'dosbox.conf';
-  sMapper = 'appmapper.map';
-//  sDosBox = 'DosBox.exe';
-
 type
   TCpuSpeed = record
     RealSpeed,ProtSpeed,Throttle : integer;
@@ -90,6 +48,12 @@ type
 
   TMemManage = record
     XMS,EMS,UMB : integer;
+    end;
+
+  TDefaultValues = record
+    CpuSpeed : TCpuSpeed;
+    MemSz    : integer;
+    MemMng   : TMemManage;
     end;
 
   TAppIcons = class(TPicture)
@@ -135,6 +99,7 @@ type
     MemSize           : integer;
     MemManage         : TMemManage;
     Speed             : TCpuSpeed;
+    DefaultValues     : TDefaultValues;
     ConsoleMode       : TConsoleModes;
     Icons             : TAppIcons;
     constructor Create (const AConfigFile : string; DefLargeImg,DefSmallImg : TPicture; DefCodePage : integer);
@@ -282,6 +247,9 @@ type
     procedure ShowConfig;
     procedure ShowConsole;
     function EditCommands (const Prompt : string; var Cmd : string) : boolean;
+{$IFDEF HDPI}   // scale glyphs and images for High DPI
+    procedure AfterConstruction; override;
+{$EndIf}
   public
     { Public-Deklarationen }
     function Execute (Categories : TStrings;
@@ -290,7 +258,8 @@ type
   end;
 
 function MiscName : string;
-function GetSwitch (Value : integer) : string;
+function GetSwitch (Value : integer; const OnStr,OffStr : string) : string; overload;
+function GetSwitch (Value : integer) : string; overload;
 function ScaleBitmap(ABitmap: TBitmap; AWidth,AHeight : integer) : TBitMap;
 
 var
@@ -305,7 +274,7 @@ uses Winapi.ShellApi, System.StrUtils, System.IniFiles,
   PathUtils, ShellDirDlg, SelectFromListDlg, WinDevUtils, StringUtils;
 
 const
-  MemSizeList : array [0..4] of word = (8,16,32,48,64);
+  MemSizeList : array [0..5] of word = (8,16,24,32,48,64);
 
 { ------------------------------------------------------------------- }
 function MiscName : string;
@@ -313,9 +282,14 @@ begin
   Result:=_('Miscellaneous');
   end;
 
+function GetSwitch (Value : integer; const OnStr,OffStr : string) : string;
+begin
+  if Value=0 then Result:=OnStr else Result:=OffStr;
+  end;
+
 function GetSwitch (Value : integer) : string;
 begin
-  if Value=0 then Result:=sOn else Result:=sOff;
+  Result:=GetSwitch(Value,sOn,sOff);
   end;
 
 function ScaleBitmap(ABitmap: TBitmap; AWidth,AHeight : integer) : TBitMap;
@@ -542,15 +516,57 @@ begin
 procedure TDosBoxApp.LoadConfig (AConfigFile : string);
 var
   s : string;
+  stag : boolean;
 begin
   if length(AConfigFile)=0 then AConfigFile:=FConfigFile;
-  with TIniFile.Create(AConfigFile) do begin
+  stag:=AnsiContainsText(AConfigFile,'staging');
+  with TMemIniFile.Create(AConfigFile) do begin
     FullScreen:=ReadBool(secSdl,cfgFull,false);
     s:=ReadString(secSdl,cfgMapF,'');
     AppMapper:=MakeAbsolutePath(ExtractFilePath(AConfigFile),s);
     if (length(AppMapper)>0) and not FileExists(AppMapper) then
       AppMapper:=MakeAbsolutePath(ExtractFilePath(FConfigFile),s);
-    MemSize:=ReadInteger(secDBox,cfgMSz,16);
+    with DefaultValues do begin
+      MemSz:=ReadInteger(secDBox,cfgMSz,0);
+      if stag then begin  //staging
+        with CpuSpeed do begin
+          s:=ReadString(secCPU,cfgReal,'3000');
+          if AnsiStartsText(s,sMax) then RealSpeed:=maxCycles
+          else if not TryStrToInt(s,RealSpeed) then RealSpeed:=-1;
+          s:=ReadString(secCPU,cfgProt,'60000');
+          if AnsiStartsText(s,sAuto) then ProtSpeed:=0
+          else if AnsiStartsText(s,sMax) then ProtSpeed:=maxCycles
+          else if not TryStrToInt(s,ProtSpeed) then ProtSpeed:=3000;
+          s:=ReadString(secCPU,cfgThrt,'');
+          if length(s)=0 then Throttle:=-1
+          else if AnsiStartsText(s,sOff) then Throttle:=0 else Throttle:=1;
+          end;
+        with MemMng do begin
+          s:=ReadString(secDos,cfgXms,'');
+          if length(s)=0 then XMS:=-1
+          else if AnsiSameText(s,sOn) then XMS:=0 else XMS:=1;
+          s:=ReadString(secDos,cfgEms,'');
+          if length(s)=0 then EMS:=-1
+          else if AnsiSameText(s,sOn) then EMS:=0 else EMS:=1;
+          s:=ReadString(secDos,cfgUMB,'');
+          if length(s)=0 then UMB:=-11
+          else if AnsiSameText(s,sOn) then UMB:=0 else UMB:=1;
+          end;
+        end
+      else begin
+        with CpuSpeed do begin
+          s:=ReadString(secCPU,cfgCycl,sAuto);
+          if AnsiStartsText(s,sAuto) then RealSpeed:=0
+          else if AnsiStartsText(s,sMax) then RealSpeed:=maxCycles
+          else if AnsiStartsText(s,sFixed) then begin
+            if not TryStrToInt(ReadNxtStr(s,' '),RealSpeed) then RealSpeed:=-1;
+            end
+          else RealSpeed:=-1;
+          ProtSpeed:=-1; Throttle:=-1;
+          end;
+        end;
+      end;
+//    MemSize:=ReadInteger(secDBox,cfgMSz,0);
 //    if ValueExists(secCPU,cfgCycl) then begin  // DosBox legacy
 //      s:=ReadString(secCPU,cfgCycl,sAuto);
 //      if AnsiStartsText(s,sAuto) then Speed.RealSpeed:=0
@@ -588,7 +604,7 @@ begin
   with Speed do begin
     RealSpeed:=-1; ProtSpeed:=-1; Throttle:=-1; // default;
     end;
-  LoadConfig(AConfigFile);       // Mapper and MemSize
+  LoadConfig(AConfigFile);       // Mapper
   AutoEnd:=true; AutoClose:=false; AppMapper:='';
   end;
 
@@ -627,6 +643,7 @@ begin
   MemSize:=ADosBoxApp.MemSize;
   MemManage:=ADosBoxApp.MemManage;
   ImgIndex:=ADosBoxApp.ImgIndex;
+  DefaultValues:=ADosBoxApp.DefaultValues;
 //  DefLImg:=ADosBoxApp.DefLImg;
 //  DefSImg:=ADosBoxApp.DefSImg;
   Icons.Assign(ADosBoxApp.Icons);
@@ -652,6 +669,14 @@ begin
     QuoteChar:=Quote; Delimiter:=Semicolon;
     end;
   end;
+
+{$IFDEF HDPI}   // scale glyphs and images for High DPI
+procedure TAppSettingsDialog.AfterConstruction;
+begin
+  inherited;
+  ScaleButtonGlyphs(self,PixelsPerInchOnDesign,Monitor.PixelsPerInch);
+  end;
+{$EndIf}
 
 procedure TAppSettingsDialog.GetCdDrives;
 var
@@ -793,8 +818,13 @@ begin
       Enabled:=AutoEnd;
       end;
     edMapperFile.Text:=AppMapper;
-    for i:=0 to High(MemSizeList) do if MemSize<=MemSizeList[i] then Break;
-    with cbMemSize do if i>High(MemSizeList) then Itemindex:=1 else Itemindex:=i;
+    with cbMemSize do begin
+      if MemSize=0 then ItemIndex:=0
+      else begin
+        for i:=0 to High(MemSizeList) do if MemSize<=MemSizeList[i] then Break;
+        if i>High(MemSizeList) then Itemindex:=0 else Itemindex:=i+1;
+        end;
+      end;
     pnMemMan.Visible:=FIsStaging;
     if FIsStaging then begin
       pcCycles.ActivePageIndex:=1;
@@ -825,6 +855,30 @@ begin
         cbEms.ItemIndex:=EMS+1;
         cbUmb.ItemIndex:=UMB+1;
         end;
+      with DefaultValues do begin
+        if (cbMemSize.ItemIndex=0) and (MemSz>0) then cbMemSize.Hint:=IntToStr(MemSz)+' MB' else cbMemSize.Hint:='';
+        with CpuSpeed do begin
+          if (cbRealSpeed.ItemIndex=0) and (RealSpeed>=0) then begin
+            if RealSpeed=maxCycles then cbRealSpeed.Hint:=sMax
+            else cbRealSpeed.Hint:=IntToStr(RealSpeed);
+            end
+          else cbRealSpeed.Hint:='';
+          if (cbProtSpeed.ItemIndex=0) and (ProtSpeed>=0) then begin
+            if ProtSpeed=0 then cbProtSpeed.Hint:=sAuto
+            else if ProtSpeed=maxCycles then cbProtSpeed.Hint:=sMax
+            else cbProtSpeed.Hint:=IntToStr(ProtSpeed);
+            end
+          else cbProtSpeed.Hint:='';
+          if (cbThrottling.ItemIndex=0) and (Throttle>=0) then
+            cbThrottling.Hint:=GetSwitch(Speed.Throttle,_('On'),_('Off'))
+          else cbThrottling.Hint:='';
+          end;
+        with MemMng do begin
+          if (cbXms.ItemIndex=0) and (XMS>=0) then cbXms.Hint:=GetSwitch(XMS,_('On'),_('Off')) else cbXms.Hint:='';
+          if (cbEms.ItemIndex=0) and (EMS>=0) then cbEms.Hint:=GetSwitch(EMS,_('On'),_('Off')) else cbEms.Hint:='';
+          if (cbUmb.ItemIndex=0) and (UMB>=0) then cbUmb.Hint:=GetSwitch(UMB,_('On'),_('Off')) else cbUmb.Hint:='';
+          end;
+        end
       end
     else begin
       pcCycles.ActivePageIndex:=0;
@@ -837,6 +891,16 @@ begin
         else if Speed.RealSpeed<=25000 then ItemIndex:=4
         else if Speed.RealSpeed<=50000 then ItemIndex:=5
         else ItemIndex:=6;  // maximum
+        end;
+      with DefaultValues do begin
+        with CpuSpeed do begin
+          if RealSpeed>=0 then begin
+            if RealSpeed=0 then cbCycles.Hint:=sAuto
+            else if RealSpeed=maxCycles then cbCycles.Hint:=sMax
+            else cbCycles.Hint:=IntToStr(RealSpeed);
+            end
+          else cbCycles.Hint:='';
+          end;
         end;
       end;
     end;
@@ -854,7 +918,7 @@ begin
 procedure TAppSettingsDialog.cxAutoEndClick(Sender: TObject);
 begin
   FDosBoxApp.AutoEnd:=cxAutoEnd.Checked;
-  ShowConfig;
+  if Visible then ShowConfig;
   end;
 
 procedure TAppSettingsDialog.rbDriveClick(Sender: TObject);
@@ -1048,7 +1112,7 @@ begin
   with OpenDialog do begin
     Options:=Options-[ofAllowMultiSelect];
     if length(edExeFile.Text)>0 then
-      InitialDir:=SetDirName(edAppPath.Text)+ExtractFilePath(edExeFile.Text)
+      InitialDir:=GetExistingParentPath(AddPath(edAppPath.Text,ExtractFilePath(edExeFile.Text)),edAppPath.Text)
     else InitialDir:=edAppPath.Text;
     DefaultExt:='exe';
     Filename:='';
@@ -1187,7 +1251,8 @@ begin
     FullScreen:=cxFullScreen.Checked;
     AutoEnd:=cxAutoEnd.Checked;
     AutoClose:=cxAutoClose.Checked;
-    MemSize:=MemSizeList[cbMemSize.ItemIndex];
+    with cbMemSize do if ItemIndex=0 then MemSize:=0
+    else MemSize:=MemSizeList[ItemIndex-1];
     if FIsStaging then begin
 //    Use default value, 3 000, 5 000, 10 000, 25 000, 50 000, Set to maximum
       case cbRealSpeed.ItemIndex of
