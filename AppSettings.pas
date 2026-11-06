@@ -14,7 +14,7 @@
    the specific language governing rights and limitations under the License.
 
    J. Rathlev, Dec. 2011
-   last modified: October 2026
+   last modified: November 2026
    *)
 
 unit AppSettings;
@@ -60,10 +60,10 @@ type
   private
     FImgType : TImgType;
     DefLImg,DefSImg   : TPicture;
-    function GetSmallImage (Img : TPicture): TBitmap; overload;
-    function GetSmallImage (Img : TIcon): TBitmap; overload;
+    function GetImageAsBitmap (Img : TPicture): TBitmap; overload;
+    function GetImageAsBitmap(Img : TIcon): TBitmap; overload;
   public
-    Small    : TBitmap;
+    Large,Small    : TBitmap;
     constructor Create (AImgType : TImgType; DefLargeImg,DefSmallImg : TPicture);
     constructor CreateFrom (Icons : TAppIcons);
     destructor Destroy; override;
@@ -208,6 +208,7 @@ type
     Label21: TLabel;
     cbThrottling: TComboBox;
     paEmulation: TPanel;
+    laSize: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure btPathClick(Sender: TObject);
     procedure btExeFileClick(Sender: TObject);
@@ -235,12 +236,14 @@ type
     procedure cxAutoEndClick(Sender: TObject);
     procedure cbNoConsoleClick(Sender: TObject);
     procedure btExitCommandsClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private-Deklarationen }
     NewIcons   : TAppIcons;
     FDosBoxApp : TDosBoxApp;
     LastDrive : string;
     FIsStaging : boolean;
+    procedure ShowIcon(AppIcons : TAppIcons);
     procedure GetCdDrives;
     procedure ChangeCdRom (IsIso : boolean);
     procedure ShowMixerChannel (AIndex : integer);
@@ -270,7 +273,7 @@ implementation
 {$R *.dfm}
 
 uses Winapi.ShellApi, System.StrUtils, System.IniFiles,
-  DosPanelMain, GnuGetText, WinUtils, MsgDialogs, FileCopy, ListUtils,
+  DosPanelMain, GnuGetText, WinUtils, ShowMessageDlg, FileCopy, ListUtils,
   PathUtils, ShellDirDlg, SelectFromListDlg, WinDevUtils, StringUtils;
 
 const
@@ -311,7 +314,8 @@ begin
   FImgType:=AImgType;
   DefLImg:=DefLargeImg; DefSImg:=DefSmallImg;
   AssignIcon(DefLargeImg.Icon);
-  Small:=GetSmallImage(DefSmallImg);
+  Large:=GetImageAsBitmap(DefLargeImg);
+  Small:=GetImageAsBitmap(DefSmallImg);
   end;
 
 constructor TAppIcons.CreateFrom (Icons : TAppIcons);
@@ -326,6 +330,8 @@ begin
   DefLImg:=Icons.DefLImg;
   DefSImg:=Icons.DefSImg;
   inherited Assign(Icons.Graphic);
+  Large:=TBitmap.Create;
+  Large.Assign(Icons.Large);
   Small:=TBitmap.Create;
   Small.Assign(Icons.Small);
   end;
@@ -338,11 +344,12 @@ begin
 
 destructor TAppIcons.Destroy;
 begin
+  if assigned(Large) then Large.Free;
   if assigned(Small) then Small.Free;
   inherited Destroy;
   end;
 
-function TAppIcons.GetSmallImage (Img : TPicture): TBitmap;
+function TAppIcons.GetImageAsBitmap (Img : TPicture): TBitmap;
 begin
   Result:=TBitmap.Create;
   with Result do begin
@@ -352,7 +359,7 @@ begin
     end;
   end;
 
-function TAppIcons.GetSmallImage (Img : TIcon): TBitmap;
+function TAppIcons.GetImageAsBitmap (Img : TIcon): TBitmap;
 begin
   Result:=TBitmap.Create;
   with Result do begin
@@ -377,8 +384,8 @@ var
     Flags := SHGFI_ICON;
     if Small then Flags:=Flags or SHGFI_SMALLICON else Flags:=Flags or SHGFI_LARGEICON;
     if SHGetFileInfo(PChar(FileName), Attributes, FI, SizeOf(FI), Flags) <> 0 then begin
-      Result := TIcon.Create;
-      Result.Handle := FI.hIcon;
+      Result:=TIcon.Create;
+      Result.Handle:=FI.hIcon;
       end
     else Result:=nil;
     end;
@@ -397,25 +404,27 @@ var
   function ScaleIcon (AIcon : TIcon; AWidth,AHeight : integer) : TBitMap;
   var
     bm : TBitMap;
+    bc : TColor;
   begin
     bm:=TBitmap.Create;
+    bc:=AppSettingsDialog.Color;
     with bm do begin
       SetSize(AIcon.Width,AIcon.Height);
+      PixelFormat:=pf24bit;
       TransparentMode:=tmFixed;
-      TransparentColor:=clWhite;
+      TransparentColor:=bc;
       Transparent:=true;
       with Canvas do begin
-        Brush.Color:=clWhite;          // background
-        Draw(0,0,AIcon);               // copy to bitmap
+        Brush.Color:=bc;          // background
+        Draw(0,0,AIcon);          // copy to bitmap
         end;
-      Transparent:=TransparentColor=clWhite;
       end;
     Result:=TBitmap.Create;
     with Result do begin
       SetSize(AWidth,AHeight);
       TransparentMode:=tmFixed;
       Canvas.StretchDraw(Rect(0,0,AWidth,AHeight),bm);  // scale
-      Transparent:=bm.Transparent;
+      Transparent:=true;
       end;
     bm.Free;
     end;
@@ -441,13 +450,13 @@ begin
         AssignIcon(ic); ic.Free;
         ic:=GetFileIcon(Filename,true);
         if assigned(ic) then begin
-          Small:=GetSmallImage(ic); ic.Free;
+          Small:=GetImageAsBitmap(ic); ic.Free;
           end
         else Small:=ScaleIcon(Icon,16,16);
         end
       else begin
         AssignIcon(DefLImg.Icon);
-        Small:=GetSmallImage(DefSImg);
+        Small:=GetImageAsBitmap(DefSImg);
         end;
       end
     else if (ImgType=imPng) then begin
@@ -466,7 +475,7 @@ begin
       Small:=ScaleBitmap(Bitmap,16,16);
       bj.Free;
       end
-    else begin
+    else begin  // icon or bitmap
       inherited LoadFromFile(Filename);
       if ImgType=imIco then Small:=ScaleIcon(Icon,16,16)
       else Small:=ScaleBitmap(Bitmap,16,16)
@@ -475,8 +484,10 @@ begin
   else begin
     ImgType:=imIco;
     AssignIcon(DefLImg.Icon);
-    Small:=GetSmallImage(DefSImg);
+    Small:=GetImageAsBitmap(DefSImg);
     end;
+  if (ImgType=imIco) or (imgType=imNone) then Large:=ScaleIcon(Icon,32,32)
+  else Large:=GetImageAsBitmap(self);
   end;
 
 { ------------------------------------------------------------------- }
@@ -670,11 +681,17 @@ begin
     end;
   end;
 
+procedure TAppSettingsDialog.FormShow(Sender: TObject);
+begin
+//  laSize.Caption:=IntTostr(Monitor.PixelsPerInch)+'/'+IntToStr(imgIcon.Width);
+  end;
+
 {$IFDEF HDPI}   // scale glyphs and images for High DPI
 procedure TAppSettingsDialog.AfterConstruction;
 begin
   inherited;
   ScaleButtonGlyphs(self,PixelsPerInchOnDesign,Monitor.PixelsPerInch);
+  ScaleImage(imgIcon,PixelsPerInchOnDesign,Monitor.PixelsPerInch);
   end;
 {$EndIf}
 
@@ -970,7 +987,7 @@ begin
     if Execute then begin
       edIconFile.Text:=Filename;
       NewIcons.LoadFromFile(Filename);
-      imgIcon.Picture.Assign(NewIcons);
+      ShowIcon(NewIcons);
       end;
     end;
   end;
@@ -1169,11 +1186,23 @@ begin
   edMapperFile.Enabled:=ok;
   end;
 
+procedure TAppSettingsDialog.ShowIcon(AppIcons : TAppIcons);
+begin
+  with imgIcon do begin
+    with Canvas do begin
+      Brush.Color:=AppSettingsDialog.Color;
+      FillRect(ClipRect);
+      StretchDraw(Rect(0,0,Width,Height),AppIcons.Large);
+      end;
+    end;
+  end;
+
 function TAppSettingsDialog.Execute (Categories : TStrings;
                                      var DosBoxApp : TDosBoxApp;
                                      IsStaging : boolean) : boolean;
 var
   i,n : integer;
+  bm  : TBitmap;
 begin
   FIsStaging:=IsStaging;
   with cbCategory do begin
@@ -1219,8 +1248,8 @@ begin
       Visible:=FileExists(frmMain.BasicSettings.TextEditor);
       Enabled:=AppConfig;
       end;
-    imgIcon.Picture.Assign(Icons);
     NewIcons:=TAppIcons.CreateFrom(Icons);
+    ShowIcon(Icons);
     pcSettings.ActivePage:=tsGeneral;
     end;
   Result:=ShowModal=mrOK;

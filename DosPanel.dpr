@@ -3,17 +3,18 @@ program DosPanel;
 {$R 'Languages.res' 'Languages.rc'}
 
 uses
-  GnuGetText in 'units\GnuGetText.pas',
-  LangUtils in 'units\LangUtils.pas',
+  GnuGetText in '..\..\..\Bibliotheken\Units\GnuGetText.pas',
+  LangUtils in '..\..\..\Bibliotheken\Units\LangUtils.pas',
   Forms,
   Graphics,
   DosPanelMain in 'DosPanelMain.pas' {frmMain},
   Settings in 'Settings.pas' {DosBoxSetDialog},
-  ShellDirDlg in 'units\ShellDirDlg.pas' {ShellDirDialog},
+  ShellDirDlg in 'dialogs\ShellDirDlg.pas' {ShellDirDialog},
   AppSettings in 'AppSettings.pas' {AppSettingsDialog},
-  SelectFromListDlg in 'units\SelectFromListDlg.pas' {SelectFromListDialog},
-  ShowMemo in 'units\ShowMemo.pas' {ShowTextDialog},
-  TxtConvertDlg in 'TxtConvertDlg.pas' {TxtConvertDialog};
+  SelectFromListDlg in 'dialogs\SelectFromListDlg.pas' {SelectFromListDialog},
+  ShowMemo in 'dialogs\ShowMemo.pas' {ShowTextDialog},
+  TxtConvertDlg in 'TxtConvertDlg.pas' {TxtConvertDialog},
+  FileCopy in '..\..\..\Bibliotheken\Units\FileCopy.pas';
 
 {$R *.res}
 

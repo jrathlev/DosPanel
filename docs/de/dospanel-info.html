@@ -11,8 +11,8 @@
 <body>
 <table>
 <tr>
-  <td rowspan="2" valign="center"><img src="images/dp-logo.png" width="53" height="40" align="left" border="0"></td>
-  <td align="Left"><h2 style="margin-top:2pt;margin-bottom:2pt;">DosPanel 2.0 - Windows-Desktop für DOSBox</h2></td>
+  <td rowspan="2" valign="center"><img src="images/dp-logo.png" width="64" height="64" align="left" border="0"></td>
+  <td align="Left"><h2 style="margin-top:2pt;margin-bottom:2pt;">DosPanel 2.1 - Windows-Desktop für DOSBox</h2></td>
 </tr>
 <tr valign="top"">
     <td><b>&copy; 2014-2026, J. Rathlev</a>, D-24222 Schwentinental</b></td>
@@ -41,17 +41,17 @@
 <map name="dospanel">
   <area shape="rect" coords="9,30,384,48" href="#menu" alt="Hauptmenü" title="Hauptmenü">
   <area shape="rect" coords="6,53,34,83" href="#add" alt="Anwendung hinzufügen" title="Anwendung hinzufügen">
-  <area shape="rect" coords="34,53,60,82" href="#edit" alt="Einstellungen der Anwendung bearbeiten" title="Einstellungen der Anwendung bearbeiten">
-  <area shape="rect" coords="62,52,90,83" href="#delete" alt="Anwendung entfernen" title="Anwendung entfernen">
-  <area shape="rect" coords="130,54,157,85" href="#start" alt="Anwendung in DOSBox starten" title="Anwendung in DOSBox starten">
-  <area shape="rect" coords="164,53,280,88" href="#view" alt="Anzeigeoptionen" title="Anzeigeoptionen">
-  <area shape="rect" coords="100,53,129,85" href="#manual" alt="Handbuch anzeigen" title="Handbuch anzeigen">
-  <area shape="rect" coords="291,53,318,86" href="#dosbox" alt="DOSBox ohne Anwendung starten" title="DOSBox ohne Anwendung starten">
+  <area shape="rect" coords="43,54,69,83" href="#edit" alt="Einstellungen der Anwendung bearbeiten" title="Einstellungen der Anwendung bearbeiten">
+  <area shape="rect" coords="76,55,104,86" href="#delete" alt="Anwendung entfernen" title="Anwendung entfernen">
+  <area shape="rect" coords="148,55,175,86" href="#start" alt="Anwendung in DOSBox starten" title="Anwendung in DOSBox starten">
+  <area shape="rect" coords="184,54,317,86" href="#view" alt="Anzeigeoptionen" title="Anzeigeoptionen">
+  <area shape="rect" coords="112,54,141,86" href="#manual" alt="Handbuch anzeigen" title="Handbuch anzeigen">
+  <area shape="rect" coords="329,54,356,87" href="#dosbox" alt="DOSBox ohne Anwendung starten" title="DOSBox ohne Anwendung starten">
   <area shape="rect" coords="5,91,385,114" href="#cats" alt="Kategorien" title="Kategorien">
   <area shape="rect" coords="11,125,384,258" href="#apps" alt="Anwendungen der Kategorie" title="Anwendungen der Kategorie">
-  <area shape="rect" coords="322,53,350,86" href="#basic" alt="Grundeinstellungen" title="Grundeinstellungen">
+  <area shape="rect" coords="362,55,390,88" href="#basic" alt="Grundeinstellungen" title="Grundeinstellungen">
 </map>
-<img src="images/dospanel.png" width="431" height="306" align="right" border="0" hspace="5" usemap="#dospanel">
+<img src="images/dospanel.png" width="448" height="294" align="right" border="0" hspace="5" usemap="#dospanel">
 <p>Das Programm stellt eine grafische Bedienoberfläche für den DOS-Emulator
   <i><a href="http://www.dosbox.com/news.php" target="_blank">DOSBox</a></i> bereit
   und funktioniert unter allen aktuellen Windows-Systemen. 
@@ -64,11 +64,16 @@
   Zur besseren Übersicht lassen sich die DOS-Anwendungen verschiedenen Kategorien
   zuordnen.   
 </p>
-<h4>Neu in Version 2.0</h4><p></p>
-<p>Das Programm unterstützt jetzt auch 
+<h4>Neu in Version 2.1</h4>
+<ul>
+  <li>Das Programm unterstützt jetzt auch 
   <b><a href="https://www.dosbox-staging.org/" title="DOSBox Staging" target="_blank">DOSBox Staging</a></b>. 
   Es wird automatisch erkannt, welche Version von DOSBox eingebunden ist. 
-  Die Befehle der Konfiguration werden entsprechend angepasst.</p>
+  Die Befehle der Konfiguration werden entsprechend angepasst.</li>
+  <li>Neues modernes Design</li>
+  <li>Verbesserte Darstellung auf hochauflösenden Bildschirmen</li>
+</ul>
+  
   
 <h3>Die Funktionen in der Übersicht:</h3>
 <ul>
@@ -82,7 +87,7 @@
   <li>Eingabe von beliebigen DOS-Befehlen, die vor dem automatischen Start der
     o.g. Anwendung ausgeführt werden (z.B. ein Verzeichniswechsel)</li>
   <li>Auswahl eines Symbols für die Anzeige in <strong>DosPanel</strong></li>
-  <li>Optionale Auswahl eines Tastaturmapper</li>
+  <li>Optionale Auswahl eines Keymapper</li>
   <li>Auswahl einer Anleitung (z.B. Text oder PDF) für die DOS-Anwendung</li>
   <li>Zusätzlicher Kommentar</li>
   <li>Zusätzliche Optionen: Vollbildanzeige und automatisches Beenden von <em>DOSBox</em></li>
@@ -94,7 +99,7 @@
 <p><em>DOSBox</em> ist ein Emulator, der es ermöglicht DOS-Anwendungen auf verschiedenen
   Plattformen und Betriebssystemen (z.B. Windows, Linux) auszuführen. Damit können 
   z.B. viele alte DOS-Spieleklassiker
-  wieder zum Leben erweckt werden. Weitere Infos und eine Downloadmöglichkeit gibt
+  wieder zum Leben erweckt werden. Weitere Infos und Download-Möglichkeiten gibt
   es hier:</p>
 <ul>
   <li><b>DOSBox 0.73:</b> <a href="https://www.dosbox.com" target="_blank">Download</a>,
@@ -180,15 +185,15 @@
   <dt><b>Hilfe</b> - Information zum Programm</dt>
 </dl>
 
-<hr style="text-align:left;width:400px;color:#FF0000;">
+<hr style="text-align:left;width:600px;color:#FF0000;">
 <map name="popmenu">
   <area shape="rect" coords="6,3,157,27" href="#start" alt="Starten">
-  <area shape="rect" coords="4,30,161,50" href="#edit" alt="Bearbeiten">
-  <area shape="rect" coords="4,83,163,103" href="#delete" alt="Entfernen">
-  <area shape="rect" coords="3,139,155,161" href="#manual" alt="Handbuch">
-  <area shape="rect" coords="5,169,153,194" href="#appmapper" alt="Keymapper">
-  <area shape="rect" coords="4,55,153,77" href="#dup" alt="Verdoppeln">
-  <area shape="rect" coords="3,110,160,137" href="#showcon" alt="Konsole">
+  <area shape="rect" coords="5,34,162,54" href="#edit" alt="Bearbeiten">
+  <area shape="rect" coords="4,96,161,119" href="#delete" alt="Entfernen">
+  <area shape="rect" coords="4,126,150,153" href="showcon" alt="Konsole">
+  <area shape="rect" coords="5,158,157,182" href="#manual" alt="Handbuch">
+  <area shape="rect" coords="1,195,149,220" href="#appmapper" alt="Keymapper">
+  <area shape="rect" coords="4,65,153,87" href="#dup" alt="Duplizieren">
 </map>
 <h3>Kontext-Menü einer Anwendung</h3>
 <p>Nach einem Rechtsklick auf das Symbol einer Anwendung öffnet sich das rechts 
@@ -199,6 +204,7 @@
 <hr>
 <img src="images/basic-options.png" width="455" height="468" align="right" border="0" hspace="5">
 <h3><a name="basic">Grundeinstellungen</a></h3>
+<img src="images/basic.png" width="32" height="32" align="left" border="0" hspace="5">
 <p>Nach dem ersten Start sucht <strong>DosPanel</strong> nach einer 
   installierten <em>DOSBox</em> und nimmt die zur Einbindung erforderlichen 
   Grundeinstellungen automatisch vor. Anschließend sind noch einige individuelle
@@ -253,14 +259,14 @@
 
 <hr>
 <h3>Konfigurieren einer DOS-Anwendung</h3>
-<img src="images/app-options.png" width="541" height="559" align="right" border="0" hspace="5">
-<h4><a name="add"><img src="images/app-add.png" width="20" height="20" border="0"> 
+<img src="images/app-options.png" width="541" height="568" align="right" border="0" hspace="5">
+<h4><a name="add"><img src="images/app-add.png" width="32" height="32" border="0"> 
   Neue Anwendung hinzufügen</a></h4>
 <p>Ein Klick auf diese Schaltfläche fügt eine neue DOS-Anwendung in <strong>DosPanel</strong>
   hinzu. In dem anschließenden Dialog werden die Einstellungen für diese Anwendung vorgenommen.
   Einzelheiten dazu findet man im nächsten Abschnitt.</p> 
 
-<h4><a name="edit"><img src="images/app-edit.png" width="20" height="20" border="0">
+<h4><a name="edit"><img src="images/app-edit.png" width="32" height="32" border="0">
   Einstellungen der ausgewählten Anwendung bearbeite</a>n</h4>
 <p>Die möglichen Einstellungen werden in der Abbildung rechts an einem Beispiel 
   verdeutlicht: </p>  
@@ -293,7 +299,7 @@
       von nicht mehr benötigten Dateien).</li>
     <li><b>Symbol-Datei:</b> Auswahl eines Symbols (Bilddatei, wie z.B. <i>.ICO</i>) 
       oder einer Anwendung mit einem Symbol für die Anzeige in <strong>DosPanel</strong></li>
-  <img src="images/app-mixer.png" width="338" height="273" align="right" border="0" hspace="5">
+  <img src="images/app-mixer.png" width="346" height="301" align="right" border="0" hspace="5">
     <li><b>Anleitung:</b> Auswahl einer Datei auf dem Host-System (z.B. Text oder PDF),
       die in <strong>DosPanel</strong> als Anleitung für die ausgewählte Anwendung
       angezeigt werden soll. Diese Datei wird automatisch mit der in Windows zugeordneten 
@@ -352,7 +358,7 @@
     </ul>
   </li>
  
-  <img src="images/app-other.png" width="346" height="212" align="right" border="0" hspace="5">
+  <img src="images/app-other.png" width="346" height="222" align="right" border="0" hspace="5">
   <li><b><a name="showcon">Weitere</a></b><br>
     <ul>
     <li><b>Konsole:</b> 
@@ -371,7 +377,7 @@
         Verfügung, wenn die Option <i>Konsole verbergen</i> eingeschaltet ist.</li>
     </ul>
     <li><b>Keymapper-Datei:</b> Hier wird die für die ausgewählte DOS-Anwendung angepasste 
-      Tastaturmapper-Datei ausgewählt (<a href="#appmapper">siehe auch</a>). Sie befindet 
+      Keymapper-Datei ausgewählt (<a href="#appmapper">siehe auch</a>). Sie befindet 
       sich normalerweise im Verzeichnis des Hauptlaufwerks der DOS-Anwendung (siehe oben).</li>
     </li>
     </ul>
@@ -402,17 +408,17 @@
     Konfigurationsdatei der Anwendung geöffnet, um diese individuell anzupassen.</li>
 </ul>
 
-<h4><a name="dup"><img src="images/app-dup.png" width="20" height="20" border="0">
+<h4><a name="dup"><img src="images/app-dup.png" width="32" height="32" border="0">
   Duplizieren der ausgewählten DOS-Anwendung</a></h4>
 <p>Dieser Befehl fügt eine neue DOS-Anwendung in <strong>DosPanel</strong> hinzu 
   und übernimmt dabei die Einstellungen der ausgewählten Anwendung. Anschließend 
   können die Einstellungen wie oben beschrieben bearbeitet werden.</p>  
   
-<h4><a name="delete"><img src="images/app-rem.png" width="20" height="20" border="0"> 
+<h4><a name="delete"><img src="images/app-rem.png" width="32" height="32" border="0"> 
   Anwendung entfernen</a></h4>
 <p>Mit diesem Befehl wird eine Anwendung aus <strong>DosPanel</strong> entfernt.</p>
   
-<h4><a name="appmapper"><img src="images/keymapper.png" width="20" height="20" border="0">
+<h4><a name="appmapper"><img src="images/keymapper.png" width="32" height="32" border="0">
   Keymapper anpassen</a></h4>
 <p>Die Funktion des Keymapper ist in der <em>DOSBox</em>-Dokumentation näher
   erläutert. Beim Aufrufen dieses Menüpunktes wird direkt der <em>DOSBox</em>-Keymapper
@@ -425,27 +431,27 @@
   </p>
   
 <hr style="text-align:left;width:400px;color:#FF0000;">
-<h3><a name="view"><img src="images/icon-large.png" width="20" height="20" border="0">&nbsp;Ansicht</a></h3>
+<h3><a name="view"><img src="images/icon-large.png" width="132" height="32" border="0">&nbsp;Ansicht</a></h3>
 <p>Die Anzeigeeinstellungen entsprechen den Auswahlmöglichkeiten des Windows-Explorers.
   Wird hier <i>Details</i> gewählt, werden u.a. für jede DOS-Anwendung auch die zugewiesenen
   Laufwerke und die ausgewählte automatisch zu startende Anwendung angezeigt.</p>
 
 <hr style="text-align:left;width:400px;color:#FF0000;">
 <h3><a name="start">Aktion</a></h3>
-<h4><img src="images/run.png" width="20" height="20" border="0">Starten</h4>
+<h4><img src="images/run.png" width="32" height="32" border="0">Starten</h4>
 <p>Die ausgewählte DOS-Anwendung wird in <em>DOSBox</em> mit den vorgenommenen
   <a href="#edit">Einstellungen</a> gestartet.</p>
   
-<h4><a name="manual"><img src="images/help.png" width="20" height="20" border="0">&nbsp;Anleitung anzeigen</a></h4>
+<h4><a name="manual"><img src="images/help.png" width="32" height="32" border="0">&nbsp;Anleitung anzeigen</a></h4>
 <p>Es wird die Anleitung der ausgewählten DOS-Anwendung angezeigt. Textdateien werden
   mit dem programmeigenen Textbetrachter geöffnet, alle anderen Dateitypen mit der
   von Windows zugewiesenen Anwendung, z.B. AdobeReader für PDF-Dateien.</p>
   
-<h4><a name="dosbox"><img src="images/dosbox.png" width="20" height="20" border="0">&nbsp;DOSBox starten</a></h4>
+<h4><a name="dosbox"><img src="images/dosbox.png" width="32" height="32" border="0">&nbsp;DOSBox starten</a></h4>
 <p>Die <em>DOSBox</em> wird geöffnet, ohne eine spezielle DOS-Anwendung zu starten.</p>
 
 <hr>
-<img src="images/tp.png" width="541" height="559" align="right" border="0" hspace="5">
+<img src="images/tp.png" width="541" height="568" align="right" border="0" hspace="5">
 <h3><a name="sample">Beispiel-Konfiguration für Turbo-Pascal</a></h3>
 <p>Jeder, der die früher sehr verbreitete Turbo-Pascal-Entwicklungsumgebung
   auf 64-Bit-Versionen von Windows einsetzen will, kann dies sehr einfach mit
@@ -459,18 +465,17 @@
 <pre>
   rem @echo off
   echo Start Turbo-Pascal 7.0 (TPX)
-  E:
   path \BIN;%PATH%
   if "%1"=="" goto normal
   cd %1
   if "%2"=="n" goto quit
   if "%2"=="N" goto quit
   if "%2"=="" goto normal
-  TPX %2
+  \bin\TPX.exe %2
   echo off
-  goto ende
+  goto quit
   :normal
-  TPX
+  \bin\TPX.exe
   echo off
   :quit
 </pre>
@@ -479,7 +484,37 @@
   sie in der Abbildung rechts dargestellt sind. Die Felder für <i>Name</i> und
   <i>Parameter</i> bezeichnen das zu dem jeweiligen Projekt gehörende
   Unterverzeichnis.</p>
+<h4>Hinweis:</h4>
+<p>In <a href="https://www.dosbox-staging.org/" title="DOSBox Staging" target="_blank">DOSBox Staging</a>
+  wird in der <a href="https://www.dosbox-staging.org/0.83/manual/appendices/keymapper/" target="_blank">Standard-Tastaturbelegung</a> 
+  (Keymapper) die Tastenkombination <i>Strg-F9</i>
+  für das Beenden der DOSBox-Anwendung benutzt. Dies kollidiert mit dem Turbo-Pascal-Befehl
+  zum Starten einer Anwendung. Es wird daher empfohlen, einen modifizierten Keymapper zu
+  verwenden. Die Tastenbelegung ist dort wie folgt geändert:</p>
+<table width="60%">
+  <colgroup>
+    <col width="20%">
+    <col width="30%">
+  </colgroup>
+  <tr>
+    <td><b>Event</b></td>
+    <td><b>Beschreibung</b></td>
+    <td><b>Tastatur-Kombination</b></td>
+  </tr>
+  <tr>
+    <td><i>hand_capmouse</i></td>
+    <td>Maus einfangen</td>
+    <td><em>Strg-rechts</em></td>
+  </tr>
+  <tr>
+    <td><i>hand_shutdown</i></td>
+    <td>DOSBox beenden</td>
+    <td><em>Strg-F10</em></td>
+  </tr>
+</table>
+<p>Ein passend modifizierter Keymapper ist im Installationspaket für <strong>DosPanel</strong> enthalten.</p>  
 
+<br clear="all">
 <hr>
 <dl>
 	<dt><h3><a name="autor">Autor:</a></h3></dt>
@@ -519,6 +554,6 @@
 </dl>
 
 <hr>
-<i>J. Rathlev, D-24222 Schwentinental, Oktober 2026</i>
+<i>J. Rathlev, D-24222 Schwentinental, November 2026</i>
 </body>
 </html>

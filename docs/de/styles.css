@@ -3,6 +3,11 @@ body {
   text-decoration:none;
   font-size:10.0pt;
   }
+table {
+  font-family:arial,sans-serif;
+  text-decoration:none;
+  font-size:10.0pt;
+  }
 a {
   font-weight:bold;  
   }

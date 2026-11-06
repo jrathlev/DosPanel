@@ -14,7 +14,7 @@
    the specific language governing rights and limitations under the License.
 
    J. Rathlev, Dec. 2011
-   last modified: October 2026
+   last modified: November 2026
    *)
 
 unit Settings;
@@ -130,7 +130,7 @@ implementation
 {$R *.dfm}
 
 uses Winapi.ShellApi, System.IniFiles, DosPanelMain, GnuGetText, StringUtils, PathUtils, WinUtils,
-  MsgDialogs, ShellDirDlg, WinApiUtils;
+  ShowMessageDlg, ShellDirDlg, WinApiUtils;
 
 const
   defConfStaging = 'dosbox-staging.conf';

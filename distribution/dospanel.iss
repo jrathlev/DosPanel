@@ -59,6 +59,7 @@ Source: "..\docs\license-*.rtf"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\docs\DosPanel-de.chm"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\docs\DosPanel-en.chm"; DestDir: "{app}"; Flags: ignoreversion
 Source: "DosPanel-u.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "tp-mapper.map"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

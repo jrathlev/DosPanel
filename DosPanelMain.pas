@@ -14,7 +14,7 @@
    the specific language governing rights and limitations under the License.
 
    J. Rathlev, Dec. 2011
-   last modified: October 2026
+   last modified: November 2026
    *)
 
 unit DosPanelMain;
@@ -100,7 +100,7 @@ type
     itmExit: TMenuItem;
     itmSettings: TMenuItem;
     itmEntries: TMenuItem;
-    View1: TMenuItem;
+    itmView: TMenuItem;
     itmAdd: TMenuItem;
     itmEdit: TMenuItem;
     itmRemove: TMenuItem;
@@ -183,6 +183,7 @@ type
     actStdOut: TAction;
     actStdErr: TAction;
     N7: TMenuItem;
+    ilStat: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actExitExecute(Sender: TObject);
@@ -218,6 +219,10 @@ type
     procedure actHelpFileExecute(Sender: TObject);
     procedure actStdOutExecute(Sender: TObject);
     procedure actStdErrExecute(Sender: TObject);
+    procedure itmMenuDrawItem(Sender: TObject; ACanvas: TCanvas;
+      ARect: TRect; Selected: Boolean);
+    procedure itmMenuMeasureItem(Sender: TObject; ACanvas: TCanvas;
+      var Width, Height: Integer);
   private
     { Private-Deklarationen }
     ProgVersName,
@@ -228,6 +233,8 @@ type
     Languages        : TLanguageList;
     lvViewStyle      : TViewStyle;
     Apps             : TObjectList;
+    function SizeScale (Value : integer) : integer;
+    procedure SetLanguage(Language : TLangCodeString);
     procedure SaveToIni;
     procedure SetViewStyle (AViewStyle : TViewStyle);
     procedure ShowFile (const Filename : string);
@@ -253,8 +260,25 @@ implementation
 
 uses Winapi.ShellApi, Winapi.ShlObj, System.StrUtils, System.Win.Registry,
   GnuGetText, InitProg, IniFileUtils, WinUtils, ListUtils, Show, WinDevUtils,
-  FileCopy, MsgDialogs, StringUtils, PathUtils, WinShell, WinExecute, NumberUtils,
+  FileCopy, ShowMessageDlg, StringUtils, PathUtils, WinShell, WinExecute, NumberUtils,
   ShowMemo, TxtConvertDlg, ShellDirDlg;
+
+{ ------------------------------------------------------------------- }
+// add ownerdraw events to all menu items
+// useful to scale the menu entries on HighDPI screens
+procedure SetOwnerDrawMenuItems (AItems : TMenuItem; DrawItem : TMenuDrawItemEvent;
+  MeasureItem : TMenuMeasureItemEvent);
+var
+  i : integer;
+begin
+  for i:=0 to AItems.Count-1 do begin
+    with AItems[i] do begin
+      OnDrawItem:=DrawItem;
+      OnMeasureItem:=MeasureItem;
+      end;
+    SetOwnerDrawMenuItems(AItems[i],DrawItem,MeasureItem);
+    end;
+  end;
 
 { ------------------------------------------------------------------- }
 constructor TConfigList.Create (const AFilename : string);
@@ -335,6 +359,7 @@ const
 procedure TfrmMain.FormCreate(Sender: TObject);
 var
   IniFile  : TUnicodeIniFile;
+  i        : integer;
 
   procedure ReadOptions;
   var
@@ -365,6 +390,7 @@ begin
     LoadLanguageNames(SelectedLanguage);
     OnLanguageItemClick:=SetLanguageClick;
     end;
+  SetOwnerDrawMenuItems(itmLanguage,itmMenuDrawItem,nil);
   with TUnicodeIniFile.CreateForRead(IniName) do begin
     Left:=ReadInteger (CfgSekt,IniLeft,50);
     Top:=ReadInteger (CfgSekt,IniTop,50);
@@ -373,11 +399,7 @@ begin
     Free;
     end;
   HtManWin:=TWebBrowserWin.Create(Application);
-  end;
-
-procedure TfrmMain.FormDestroy(Sender: TObject);
-begin
-  Apps.Free; Languages.Free;
+  MainMenu.OwnerDraw:=true;   // to avoid alignment errors in the menu layout
   end;
 
 {$IFDEF HDPI}   // scale glyphs and images for High DPI
@@ -385,8 +407,43 @@ procedure TfrmMain.AfterConstruction;
 begin
   inherited;
   ScaleImageList(ilActions,PixelsPerInchOnDesign,Monitor.PixelsPerInch);
+  ScaleImageList(ilStat,PixelsPerInchOnDesign,Monitor.PixelsPerInch);
+  with StatusBar do begin
+    Height:=SizeScale(Height);
+    with Panels[0] do Width:=SizeScale(Width);
+    end;
   end;
 {$EndIf}
+
+procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  i : integer;
+  s : string;
+begin
+//  DefaultInstance.DebugLogToFile('ggt.log');
+  with Apps do for i:=0 to Count-1 do with (Items[i] as TDosBoxApp) do
+      if cmErase in ConsoleMode then begin
+    s:=AddPath(AppPath,sStdOut);
+    if FileExists(s) then DeleteFile(s);
+    s:=AddPath(AppPath,sStdErr);
+    if FileExists(s) then DeleteFile(s);
+    end;
+  UpdateAutoStart;
+  with HtManWin do begin
+    if Visible then Close;
+    Release;
+    end;
+  end;
+
+procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  SaveToIni;
+  end;
+
+procedure TfrmMain.FormDestroy(Sender: TObject);
+begin
+  Apps.Free; Languages.Free;
+  end;
 
 { ------------------------------------------------------------------- }
 procedure TfrmMain.lvAppsResize(Sender: TObject);
@@ -406,6 +463,7 @@ begin
     if Visible then sc:=Tabs[TabIndex] else sc:=MiscName;
     end;
   ilLarge.Clear; ilSmall.Clear;
+  ilLarge.SetSize(32,32); ilSmall.SetSize(16,16);   // set to design size
   with Apps do for i:=0 to Count-1 do with (Items[i] as TDosBoxApp) do
       if (AnsiSameText(Category,sc))
       or (length(Category)=0) and AnsiSameText(sc,MiscName) then begin
@@ -515,7 +573,6 @@ var
     end;
 
 begin
-  s:='';
 // bei größeren dpi wird die Fontgröße falsch berechnet, wenn ParentFont:=false ist
   k:=Font.Height;
   tcCats.Font.Height:=k;
@@ -646,29 +703,32 @@ begin
   UpdateView(CurApp);
   end;
 
-procedure TfrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
-var
-  i : integer;
-  s : string;
+function TfrmMain.SizeScale (Value : integer) : integer;
 begin
-//  DefaultInstance.DebugLogToFile('ggt.log');
-  with Apps do for i:=0 to Count-1 do with (Items[i] as TDosBoxApp) do
-      if cmErase in ConsoleMode then begin
-    s:=AddPath(AppPath,sStdOut);
-    if FileExists(s) then DeleteFile(s);
-    s:=AddPath(AppPath,sStdErr);
-    if FileExists(s) then DeleteFile(s);
-    end;
-  UpdateAutoStart;
-  with HtManWin do begin
-    if Visible then Close;
-    Release;
-    end;
+  Result:=MulDiv(Value,Monitor.PixelsPerInch,PixelsPerInchOnCreate);
   end;
 
-procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+procedure TfrmMain.itmMenuMeasureItem(Sender: TObject; ACanvas: TCanvas;
+  var Width, Height: Integer);
 begin
-  SaveToIni;
+  Width:=SizeScale(Width); Height:=SizeScale(Height);
+  end;
+
+procedure TfrmMain.itmMenuDrawItem(Sender: TObject; ACanvas: TCanvas;
+  ARect: TRect; Selected: Boolean);
+var
+  ch : boolean;
+  s  : string;
+begin
+  with ACanvas do begin
+    with (Sender as TMenuItem) do begin
+      TextOut(ARect.Left+SizeScale(25),ARect.Top+SizeScale(1),DelChar(Caption,'&'));
+      s:=ShortCutToText(ShortCut);
+      TextOut(ARect.Right-TextWidth(s)-SizeScale(5),ARect.Top+1,s);
+      ch:=(GroupIndex>0) and Checked;
+      end;
+    if ch then with ARect do ilStat.Draw(ACanvas,Height div 4,Top+Height div 16,0);
+    end;
   end;
 
 procedure TfrmMain.SaveToIni;
@@ -749,6 +809,7 @@ begin
   lvViewStyle:=AViewStyle;
   lvApps.ViewStyle:=AViewStyle;
   lvApps.Scroll(0,0);
+//  itmView.Items[ord(AViewStyle)].Checked:=true;
   end;
 
 procedure TfrmMain.tcCatsChange(Sender: TObject);
@@ -757,21 +818,25 @@ begin
   end;
 
 procedure TfrmMain.SetLanguageClick(Sender : TObject; const Language : TLangCodeString);
+begin
+  if not AnsiSameStr(SelectedLanguage,Language) then SetLanguage(Language);
+  end;
+
+procedure TfrmMain.SetLanguage(Language : TLangCodeString);
 var
   sl : TLangCodeString;
   s : string;
   n : integer;
 begin
-  if not AnsiSameStr(SelectedLanguage,Language) then begin
-    s:=MiscName;
+  s:=MiscName;
 //    Languages.SelectedLanguageCode:=Language;
-    sl:=ChangeLanguage(Language);
-    Languages.LoadLanguageNames(sl);
-    Caption:=_('Run DOSBox applications')+' ('+VersInfo.Comments+')';
-    with tcCats do with Tabs do begin
-      n:=IndexOf(s);
-      if n>=0 then Strings[n]:=MiscName;
-      end;
+  sl:=ChangeLanguage(Language);
+  Languages.LoadLanguageNames(sl);
+  SetOwnerDrawMenuItems(itmLanguage,itmMenuDrawItem,nil);
+  Caption:=_('Run DOSBox applications')+' ('+VersInfo.Comments+')';
+  with tcCats do with Tabs do begin
+    n:=IndexOf(s);
+    if n>=0 then Strings[n]:=MiscName;
     end;
   end;
 
@@ -825,8 +890,8 @@ procedure TfrmMain.piDrawItem(Sender: TObject; ACanvas: TCanvas;
   ARect: TRect; Selected: Boolean);
 begin
   with ((Sender as TMenuItem).Action as TAction) do begin
-    ACanvas.TextRect(ARect,Arect.Left+30,ARect.Top+4,DelChar(Caption,'&'));
-    with ARect do ilActions.Draw(ACanvas,Left+1,Top+1,ImageIndex);
+    ACanvas.TextRect(ARect,ARect.Left+SizeScale(30),ARect.Top+SizeScale(4),DelChar(Caption,'&'));
+    with ARect do ilActions.Draw(ACanvas,Left+SizeScale(1),Top+SizeScale(1),ImageIndex);
     end;
   end;
 
@@ -857,8 +922,8 @@ begin
 
 procedure TfrmMain.actInfoExecute(Sender: TObject);
 begin
-  InfoDialog(CenterPos,ProgName,ProgVersName+' - '+ProgVersDate+#13+
-           VersInfo.CopyRight+#13+'E-Mail: '+EmailAdr);
+  InfoDialog(CenterPos,ProgVersName+' - '+ProgVersDate+sLineBreak+
+           VersInfo.CopyRight+sLineBreak+'E-Mail: '+EmailAdr);
   end;
 
 procedure TfrmMain.actHelpFileExecute(Sender: TObject);
@@ -1019,16 +1084,6 @@ begin
   lvApps.Arrange(arDefault);
   end;
 
-procedure TfrmMain.actStdErrExecute(Sender: TObject);
-begin
-  ShowFile(sStdErr);
-  end;
-
-procedure TfrmMain.actStdOutExecute(Sender: TObject);
-begin
-  ShowFile(sStdOut);
-  end;
-
 procedure TfrmMain.actListExecute(Sender: TObject);
 begin
   SetViewStyle(vsList);
@@ -1037,6 +1092,16 @@ begin
 procedure TfrmMain.actDetailsExecute(Sender: TObject);
 begin
   SetViewStyle(vsReport);
+  end;
+
+procedure TfrmMain.actStdErrExecute(Sender: TObject);
+begin
+  ShowFile(sStdErr);
+  end;
+
+procedure TfrmMain.actStdOutExecute(Sender: TObject);
+begin
+  ShowFile(sStdOut);
   end;
 
 procedure TfrmMain.actRunExecute(Sender: TObject);

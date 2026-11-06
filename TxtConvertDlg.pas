@@ -14,7 +14,7 @@
    the specific language governing rights and limitations under the License.
 
    J. Rathlev, Sep. 2014
-   last modified: August 2025
+   last modified: November 2026
    *)
 
 unit TxtConvertDlg;
@@ -43,6 +43,9 @@ type
     FRootPath,
     LastFile : string;
     procedure Convert(const InFile,OutFile : string; CodePage : integer);
+{$IFDEF HDPI}   // scale glyphs and images for High DPI
+    procedure AfterConstruction; override;
+{$EndIf}
   public
     { Public-Deklarationen }
     procedure Execute (const ARootPath : string; ACodePage : integer);
@@ -68,6 +71,14 @@ begin
     end;
   LastFile:='';
   end;
+
+{$IFDEF HDPI}   // scale glyphs and images for High DPI
+procedure TTxtConvertDialog.AfterConstruction;
+begin
+  inherited;
+  ScaleButtonGlyphs(self,PixelsPerInchOnDesign,Monitor.PixelsPerInch);
+  end;
+{$EndIf}
 
 procedure TTxtConvertDialog.btTextFileClick(Sender: TObject);
 begin
