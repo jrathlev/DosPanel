@@ -26,7 +26,7 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.ActnList,
   Vcl.ComCtrls, Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls, System.Contnrs,
   Vcl.CategoryButtons, LangUtils, Vcl.ImgList, Vcl.Imaging.pngimage, System.ImageList,
-  Vcl.ExtCtrls, System.Actions, Settings, AppSettings, WebBrowser;
+  Vcl.ExtCtrls, System.Actions, Settings, AppSettings, WebBrowser, StyleUtils;
 
 const
   ProgName = 'DOS Panel';
@@ -184,6 +184,10 @@ type
     actStdErr: TAction;
     N7: TMenuItem;
     ilStat: TImageList;
+    itmDisplay: TMenuItem;
+    itmDmDefault: TMenuItem;
+    itmDmLight: TMenuItem;
+    itmDmDark: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actExitExecute(Sender: TObject);
@@ -223,6 +227,9 @@ type
       ARect: TRect; Selected: Boolean);
     procedure itmMenuMeasureItem(Sender: TObject; ACanvas: TCanvas;
       var Width, Height: Integer);
+    procedure itmDmDefaultClick(Sender: TObject);
+    procedure itmDmLightClick(Sender: TObject);
+    procedure itmDmDarkClick(Sender: TObject);
   private
     { Private-Deklarationen }
     ProgVersName,
@@ -231,9 +238,11 @@ type
     CurApp           : string;
     HtManWin         : TWebBrowserWin;
     Languages        : TLanguageList;
+    DisplayMode      : TDisplayMode;
     lvViewStyle      : TViewStyle;
     Apps             : TObjectList;
     function SizeScale (Value : integer) : integer;
+    procedure ChangeStyle (dm : TDisplayMode);
     procedure SetLanguage(Language : TLangCodeString);
     procedure SaveToIni;
     procedure SetViewStyle (AViewStyle : TViewStyle);
@@ -258,7 +267,7 @@ implementation
 
 {$R *.dfm}
 
-uses Winapi.ShellApi, Winapi.ShlObj, System.StrUtils, System.Win.Registry,
+uses Winapi.ShellApi, Winapi.ShlObj, System.StrUtils, System.Win.Registry, System.UITypes,
   GnuGetText, InitProg, IniFileUtils, WinUtils, ListUtils, Show, WinDevUtils,
   FileCopy, ShowMessageDlg, StringUtils, PathUtils, WinShell, WinExecute, NumberUtils,
   ShowMemo, TxtConvertDlg, ShellDirDlg;
@@ -277,6 +286,17 @@ begin
       OnMeasureItem:=MeasureItem;
       end;
     SetOwnerDrawMenuItems(AItems[i],DrawItem,MeasureItem);
+    end;
+  end;
+
+// prepare menu to use ownerdraw
+procedure SetOwnerDrawMenu (AMenu : TMenu; DrawItem : TMenuDrawItemEvent;
+  MeasureItem : TMenuMeasureItemEvent);
+begin
+  with AMenu do begin
+    AutoHotKeys:=maManual;
+    OwnerDraw:=true;
+    SetOwnerDrawMenuItems(Items,DrawItem,MeasureItem);
     end;
   end;
 
@@ -355,11 +375,17 @@ const
   iniFull   = 'FullScreen';
   iniAuto   = 'AutoEnd';
   iniClose  = 'AutoClose';
+  iniDispMd = 'DisplayMode';
+
+//  DarkStyle = 'Windows10 Dark';
+  LightStyle = 'Windows10';
+  DarkStyle = 'JR Dark';
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 var
   IniFile  : TUnicodeIniFile;
   i        : integer;
+  UseDarkMode : boolean;
 
   procedure ReadOptions;
   var
@@ -371,7 +397,8 @@ var
         s:=ParamStr(i);
         if (s[1]='/') or (s[1]='-') then begin
           delete (s,1,1);
-          if ReadOptionValue(s,siAltIni) then  // anderer Ort für Ini-Datei
+          if CompareOption(s,'dark') then UseDarkMode:=true
+          else if ReadOptionValue(s,siAltIni) then  // anderer Ort für Ini-Datei
             IniName:=Erweiter(AppDataPath,s,IniExt);
           end
         end;
@@ -383,6 +410,7 @@ begin
   InitPaths(AppDataPath,UserPath,ProgPath);
   InitVersion(ProgName,Vers,CopRgt,3,3,ProgVersName,ProgVersDate);
   IniName:=Erweiter(AppDataPath,PrgName,IniExt);
+  UseDarkMode:=false;
   ReadOptions;
   Languages:=TLanguageList.Create(PrgPath);
   with Languages do begin
@@ -390,16 +418,24 @@ begin
     LoadLanguageNames(SelectedLanguage);
     OnLanguageItemClick:=SetLanguageClick;
     end;
-  SetOwnerDrawMenuItems(itmLanguage,itmMenuDrawItem,nil);
+//  SetOwnerDrawMenuItems(itmLanguage,itmMenuDrawItem,nil);
   with TUnicodeIniFile.CreateForRead(IniName) do begin
     Left:=ReadInteger (CfgSekt,IniLeft,50);
     Top:=ReadInteger (CfgSekt,IniTop,50);
     Height:=ReadInteger(CfgSekt,iniHeight,Height);
     Width:=ReadInteger(CfgSekt,iniWidth,Width);
+    DisplayMode:=TDisplayMode(ReadInteger(CfgSekt,IniDispMd,0));
     Free;
     end;
   HtManWin:=TWebBrowserWin.Create(Application);
-  MainMenu.OwnerDraw:=true;   // to avoid alignment errors in the menu layout
+// to avoid alignment errors in the menu layout
+  SetOwnerDrawMenu(MainMenu,itmMenuDrawItem,itmMenuMeasureItem);
+  SetOwnerDrawMenu(PopupMenu,piDrawItem,itmMenuMeasureItem);
+// set style for Windows dark mode
+  SetDefaultStyles(DarkStyle);
+  if UseDarkMode then SelectStyle(true)
+  else ChangeStyle(DisplayMode);
+  itmDisplay.Items[integer(DisplayMode)].Checked:=true;
   end;
 
 {$IFDEF HDPI}   // scale glyphs and images for High DPI
@@ -443,6 +479,13 @@ begin
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
   Apps.Free; Languages.Free;
+  end;
+
+procedure TfrmMain.ChangeStyle (dm : TDisplayMode);
+begin
+  DisplayMode:=dm;
+  itmDisplay.Items[integer(DisplayMode)].Checked:=true;
+  SetDisplayMode(DisplayMode);
   end;
 
 { ------------------------------------------------------------------- }
@@ -708,10 +751,25 @@ begin
   Result:=MulDiv(Value,Monitor.PixelsPerInch,PixelsPerInchOnCreate);
   end;
 
+procedure TfrmMain.itmDmDarkClick(Sender: TObject);
+begin
+  ChangeStyle(dmDark);
+  end;
+
+procedure TfrmMain.itmDmDefaultClick(Sender: TObject);
+begin
+  ChangeStyle(dmDefault);
+  end;
+
+procedure TfrmMain.itmDmLightClick(Sender: TObject);
+begin
+  ChangeStyle(dmLight);
+  end;
+
 procedure TfrmMain.itmMenuMeasureItem(Sender: TObject; ACanvas: TCanvas;
   var Width, Height: Integer);
 begin
-  Width:=SizeScale(Width); Height:=SizeScale(Height);
+//  Width:=SizeScale(Width); Height:=SizeScale(Height);
   end;
 
 procedure TfrmMain.itmMenuDrawItem(Sender: TObject; ACanvas: TCanvas;
@@ -719,15 +777,57 @@ procedure TfrmMain.itmMenuDrawItem(Sender: TObject; ACanvas: TCanvas;
 var
   ch : boolean;
   s  : string;
+  n  : integer;
+  mi : TMenuItem;
 begin
+  mi:=(Sender as TMenuItem);
   with ACanvas do begin
-    with (Sender as TMenuItem) do begin
-      TextOut(ARect.Left+SizeScale(25),ARect.Top+SizeScale(1),DelChar(Caption,'&'));
-      s:=ShortCutToText(ShortCut);
-      TextOut(ARect.Right-TextWidth(s)-SizeScale(5),ARect.Top+1,s);
-      ch:=(GroupIndex>0) and Checked;
+    if Selected then Brush.Color:=GetSysColor(clHighlight) else Brush.Color:=GetSysColor(clMenu);
+    if mi.Caption=cLineCaption then with ARect do begin
+      FillRect(ARect);
+      if StylesEnabled  then Pen.Color:=TColors.LtGray else Pen.Color:=clActiveBorder;
+      n:=Top+Height div 2;
+      MoveTo(Height,n); LineTo(Width-Height,n);
+      end
+    else begin
+      with Font do begin
+        Size:=frmMain.Font.Size; //SizeScale(Size);
+        if Selected then Color:=GetSysColor(clHighlightText) else Color:=GetSysColor(clMenuText);
+        end;
+      TextOut(ARect.Left+ARect.Height,ARect.Top+SizeScale(3),DelChar(mi.Caption,'&'));
+      s:=ShortCutToText(mi.ShortCut);
+      TextOut(ARect.Right-TextWidth(s)-SizeScale(5),ARect.Top+SizeScale(3),s);
+      with mi do ch:=(GroupIndex>0) and Checked;
+      if mi.GroupIndex>0 then n:=-1 else n:=mi.ImageIndex;
+      if ch then with ARect do ilStat.Draw(ACanvas,Height div 4,Top+Height div 8,0)
+      else if (n>=0) then with ARect do ilActions.Draw(ACanvas,Left+SizeScale(1),Top+SizeScale(1),n);
       end;
-    if ch then with ARect do ilStat.Draw(ACanvas,Height div 4,Top+Height div 16,0);
+    end;
+  end;
+
+procedure TfrmMain.piDrawItem(Sender: TObject; ACanvas: TCanvas;
+  ARect: TRect; Selected: Boolean);
+var
+  mi : TMenuItem;
+  n  : integer;
+begin
+  mi:=(Sender as TMenuItem);
+  with ACanvas do begin
+    if Selected then Brush.Color:=GetSysColor(clHighlight) else Brush.Color:=GetSysColor(clMenu);
+    if mi.Caption=cLineCaption then with ARect do begin
+      FillRect(ARect);
+      if StylesEnabled  then Pen.Color:=TColors.LtGray else Pen.Color:=clActiveBorder;
+      n:=Top+Height div 2;
+      MoveTo(Height,n); LineTo(Width-Height,n);
+      end
+    else begin
+      with Font do begin
+        Size:=SizeScale(Size);
+        if Selected then Color:=GetSysColor(clHighlightText) else Color:=GetSysColor(clMenuText);
+        end;
+      TextOut(ARect.Left+ARect.Height,ARect.Top+SizeScale(3),DelChar(mi.Caption,'&'));
+      with ARect do ilActions.Draw(ACanvas,Left+SizeScale(1),Top+SizeScale(1),mi.ImageIndex)
+      end;
     end;
   end;
 
@@ -741,6 +841,7 @@ begin
     WriteInteger (CfgSekt,IniTop,Top);
     WriteInteger(CfgSekt,iniHeight,Height);
     WriteInteger(CfgSekt,iniWidth,Width);
+    WriteInteger(CfgSekt,IniDispMd,integer(DisplayMode));
     with BasicSettings do begin
       WriteString(CfgSekt,iniPath,DosBoxPath);
       WriteString(CfgSekt,iniRoot,RootPath);
@@ -884,15 +985,6 @@ begin
     end;
   itmConsole.Visible:=b;
   piConsole.Visible:=b;
-  end;
-
-procedure TfrmMain.piDrawItem(Sender: TObject; ACanvas: TCanvas;
-  ARect: TRect; Selected: Boolean);
-begin
-  with ((Sender as TMenuItem).Action as TAction) do begin
-    ACanvas.TextRect(ARect,ARect.Left+SizeScale(30),ARect.Top+SizeScale(4),DelChar(Caption,'&'));
-    with ARect do ilActions.Draw(ACanvas,Left+SizeScale(1),Top+SizeScale(1),ImageIndex);
-    end;
   end;
 
 procedure TfrmMain.ShowFile (const Filename : string);

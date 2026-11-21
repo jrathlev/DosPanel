@@ -14,7 +14,9 @@ uses
   SelectFromListDlg in 'dialogs\SelectFromListDlg.pas' {SelectFromListDialog},
   ShowMemo in 'dialogs\ShowMemo.pas' {ShowTextDialog},
   TxtConvertDlg in 'TxtConvertDlg.pas' {TxtConvertDialog},
-  FileCopy in '..\..\..\Bibliotheken\Units\FileCopy.pas';
+  FileCopy in '..\..\..\Bibliotheken\Units\FileCopy.pas',
+  Vcl.Themes,
+  Vcl.Styles;
 
 {$R *.res}
 
@@ -23,6 +25,7 @@ begin
   InitTranslation(['delphi10','units']);
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
+  TStyleManager.TrySetStyle('JR Dark');
   Application.CreateForm(TfrmMain, frmMain);
   Application.CreateForm(TDosBoxSetDialog, DosBoxSetDialog);
   Application.CreateForm(TShellDirDialog, ShellDirDialog);
